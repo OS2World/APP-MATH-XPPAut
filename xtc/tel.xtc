@@ -1,0 +1,19 @@
+SPACE x
+TIME t
+SET DELTA_T=.1
+SET TFINAL=.5
+SET GRID=50
+SET LENGTH=6.28
+SET METHOD=1
+SET FAST=1
+SET NOUT=50
+PAR d=.2
+CVAR u=cos(x)
+CVAR v=sin(x)
+BDRY u 0 periodic
+BDRY u 1 periodic
+BDRY v 0 periodic
+BDRY v 1 periodic
+u'=v
+v'=u_xx-d*sin(u)
+DONE

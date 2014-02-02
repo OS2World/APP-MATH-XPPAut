@@ -1,0 +1,11 @@
+1
+# declare the scalar x
+v x=1
+# declare all the parameters, initializing the delay to 3
+p tau=0,b=4.8,a=4,p=-.8
+# define the nonlinearity
+u f 1 1/(1+exp(-arg1))
+# define the right-hand sides; delaying x by tau
+o -x + f(a*x-b*delay(x,tau)+p)
+# done
+d

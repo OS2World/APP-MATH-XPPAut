@@ -1,0 +1,8 @@
+3
+# the famous Lorenz equation
+v x=1,y=2,z
+p r=27,s=10,b=2.66666
+o s*(-x+y)
+o r*x-y-x*z
+o -b*z+x*y
+d

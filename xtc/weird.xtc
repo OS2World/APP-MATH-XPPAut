@@ -1,0 +1,23 @@
+#-------------weird.xtc-----------------
+# Diffusion with a half length  distant inhibition leads to pattern formation
+#
+SPACE x
+TIME t
+SET DELTA_T=.005
+SET TRANS=0
+SET TFINAL=.1
+SET GRID=50
+SET LENGTH=6.28318
+SET METHOD=0
+SET FAST=1
+SET NOUT=100
+PAR d=1,beta=2.5,dist=3.1415926
+CVAR u=.02*exp(-x*x)-.01
+BDRY u 0 periodic
+BDRY u 1 periodic
+FUN f 1 beta*tanh(arg1)
+u'=-u+d*u_xx-.5*(f(u(x+dist))+f(u(x-dist)))
+DONE
+
+
+

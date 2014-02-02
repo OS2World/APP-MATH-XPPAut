@@ -1,0 +1,17 @@
+SPACE x
+TIME t 
+SET LENGTH=20
+SET GRID=20
+SET FAST=1
+SET METHOD=0
+SET DELTA_T=1
+SET TFINAL=.1
+SET NPERIOD=10
+SET NOUT=2
+SET TRANS=0
+SET BUFSIZE=100
+CVAR u=.05*(ran(1)-.5)
+WEIGHT none w=ran(1)-.5
+PAR al=-.5,bet=.05
+u'=al*u+bet*tanh(weight(w,u,0,20,x))
+DONE

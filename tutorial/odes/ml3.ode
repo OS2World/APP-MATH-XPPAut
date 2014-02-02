@@ -1,0 +1,16 @@
+3
+v v=-59.474,w=.00,z
+param vk=-84,vl=-60,vca=120
+param i=0,gk=8,gl=2, gca=4, c=20
+param gc=0,glz=.1,gcz=.5
+# type II -- v3=2,v4=30,phi=.04 -- like HH 
+# type I -- v3=12,v4=17.4,phi=.06666667
+param v1=-1.2,v2=18,v3=12,v4=17.4,phi=.06666667
+param vz=0
+user minf 1 .5*(1+tanh((arg1-v1)/v2))
+user ninf 1 .5*(1+tanh((arg1-v3)/v4))
+user lamn 1 phi*cosh((arg1-v3)/(2*v4))
+odev  (i+gl*(vl-v)+gk*w*(vk-v)+gca*minf(v)*(vca-v)+gc*(z-v))/c
+odew lamn(v)*(ninf(v)-w)
+odez (glz*(vz-z)+gcz*(v-z))/c
+done

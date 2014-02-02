@@ -1,0 +1,5 @@
+#define MAXODE 299
+#define MAXODE1 300
+#define WORKSIZE 200000
+#define MAXDELAY 50
+#define AUTOMAX 50

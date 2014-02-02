@@ -1,0 +1,25 @@
+# ------------ class.xtc ------------------
+# Since it is biharmonic, set MAXDERIV=4. Use Gear method with reduced
+# tolerance. Look at 15 time units with steps of .1
+# 
+# Use a small bump in the middle as the initial perturbation
+#
+# Set b<0 and greater than a.
+SPACE x
+TIME t
+SET LENGTH=3.1415926
+SET MAXDERIV=4
+SET FAST=1
+SET GRID=50
+SET METHOD=2
+SET TOLERANCE=.001
+SET DELTA_T=.01
+SET TFINAL=.1
+SET NOUT=150
+PAR a=1,b=-2,beta=.1
+CVAR v=.01*exp(-(x-1.57)^2)
+BDRY v 0 noflux
+BDRY v 1 noflux
+v'=-v+a*v^2+b*v^3+beta*(-8*v_xx-biharm(v,x,even))
+DONE
+

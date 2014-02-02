@@ -1,0 +1,611 @@
+<html>   
+<head>
+  <title>  XPP TUTORIAL II </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> <a name="nonlin1"> II. Nonlinear ODES </a> </h1>
+
+<p>
+
+If all differential equations were linear, then life would be easier
+but not so interesting.  Most of the models that arise in real
+physical systems involve nonlinearities and as a consequence a much
+broader range of behavior is possible such as <a href=#chaos> chaos
+</a> and <a href=#periodic> oscillations </a>.  We will continue
+building our simple membrane model by adding a <a name=exam2_int> nonlinear
+</a> voltage-dependent conductance.  This conductance is due to calcium.
+The <a name=mlc> equation </a> is
+<p>
+<a href=odes/mlcal.ode>
+<img align=center src=gif/mlcal.gif> </a> <p>
+
+where 
+<p>
+<img align=center src=gif/minf.gif> <p>
+
+This equation is already too difficult to solve analytically so one
+sees the advantage of numerical and qualitative techniques. (Actually,
+you can write the solution down in terms of an integral which you
+cannot evaluate except numerically!)  <p>
+The ODE file for this equation in the old style is 
+<pre>
+<a name=mlcal>
+# One fast persistent calcium channel
+# Here is the equation
+dv/dt=(i+gl*(vl-v)+gca*minf(v)*(vca-v))/c
+
+#and the initial condition
+V(0)=-60
+
+# and the calcium current
+aux ica=gca*minf(v)*(v-vca)
+
+# and the parameters
+param vl=-60,vca=120
+param i=0,gl=2,gca=4,c=20
+param v1=-1.2,v2=18
+
+# and the functions
+minf(v)=.5*(1+tanh((v-v1)/v2))
+done
+
+</pre>
+
+I have attempted to make comments which tell you what is going on.
+There are 2 new things here.  <b> Auxiliary </b> quantities and <b>
+User defined </b> functions.  Since functions are really important we will
+cover them first.<p>
+<h2> <a name=user> User defined functions.</h2> </a> <p>   
+User defined functions are declared just like you would write them.  They can have up to 9 arguments. 
+ Thus  the function <b> minf </b> has <b> 1 </b>
+argument and is a squashing function.  A function of 2 variables, say,
+<i> f(x,y)=exp(x)*sin(y) </i> would be written as
+<pre>
+f(x,y)=exp(x)*sin(y)
+</pre>
+ 
+<p>
+<a name=auxiliary> <h2> Auxiliary quantities. </h2></a>  <p>  
+ We saw in the previous example that it was possible to add new <a
+href=xppbrowse.html#addcol> columns </a> 
+to the <a href=xppbrowse.html> Data Browser </a> window.  This is fine
+if you think of something you want to compute while in XPP.  But the
+<b> auxiliary </b> declaration allows you to incorporate quantities
+that are not explicitly solutions to differential equations but
+instead some combinations of them.  They are declared by starting the
+line with <b> aux </b> followed by the name of the quantity an equal
+sign and the definition. Now when you run this, you will be able to
+save the value of the calcium current and plot it as a function of time.
+<p>
+<h3> <a name=hw1.3> Homework 1.3 </h3>
+Add another auxiliary variable to your file which tracks the leak
+current,  <i> gl*(V-VL) </i>.  
+<p>
+
+<h2> <a name=fixed> Fixed quantities </a> </h2> <p>
+In the above examples, the calcium current is computed twice: once in
+the definition of the right-hand side and another time as an auxiliary
+quantity.  While for this simple example, it probably doesn't matter
+(unless you are running on a PC with no math coprocessor) there are
+plenty of times when it will.  If you were writing a program in C or
+FORTRAN you might define an intermediate quantity and use it to save
+on computation time.  In XPP, this is done with <b> fixed </b>
+quantities that are declared by typing <b> name=formula </b> into the
+file. Fixed quantities are always evaluated before the right-hand
+sides are evaluated and are evaluated in the order that they are
+defined.
+<p>
+Thus, a faster version of the ode is 
+<a href=odes/mlcalf.ode> 
+<pre>
+# One fast persistent calcium model with fixed quantities </a>
+# Here is the equation
+dv/dt=(i+gl*(vl-v)-icaf)/c
+
+#and the initial condition
+V(0)=-60
+
+# and the calcium current as a fixed quantity
+icaf=gca*minf(v)*(v-vca)
+
+# make ica available to look at
+aux ica=icaf
+
+# and the parameters
+param vl=-60,vca=120
+param i=0,gl=2,gca=4,c=20
+param v1=-1.2,v2=18
+
+# and the functions
+minf(v)=.5*(1+tanh((v-v1)/v2))
+done
+</pre> 
+<i> NOTE </i> XPP complains if things have the same names, thus, I
+have not named the AUXILIARY and the FIXED variables the same thing.
+
+<p>  
+You have now learned the essential components of an ODE file: 
+<ul> 
+<li> Declaration of differential equations
+<li> Declaration of parameters
+<li> Fixed variables
+<li> Auxiliary quantities
+<li> User defined functions
+<li> Initial conditions
+</ul>
+Most applications use no more than this.
+
+<p>
+<h3> <a name=hw1.4> Homework 1.4</h3>
+<p>
+ Consider the nonlinear pendulum <p>
+<a name=pend> 
+ <img align=center src=gif/pend.gif> </a>  
+<p>
+Rewrite this as a pair of first order differential equations.  The
+frictionless energy of the system is given by: <p>
+<img align=center src=gif/energy.gif> <p>
+Write an ODE file for it in the old style and then in the new
+style. Keep track of the energy with an auxiliary variable.
+Assign some positive values to all of the parameters and some random
+initial conditions. <a href=xpphw.html#hw1.4a> Answer! </a> <p>
+
+ Write an ODE file for the single variable continuous time Hopfield
+model <p>
+<a name=nnet1> 
+ <img align=center src=gif/nnet1.gif> </a>  
+<p>
+where <p>
+<img align=center src=gif/squash.gif> 
+<p>
+Use  <i>beta=2,theta=1,i=0,tau=1,w=1, a(0)=0 </i>. <a
+href=xpphw.html#hw1.4b> Answer! </a>
+<hr>
+  
+<h2> <a name=hysteresis> Multiple equilibria and hysteresis </a> </h2> 
+    
+
+<p>
+ Now that you undestand the essentials of creating an ODE file, we
+will explore some more of the features of the program.  Recall that we
+wish to explore:
+
+
+<p>
+<a href=odes/mlcal.ode>
+<img align=center src=gif/mlcal.gif> </a> <p>
+
+where 
+<p>
+<img align=center src=gif/minf.gif> <p>
+
+Fire the file up by clicking on the equation.  As usual the main
+window and  the others will show up on the screen.  Let's take a look
+at a very important set of menus:
+<p>
+<h2> <a name=numerics>  Numerics Menu </a></h2>
+<p>
+Click (U) or on the <a href=xppnum.html><b> n(U)merics </b> </a>
+part of the main menu (<i>
+i.e. </i> type "U") and a  new menu  will appear.
+<p>
+<img align=center src=gif/numcom.gif> <p>
+This menu is very important as it sets the parameters for all of the
+numerical algorithms in XPP. Details of the commands for this are
+found by clicking on the title of this section.  I will briefly
+summarize the other most important commands for you.  For the present
+example, the voltage can reach up to 120 mV.  XPP attempts to prevent
+numerical overflow by stopping a calculation when any variable or
+auxiliary quantity exceeds a <b> Bound </b> that is set by the user.
+The default when XPP fires up is <b> 100 </b> which is less than what
+we would like.  Set the <b> Bound </b> to 1000 by clicking on (B) and
+adding a 0 to make the global bount 1000 instead of 100. Type (Enter)
+when you are done.  Next, we want to integrate for at least 200 msec
+so change the amount of time to integrate to 200.  Do this by clicking
+on (T) for <b> Total </b> and changing the 20 to 200 and typing
+(Enter).   <p>
+Now is a good time to take a look at other things in this menu.  The
+time step for integration <b> Dt </b> is set by clicking on (D) and
+chjanging it.  If  <b> Dt </b> is negative, then the program
+integrates bakwards in time. The default is <b> Dt=0.05</b>. For this
+simple problem, set <b> Dt=.2 </b> by clicking (D), typing .2, and
+then (Enter).
+<b> n(O)ut </b> is important as it tells
+XPP how frequently you want output to plot and browse.  It is set to 1
+by default thus, you will get output every 0.05 msec in these
+examples. The <b> t(R)ansient </b> tells the program how long to
+integrate before saving and plotting the numbers.  This is useful for
+integrating out transient effects.  <b> Start time </b> tells the
+integrator what the starting time is.  It is set to 0 by default and
+is totally irrelevant for <i> autonoumous </i> differential equations
+that do not have time explicitly in them. Finally, <b> Method </b> tells the
+program which method to use to integrate the equations.  The default
+is Runge-Kutta.  The <b> Gear </b> method is
+uses an <i> adaptive
+</i> step size.  It will integrate <i> stiff </i> differential
+equations which are impossible to integrate using standard means.  It
+is a very robust integrator. The <b> Stiff </b> integrator is another
+integrator for stiff equations that uses adaptive stepping.  The best
+general purpose integrator is the Quality Step Runge-Kutta which works
+for most nonstiff equations and is adaptive.
+  The other integrators are well-known and
+can be found in any book on numerical methods.  <b> Modified Euler
+</b> is sometimes called Heun's method.  
+
+<p> Having set the global bounds and the total integration time,
+return to the main menu by clicking (Esc). Set the window size by
+clicking (W) (W) to bring up the <a href=xppmain.html#wind> window </a>
+box. Change it so that the
+X-axis goes from 0 to 200 and the y-axis from -150 to 150.  Click on
+(Ok) or type (Tab) to enter the results.  Type (I) (G) to <a
+href=xppmain.html#ics> integrate </a>
+the equations.  You should see a straight line across the screen.  We
+started essentially at rest.  Now type (I) (N) to manually enter new
+initial conditions. You will be asked for the initial voltage.  Type
+in  -20.  You should see a decay to the rest state just like you saw
+in the linear problem. Now start with initial data of V=-10. Click (I)
+(N) again and then type in -10.  <i> Aha! </i> the voltage does not
+decay; instead it increases to a new level of around 50 mV. This is an
+example of multi-stability.  <i> Nonlinear systems are often
+characterized by the existence of multiple stable behaviors. </i>
+This cannot happen with linear differential equations (unless they are
+<a href=gif/texasch.gif> degenerate </a>.) <p>
+
+
+ 
+
+<h2> <a name=newwind> Making another window </a> <p> </h2>
+Lets look at the calcium current. Create a  new window
+by clicking (M) (C).  This invokes the <a
+href=xppmain.html#half>  Make Window </a> 
+command. (For old versions, the command is Half Window,
+ a <a href=gif/3stooges.gif> stupid </a> name that is a
+holdover from the DOS version where the window was split in half.)
+Grab the lower corner of the window and make it larger.  Note that the
+window has a small square in the upper left corner that tells you it
+is the current plotting window.  It also has a strip across the top
+that gives the x-y coordinates when you move the mouse within the
+window with the button down. Now in the main window click (X) to
+choose what to plot versus time and type ICA (Enter) at the prompt.
+Recall that ICA is the name you gave the calcium current.  You will
+see the calcium current plotted in the new window as a function of
+time.  Note that it is negative and so it is an inward current.  
+To make the voltage window the active plotting window, click the mouse
+inside the graph and the little square will show up on the voltage
+window.  Make the calcium window active again.  Now click the mouse
+button somewhere in the picture and move it around. Look at the
+region above the picture.  You should see a pair of numbers that indicate
+the point on the graph where you move.  This is how you can figure
+out approximate values of points on your graphs. Find the time at
+which the calcium current is most negative. (It is about -4.7 msec.)  
+
+<h3> <a name=hw1.5> Homework 1.5 </h3> <p>
+Make the voltage window the plotting window by clicking on it.
+You saw above that if you start with V=-20 then the voltage goes to an
+equilibrium value of about -60.  If you start with V=-10 it goes to a
+high voltage of about 60 mV.  This suggests that between -20 and -10
+there is a critical value of voltage which acts as a threshold and any
+potential below threshold goes to the low state and above goes to the
+high state.  Find this value, <b> V* </b>  Then use the (S) (G) option to find the 
+<a href=xppmain.html#sing> <b> singular point </b> or <b> equilibrium
+</b></a> value of voltage that is the threshold.  (Answer <b> No </b>
+to both questions that XPP asks. ) Is this stable?
+Such a point separates the set of initial voltages into two groups:
+(i) those which tend to the lower voltage  <i> V &lt V* </i> and (ii)
+those which tend to the upper voltage <i>V &gt V* </i>.  These two
+half lines are called <b> the domain of attraction </b> of the lower
+and upper equilibria.  
+<p>
+
+<center> <img src=gif/godhead.gif> </center> <p>
+<h2> <a name=auto> AUTO for the first time </a> </h2>
+
+One of the main goals of nonlinear dynamics is the study of how
+systems depend on parameters.  The study of the parametric dependence
+of differential equations is called <b> continuation </b> and the
+analysis of how solutions appear and disappear as parameters vary is
+called <b> bifurcation theory </b> from the Latin word <i> bifurkus
+</i> for branching. 
+<p>
+The program <a href=xppauto.html> <b> AUTO </b> </a> 
+ is one of the best continuation packages
+available and allows you to study the behavior of nonlinear dynamical
+systems as a function of parameters.  It is part of XPP so that you
+can easily go between the two programs.  The interface to regular AUTO
+involves writing lots of different FORTRAN programs, compiling them,
+and then running them.  In this version, everything is done
+interactively.  
+<p>
+To use AUTO you have to <a href=xppauto.html#prep><b> prepare </b>
+</a> your file by starting at a known
+steady state.  When <i> I=0 </i> the lower steady state is -59.446.
+Thus start an integration with V(0)=-59.446.  (I) (N) and enter the
+voltage at the prompt. Now you have a good guess for a steady state.
+Click (F) (A) to bring up the AUTO window. You will see a window like
+this:
+<p>
+<center> <img src=gif/auto.gif> </center> </p>
+There are 4 regions in the window.  A majority of it is taken up by
+the main graphics window where the bifurcation diagram is drawn.
+Below this is the information window.  This is used when you have
+found the bifurcation window and are traversing the different
+branches.  It tells you about stability of the branch, the values of
+the parameters, and the nature of <a href=xppauto.html#special> <b>
+special points.</b></a> the left are the menus which let you tell AUTO
+<ul>
+<li> The <a href=xppauto.html#choose> <b> parameters </b> </a> you want to
+vary
+<li> The dimensions and what you want to plot on the <a
+href=xppauto.html#axes> <b> axes </b> </a>
+<li> The <a href=xppauto.html#numer> <b> numerical </a> </b>
+parameters that control AUTO
+<li> <a href=xppauto.html#user> <b> User defined </b></a> special
+points at, say, a particular period or value of a parameter
+<li> What to <a href=xppauto.html#save> <b> save </b> </a> such as the
+graph of the diagram, the actual orbits, etc.
+<li> When to <a href=xppauto.html#abort> <b> ABORT </b> </a> a calculation
+</ul>
+<p> Finally, the little square with a circle in it summarizes the
+<a href=xppauto.html#run> <b> stability </b> </a> 
+ information of the solutions.  All stable modes lie in the circle and
+unstable ones out of the circle.    
+<p> <center> <img src=gif/rainbowline.gif> </center> <p>
+Assuming you are still with me, we will now use AUTO to compute the
+steady state voltage as a function of the current.  (This can be done
+by hand since this is a scalar differential equation.  Thus, it might
+seem that we are killing a <img src=gif/spider2.gif> with a shotgun.
+However, the basic method we use here can be easily used for other
+problems. )<p>
+You should have set the initial data for the voltage to <i> V=50.446
+</i> and the current <i> I=0. </i>   All other paremeters should be at
+their default values.  (To make sure of this, go to the main XPP
+window and type (P).  At the <b> Parameter </b> prompt, type the word
+<b> default </b> and the parameters will be set to their originals.)
+<p>
+Now click the AUTO window so that it is active.  Click on the
+(Parameter) window and you will see a list of 5 parameters.  These are
+the parameters that AUTO will recognize.  We want to vary the current,
+<b> I </b> and since the
+current <b> I </b> is among these parameters, we don't have to change
+anything.  Just click on (Ok). 
+<p>
+Next, we want to set up the ranges of the diagram for plotting.  Click
+on (Axes) and a menu will appear.  We want to plot the maximum and
+minimum of the voltage versus the parameter, so we choose the default
+of <b> HiLo. </b> A new window will appear into which we type the
+necessary information.  We want the "Y axis" to be the voltage, so we
+should type <b> V </b> for that entry.  The main parameter is the
+current so change  <b> VL </b> to <b> I </b>.  We want the current to
+vary from -225 to 60 so use these values for <b> Xmin </b> and <b>
+Xmax </b> respectively.  Finally, the voltage will range from -200 to
+100 so type in these values for <b> Ymin </b> and <b> Ymax </b>
+respectively and then click on (Ok).  Summarizing, the entries of
+interest should look like this:
+<ul>
+<li> Y axis: V 
+<li> Main Par. : I
+<li> Xmin: -225
+<li> Ymin: -200
+<li> Xmax: 60
+<li> Ymax: 100
+</ul>
+(<i> How did I know what range?
+</i> I ran this diagram extending the ranges until I got the full
+picture. Thus, <i> practice and playing around are the best
+tools. </i>)  
+<p> Now, AUTO needs to know some numerical stuff.  Click on (Numerics)
+and a window comes up with many entries.  Look at <a
+href=xppauto.html#numer> the numerical </a> description in the <a
+href=xppaut.html> AUTO </a> part of this tutorial.  For now make sure
+of the following :
+<ul>
+<li> Ds = .02
+<li> Dsmax = 5.0
+<li> Par Min = -220
+<li> Par Max = 50
+<li> Norm Max = 1000
+</ul>
+and then click on (OK).  You are ready to roll!  Click on (Run) and
+then click on (Steady state).  If you did it right, you will be
+rewarded with the diagram:
+<p>
+<center>
+<img src=gif/diag1.gif> </center> <p>
+<img align=left src=gif/bangbang.gif> <i> If you did not get this, then
+you should  try again.  Reset the diagram
+by clicking (File) (Reset Diagram) and answering yes.  Go back to the
+main  <b> XPP </b> window and reset the initial data to V=-59.446 and
+I=0. Then repeat the above steps.  </i>
+<p>
+Assuming that you now have the diagram, lets <a
+href=xppauto.html#grab> traverse </a> the diagram to see what we have
+computed.  Click on (Grab) and a cross-hair should appear on your
+diagram.  (<i> NOTE </i> If you do not
+see a cross-hair then you should run XPP with the -xorfix option.
+That is, XPP should call xppaut -xorfix instead of just xppaut See the
+documentation for details.)   
+Use the left and right arrow keys to move along the diagram.
+As you move, the information window at the bottom tells you stuff
+about the solutions such as the parameter values, the voltage value
+and the value of a secondary parameter.  As you move along the
+diagram, the stability is displayed in the stability window. A quick
+summary of stability is seen from the diagram itself.  <b>Thick solid 
+lines indicate  stable fixed points </b> , <i> thin are unstable fixed points</i>.
+<b> Solid circles are stable periodic solutions</b> and <i> open circles are
+unstable periodics </i>. 
+<p>
+You can move through the diagram very rapidly by using the (TAB) key
+which only jumps to the<a href=xppauto.html#special> <b>
+special points.</b></a>  When you grab a <b> special </b> point, then
+you can do lots of other things with AUTO.  Move to the point labeled
+1.  We will continue this curve in the negative <b> I </b> direction.
+Press the (Enter) key to accept this point.  (When you (Enter) on a
+grabbed point, it sets all the dependent variables to the
+corresponding values and the relevant parameters to their values.  If
+the point is a <b> special </b> point, it 
+also tells AUTO information about the nature of the point. )  Now we
+have "grabbed" the starting point in our curve.  AUTO has already
+traced out the curve in the positive I diresction.  Click on the
+(Numerics) menu again.  In the slot labeled <b> Ds </b> change  <b> 0.02
+to -.02 </b> so that AUTO will try to go in the other direction. Click
+on (Ok) to leave the numerics window and click on (Run).  A branch
+should appear that continues until around I=-220.  It is solid.  <p>
+This is a complete diagram of the voltage-current relationship.  There
+are two interesting values of the current.  Traverse the diagram by
+clicking (Grab) and moving the crosshairs.  The special point labeled
+<b> 2 </b> is denoted in the information window as <b> LP </b> meaning
+that it is a limit point.  It occurs at <i> I=36.79 </i>  A similar
+point at <i> I=-210.5 </i> is also a limit point.  Both of these <b>
+limit points </b> are also called <b> saddle-nodes </b> or <b> turning
+point </b> bifurcations.  They represent values of the parameter at
+which a pair of solutions comes together to form one solution.  Note
+that the two values of current delimit the range in which there are
+two stable possible voltages.  For <i> -210.5 &lt I &lt 36.8 </i>
+there are three steady states, two of which are stable, separated by
+an unstable steady state (cf. <a href=#hw1.5> Homework 1.5 </a>)  Thus
+imagine you start at the lower steady state.  As you increase the
+current, the voltage rises until you hit <i> I=36.8. </i> There is a
+sudden increase in the potential from about -32 mV to +64mV.  Now
+decrease the current.  The potential stays high until you cross <i>
+I=-210.5 </i> at which point the potential drops precipitously.  The
+appearance of two stable steady states gives rise to <i> this </i>
+phenomena which is known as <b> hysteresis. </b>  <p>
+<a name=oscil> <b> NOTE </b> </a>  This hysteresis in the <i> I-V </i> curve is essential
+for neurons and one can see how it is then possible to get oscillatory
+behavior.  Indeed, suppose that we make the current a varible such
+that when the voltage is low, the current increases and when it is
+high, it decreases.  Then the voltage will oscillate making up and
+down jumps at the limit points. <p>
+<h3> <a name="cusp"> Two parameter curves and the "Cusp catastrophe"
+</a>
+</h3> <p>
+AUTO (and XPP) allow you to study two parameter curves of special
+points.  That is, we have seen that for <i> GCA=4 </i> there are
+limit points at <i> I=36.8,-210.5. </i>  What about <i> GCA=3 </i> or
+other values of GCA.  We could of course, change GCA and redo this
+calculation.  Instead, we can fix our attention to the limit point and
+just compute the values of I for each value of GCA at which there is a
+limit point. Lets do that now.  Grab special point number 2.  (Click
+(Grab) and (Tab) to it, then hit (Enter).) Click on (Axes and choose
+(Two par) to do a two parameter bifurcation.  We will look at the
+appearance of limit points for <i> 0 &lt GCA &lt 10 </i> and extend
+the current to a slightly more positive value. 
+<ul> 
+<li> Change the entries inthe Axis window to:
+<ul>
+<li> Y-axis : V
+<li> Main Parm: I
+<li> 2nd Parm: gca
+<li> Xmin: -225
+<li> Ymin: 0
+<li> Xmax: 100
+<li> Ymax: 10
+</ul>
+<li> Click (Ok) after making these changes.  In two parameter bifurcations,
+the "Y-axis" entry is ignored and just "2nd Parm" entry becomes the
+Y-axis for the graph.  
+<li> Now click on (Numerics) and change (Par Max) to
+100. Click (Ok) and we are ready to roll.  
+<li> Click on (Run) and a thinline that runs off the screen will
+appear. This is a curve of values
+of (I,GCA) at which there is a limit point. 
+<li>  Now focus on the
+information window and click (Grab) until you once again are on
+special point 2 (You wont see anything on the graph which is why I
+told you to focus on the info window.)  
+Type (Enter) to accept the point.  
+<li> Click on (Numerics) and then change <b> Ds from -.02 to
+0.2 </b> and then click on (Ok.)  
+<li> Now click on (Run) and the branch
+will continue down and to the right until it stops.  This is the
+"complete" curve of (I,GCA) points corresponding to the first limit point..
+</ul>
+<p>
+Now, we want to do this for the other limit point, special point 4.
+<ul>
+<li> Click on (Grab) and (Tab) 3 times to get special point 4 and type
+(Enter) to accept it.
+<li> <i> Now before starting, note that you may want to click on <b>
+(ABORT) </b> while the curve is running as it gets numerically
+treacherous near the end. </i> Thus, if you see a build-up of lots of
+numbers, click on the (ABORT).  Now click on (Run) and the other
+branch will appear. Click on (ABORT) to stop the calculation.
+</ul>
+If you have done this correctly, you will see something like<p>
+<center>
+<img src=gif/cusp.gif> </center> <p>
+The two branches of limit points meet at a cusp point.  Within the
+region bounded by the two curves, there are <b> three </b> rest states
+and outside of them there is <b> one. </b>   A three-dimensional
+representation of this looks like:
+<p><center><img src=gif/cusp3d.gif> </center><p>
+<p>
+This completes the analysis of a model with a single nonlinear
+conductance. You should click on (File)  (Reset Diagram) and click
+(Yes) at the prompt.  This will delete all the files that AUTO creates
+when running a bifurcation diagram   
+<h3> <a name=hw1.6> Homework 1.6 </a> </h3><p>
+A one-dimensional neural net is described by the following equations:
+<p><center><img src=gif/nnethw.gif> </center><p>
+<ul>
+<li> Write an ODE file for this model. Hint: See <a href=#nnet1>
+Homework 1.4b. </a>
+<li> Set <i> w=6,theta=5 </i> and find the equilibria.  How many are
+there?
+<li> Compute a 1 parameter bifurcation curve using <i> theta </i> as
+the parameter varying it between -8 and 8.  Use DsMax=.05 in the AUTO
+calculation.  What are the limit points.  What is the range of
+hysteresis?
+</ul>
+
+
+<p>
+
+
+
+
+ 
+
+
+
+
+<center>
+<h2> Still not ready to give up? </h2> 
+</center><p>
+<center> <img src=gif/badday.gif> </center>
+ 
+<p> Don't give up now, you <a
+href=http://www.owlnet.rice.edu/~gouge/twinkies.html> Twinkie! </a>
+<p>
+<hr>
+<p>
+<h3> <a href=xpptut.html> BACK TO PART I </a>
+<p>
+     <a href=xpptut3.html> FORWARD TO PART III </a>
+</h3>
+ <p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+

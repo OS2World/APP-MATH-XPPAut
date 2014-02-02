@@ -1,0 +1,351 @@
+<html>
+<head>
+<title> XPP CHAOS</title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> Chaos ....</h1>
+<h2> <a name=intro> Introduction </h2>
+Chaos is a phenonenon with many meanings depending on whom you ask.
+For the purpose of this tutorial, I will say that a system is <b>
+chaotic </b> if there is <b> sensitive dependence on initial
+conditions.</b> That is, if I start with two initial conditions that
+are very close to each other, then their difference will diverge
+exponentially in time. 
+<p>
+ For discrete dynamical systems, it is possible to get chaotic
+behavior with a one-dimensional map, as you saw with the <a
+href=xppphase.html#std2> standard map. </a>  For continuous systems,
+the usual model for chaos is the <a href=newstyle.html#lorenz> Lorenz
+attractor </a> but the mechanism through which chaos occurs for this
+model is somewhat difficult to explain.  
+<h2> <a name=triple> The "simplest" chaotic differential equation </a></h2>
+When the linearization of a system about an equilibrium has a zero
+eigenvalue for some set of parameters, this is a sign that perhaps new
+solutions may exist for nearby sets of parameters.  If the zero
+eigenvalue is simple, then <b> normal form analysis </b> can be
+applied to reduce the system to a one-dimensional dynamical system.
+The dynamics of this one-dimensional system describes the behavior of
+the full system.  More complicated equations arise if the zero
+eigenvalue is not simple.  In the remainder of this tutorial, we
+examine an equation that arises when the linearized system has a <b>
+triple zero </b> eigenvalue that is geometrically simple.  This means
+that the <em> characteristic polynomial </em> starts with cubic terms.
+The Jordan canonical form for the three-dimensional subspace with this
+degeneracy is:
+<p>
+<center> <img src=gif/jordan.gif> </center> <p>
+Since the characteristic polynomial has a triple degeneracy, we need
+three free parameters to "unfold" this triple zero eigenvalue.  Thus,
+we will study the <a name=tripeq> differential equation:</a>
+<p>
+<center> <a href=odes/triplez.ode> <img src=gif/triple.gif></a> </center> <p>
+Notice that there is only one nonlinear term, a quadratic.  Also note
+that if the three parameters <tt> mu,nu,gamma </tt> are set to zero,
+the linearized system is <b> J</b>.
+
+<h2> <a name=doubling> Period doubling cascades </a> </h2>
+
+A detailed analysis of this equation is beyond the scope of the
+tutorial.  However, we can explore the dynamics letting one parameter,
+say , <tt> gamma </tt> vary.   Thus, we fix <tt> q=2,nu=2,mu=1 </tt>
+and let <tt> gamma </tt> be our principle parameter.  
+<p>
+Clearly <b> (x,y,z)=(0,0,0) </b> is always a solution, so we will
+study stability and bifurcation of this.  The easiest way to do this
+is to use <a href=xppauto.html> AUTO. </a> (The stability of the fixed
+point could be done analytically using the Routh-Hurwitz criterion,
+but any other analysis is best doen numerically, even for this simple
+system.) 
+<p>  Get the AUTO window up by clicking (File) (Auto). Within AUTO, do
+the following:
+<ul> 
+<li> Click (Axes) (Hi Lo) and set 
+<ul>
+ <li> <b> Main Parm </b> gamma 
+ <li> <b> Xmin </b> 0
+ <li> <b> Ymin </b> -3
+ <li> <b> Xmax </b> 4
+ <li> <b> Ymax </b> 3
+ </ul>
+  and click (Ok)
+<li> Click (Numerics) and set
+<ul>
+ <li> <b> Dsmin </b> .0001
+ <li> <b> Dsmax </b> .1
+ <li> <b> Par Min </b> 0
+ <li> <b> Par Max </b> 3.75
+ <li> <b> Norm Min </b> 0.0
+ <li> <b> Norm Max </b> 50
+ </ul>
+ and click (Ok)
+<li> Click (Run) (Steady State)
+ You will see a line travel across the screen indicating the zero
+steady state.  It loses stability at <b> gamma=2 </b>  Click (Grab)
+and move the cross until Label 2 is reached.  (Just click (Tab) to go
+there quickly.)  You will see that the type of point is <b> HB </b>
+meaning a Hopf bifurcation has occurred.  
+<li> Click (Enter) to accept this
+point and then click (Run) (Periodic) to compute the periodic solution
+that comes from the point.  Note the solution is stable (filled
+circles) but loses stability. 
+<li> Click (Grab) and (Tab) 3 times until label 4 appears in the info
+window in the AUTO window.  Note it appears at <b> gamma=3.126 </b>
+and that its type is <b> PD </b>  This indicates a <b> period doubling
+bifurcation </b> which means that the basic limit cycle loses
+stability and a new cycle arises that has twice the period.  Click
+(Enter) to accept this point.
+<li> Click (Run) and (Doubling) to compute the branch of period two
+solutions.  This extends for a bit and itself becomes unstable through
+yet another period doubling bifurcation.  When
+AUTO has finished the calculation, click on (Grab) and hit (Tab) 5
+times to get the next period doubling point. It is Label 6 at <b>
+gamma=3.357 </b> 
+<li> Click (Enter) to accept this and then click (Run)
+(Doubling) once again.  This branch also becomes unstable at a period
+doubling point for <b> gamma=3.412. </b>  
+</ul>
+We have found three period doublings.  This is a classic scenario for
+the onset of chaotic behavior: <b> the period doubling cascade. </b>
+These calculations can be continued, but it would take a while, so we
+will stop the continuation here.
+<p>
+<h2> <a name=3d> Some three-dimensional views </a> </h2>
+  Before continuing on, lets look at some of these solutions.  We will
+look at the limit cycles at the three points of instability. 
+<ul>
+<li> Click (Grab) and click (Tab) until label 4 appears and click
+(Enter).  Click (File) (Import Orbit). This loads this orbit into the
+Data Browser so you can look at it.  
+<li> In the XPP main window, click (Viewaxes) (3d). Set the following
+parameters:
+<ul>
+ <li> <b> X-axis </b> X
+ <li> <b> Y-axis </b> Y
+ <li> <b> Z-axis </b> Z
+ <li> <b> Xlabel </b> X
+  <li> <b> Ylabel </b> Y
+  <li> <b> Zlabel </b> Z
+</ul> 
+Ignore all the other stuff!!  Click (Ok). Click on <a
+href=xppmain.html#wind> (Window) (Fit) </a> to let XPP figure out the
+window dimensions.  The
+orbit will be plotted in three-dimensions. <a href=xppfreeze.html>
+Freeze </a>  this curve with some color, e.g.color 7.  (If you don't
+remember how to freeze a curve, <a href=xpptut.html#exam1_graph> see
+the first tutorial.</a>
+<p>  Go back to AUTO and get the next period doubling point, Label 6
+using (Grab) and (Tab).  Click (File) (Import Orbit) again.  Then in
+the XPP main window click (Window) (Fit) and freeze this curve with a
+different color.  Note how it loops around the phasespace twice.  Its
+period is roughly twice the other orbit's.  
+<p>
+ Repeat this for the third period doubling point (Label 8) and freeze
+it with still another color.  You will see that it loops around the
+phase-space 4 times!  You should have a picture that looks like:
+<p>
+<center> <img src=gif/per2.gif> </center> <p>
+<p>
+Just for fun, click on (3d-params) in the main XPP window and change
+<b> Phi, Theta </b>  to rotate the three-d plot.  You can actually
+make a movie by rotating and then using <a href=xppmain.html#kine>
+the Kinescope </a> command.  As this sometimes causes trouble on the
+X-server, I won't officially do it here, but you can fool around at
+your discretion.
+</ul> 
+<p>
+<h2> <a name=chaos> Chaos at last... </a> </h2>
+In the previous section, we saw that there was an apparent period
+doubling cascade.  This is a classic scenario and sometimes "at the
+end" of the cascade, there is a regime in parameter space where
+chaotic behavior can occur.  <b> Before continuing </b> go into the
+AUTO window and click on (File) (Reset Diagram) and answer (Yes) so we
+don't forget and leave AUTO junk all over the disk.  
+<p>
+Click on (Graphic stuff) (Freeze) (Remove all) to get rid of all the
+frozen curves and set the angles <b> Phi,Theta </b> back to 45 using
+the (3d-params) command.  Go into the (nUmerics) menu and set (Total)
+to 150.  (Escape) back to XPP main and set the parameter <b>
+gamma=3.5</b>.  Click (I)(G) to integrate.  When done, click (W) (F)
+to automatically fit the window to the data. 
+<p>
+ You should see a banded surface that is twisted like a Mobius strip.
+This is <b> chaotic attractor. </b> To see it is chaotic, click on (Xi
+vs T) to plot <b> Z </b> as a function of t. Click on (I) (N) and put the
+following initial conditions in:
+<ul>
+<li> <b> X </b> -.3
+<li> <b> Y </b> 1
+<li> <b> Z </b> 3
+</ul>
+Freeze this curve with some nonzero color.  Now, click (I) (N) again
+and use the following initial data:
+<ul>
+<li> <b> X </b> -.3001
+<li> <b> Y </b> 1
+<li> <b> Z </b> 3
+</ul>
+<a href=xppmain.html#wind> Window </a>  the graph so that the x-axis
+goes from 100 to 150 and the y-axis goes from -1.5 to 3.5. Note thjat
+the curves are quite different; small bumps and large bumps are
+switched and so on.  This shows <b> sensitive dependence on initial
+conditions </b> the hallmark of a chaotic system.  We changed the
+fourth decimal place of an initial condition and the trajectory
+changed completely after some time.  What this says is that the
+trajectories diverge exponentially in time.  The rate of this
+divergence is called the <b> maximal Liapunov exponent. </b> Stable
+fixed points have a negative maximal Liapunov exponent, stable perioidic
+orbits have a zero maximal Lyapunov exponent and <em> chaotic orbits
+have a positive maximal Lyapunov exponent. </em>
+ 
+<p>
+<h2> <a name=map1> Computing the Poincare map </a> </h2>  
+Often in chaotic systems, a great deal can be learned by computing a
+Poincare section.  We will compute the section through <b> X=0 </b> as
+it is clear that at every cycle, <b> X </b> passes through zero. (To
+see this plot <b> X vs t </b>.)  We will need to compute for a longer
+period of time. 
+<ul>
+<li> Delete any frozen curves by clicking (G) (F)
+(R). Then edit curve 0 so that it is line-type 0. Use (G) (E) 0
+(Enter) and click (Ok) when done. 
+<li> Enter the (nUmerics) menu and change (Total) from 150 to 1000. 
+<li> Click <a href=xppnum.html#poin> (Poincare) (Section) </a>
+ and fill in:
+<ul>
+ <li> <b> Variable: </b> X
+ <li> <b> Section: </b> 0
+ <li> <b> Sign: </b> 1
+ <li> <b> Stop on section: </b> N
+</ul>
+and click on (Ok).  
+<li> (Esc) back to the main menu and integrate with (I) (L).  
+<li> Use the (View axes) to plot <tt> Y and Z </tt> for this map, then
+use (W) (F) to <a href=xppmain.html#wind> fit the window</a>,  and
+observe that they are essentially linearly related.  Thus, we need
+only look at <tt> Z </tt> and this relation gives us <tt> Y. </tt>
+That is, <em> the Poincare map on two dimensions is fundamentally one
+dimensional. </em> 
+<li> We will use the Ruelle plot to find an approximate map.  <a
+href=xppmain.html#view> Change
+the view </a> to have <tt> Z </tt> on both axes and use (W) (F) to fit the
+window to the data.  You should see a diagonal line.
+<li> Click to (nUmerics) and then (Ruelle) to get the Ruelle plot
+option. Shift the <b> x-axis </b> by 1 and leave the remaining axes
+unshifted. This will allow you to see <tt> Z(n) vs Z(n-1) </tt> and
+thus see if there is a nice map. 
+(Escape) to the main XPP window and click (Restore) to
+redraw. It is apparent that the map is roughly quadratic.  In fact, it
+is very well fitted by 
+<p>
+<center> <a href=odes/tripmap.ode><img src=gif/tripmap.gif> </a> </center> <p>
+a <a href=newstyle.html#tripmap> quadratic approximation </a> of the
+real Poincare map.
+</ul>
+
+With this knowledge, you should close the continuous ODE file and fire
+up the discrete map approximation.
+<h2> <a name=approx> The quadratic approximation map, unstable
+periodic points,  and Liapunov
+exponents </a> </h2>
+ 
+If you haven't already, fire up the quadratic approximation to the
+Poincare map of the dynamical system.  Click on (nUmerics) and change
+<b> Total </b> to 2000 and <b> Method </b> to (Discrete).  (Escape) to
+the main menu and <a href=xppmain.html#graph> edit the curve </a> so
+that the <b> Linetype </b> is 0 and we plot dots. Change the view to
+plot <tt> Z </tt> on both axes as we will be using the Ruelle plots to
+look at things.  Integrate the
+equations by clicking (I) (G). Click (W) (F) to fit the window to the
+data.  You will see a diagonal line.  Then use the (G) (F) (F) to
+<a href=xppfreeze.html> freeze </a> this diagonal.  
+You can keep all the defaults and just click on (Ok).  
+<p>
+Now we will look for periodic points of different periods.  <b> A
+point is <em> k- </em> periodic if Z(n)=Z(n-k) and Z(n) != Z(n-l) if l
+&lt k </b> thus, we need to
+shift the x-axis by different amounts and look at the intersections
+with the diagonal line. <ul>
+<li> First we look for <b> period 1 </b> or <b> fixed </b> points of
+the map.  Click (nUmerics) (rUelle) and shift the <b> x-axis </b> by
+1. (Esc) to the main menu and click (Restore).  Note there is one
+intersection and it is at about <tt> Z=2.43. </tt>  The slope at the
+intersection is greater than 1 in magnitude so it is unstable.  
+<li> Now look for period 2 points, by repeating the above and shifting
+the x-axis by 2 instead. Note the appearance of two additional
+intersections as well as the original fixed point. (Fixed points are
+trivially periodic of all periods.)  
+<li> Try to find fixed points of period 3,4,5.  Are there any? Be
+careful that you don't mistake the fixed point for a higher period
+point. 
+<li> Integrate for a total of 4000 and then look for higher period
+points that are not powers of 2.  I think there is are period 10,11
+points. The resolution is bad for much higher than 11. 
+</ul>
+
+The existence of many unstable periodic points is often a hallmark of
+chaotic behavior.  As we <a href=#intro> mentioned previously</a>,
+another hallmark of chaos is sensitivity to initial conditions.  For a
+one-dimensional map, this is easy to quantify.  We need to compute the
+maximal Liapunov exponent:
+<p> <center> <img src=gif/lexp.gif> </center> <p>
+where <em> f'(xn) </em> is the derivative of the map evaluated at the
+<em> nth </em> iterate.<p>
+Since the <b> log of the product </b> is the <b> sum of the logs </b>
+we can write this as the limit of an iteration.  Close the above XPP
+file and fire up <a href=odes/trmapexp.ode> the XPP file </a> for
+computing this.  The <a href=newstyle.html#liapunov> source for this
+</a> is worth looking at to see how I did it.   Basically, I compute
+the iterate and then divide by the number of iterates (kept in the
+<tt> t </tt> variable as an <b> auxiliary variable </b> <tt>
+lexp. </tt> 
+<p>
+Click on (View axes) (2d) and set the Y-axis to be <tt> lexp </tt>.
+Set the dimensions so that the <b> Y-axis </b>  runs between -1 and 1
+and the <b> X-axis </b> runs between 0 and 2000.  Click (Ok) and then
+go into the (nUmerics) menu, set <b> Total=</b> 2000, <b>
+Bounds=</b>1000, and <b>Method=</b> (D)iscrete.  (Esc) back to the
+main window and click (I) (G) to integrate the equations.  You should
+see a curve that rises and then flattens out at about .332.  This is
+the Lyapunov exponent and since it is positive, there is good evidence
+that the system is <b> chaotic. </b> 
+  
+ 
+
+<p>
+<center>
+<h2> <a href=hwlast.html> Homework 5.1 </a> </h2>
+</center>
+ 
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+
+
+
+
+
+

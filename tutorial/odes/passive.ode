@@ -1,0 +1,11 @@
+1
+# Passive Membrane Model
+variable v=0
+parameter c=20,gl=2,vl=-60,i=2
+o (gl*(vl-v)+i)/c
+done
+
+
+
+
+

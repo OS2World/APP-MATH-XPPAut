@@ -1,0 +1,18 @@
+# Common directories and Versions of the different projects
+# Copyright by Klaus Gebhardt, 1994 - 1996
+
+cdir    = /project/C
+libdir  = $(cdir)/lib
+incldir = $(cdir)/include
+
+# The directory of the info files:
+infodir = h:/apps/emacs/info
+
+# The directory for temporary files:
+TEMPDIR = k:/temp
+
+# The directory emx is installed in:
+EMXDIR  = h:/apps/c/emx
+
+# Version of Octave:
+OCTVER     = 2.09

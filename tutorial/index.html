@@ -1,0 +1,192 @@
+<html>   
+<head>
+  <title> XPP TABLE OF CONTENTS</title>
+</head>
+<IMG src="gif/xppaut.gif">
+<hr size=5>
+<body>
+
+This tutorial will show you how to create files and run <b> XPP </b>
+as well as give you a brief overview of dynamical systems.  <p>
+
+
+<center><p>
+<img src=gif/rainbowline.gif> </center>
+<p>
+
+<H2> Technical Setup </h2>
+
+<img align=left src="gif/yield.gif"> </a> 
+In order to run this tutorial properly, you must alter
+your  <A HREF=".mailcap"> .mailcap </a> and 
+<A HREF=".mime.types"> .mime.types </a>  files so that the
+viewer knows what to do with the <b> XPP </b> files that are used in
+the tutorial.  If you already have these files in your home directory,
+just add the lines in the two files to your existing ones. You also
+must be able to run <b> XPP </b> on your local machine. The command to
+call <b> XPP </b> must be <b> xpp </b> (The default compiled version
+is <b> xppaut </b> thus, you should make a link to that called <b> xpp
+</b> or just change it's name.  Or, just change the <tt> xpp </tt> in
+the <tt> .mime.types </tt> and <tt> .mailcap </tt> files to <tt>
+xppaut </tt>.)
+<p>
+Since this tutorial takes a long time to run you might want to try it
+locally rather than over the network.  In that case, <a
+href=ftp://ftp.math.pitt.edu/pub/bardware/xpptut.tar.Z> get the
+compressed tarred files </a> put them in a directory, uncompress and
+untar them.  Then load <tt> index.html </tt> into your viewer. 
+
+
+<h3> How do I get XPP? </h3> <p>
+Just <b> ftp </b> the program from <a
+href=ftp://ftp.math.pitt.edu/pub/bardware> 
+<b> ftp.math.pitt.edu/pub/bardware</b> </a> and
+pick up  <b> xppaut1.x.tar.Z </b> and <b> f2clibs.tar.Z </b> or just
+pick up the binary for your computer and the documentation, <b>
+xpp_doc.ps.Z </b> 
+<p>
+
+<p>
+<center><p>
+<img src=gif/fishline.gif> </center>
+<p>
+<center><p>
+<img src=gif/rainbowline.gif> </center>
+<p>
+
+
+<h1><a name="toc">Table of Contents</a></h1>
+
+It is usually best to go through the various sections in order, but
+you can jump to any heading by clicking on it.
+
+<h2>
+ <dd> <a href="xpptut.html#intro"> I. Introduction </a> <p>
+ 
+ <h3> 
+ <dd> <a href="xpptut.html#disc" > A. Discrete Systems </a> <p>
+
+ <dd> <a href= "xpptut.html#cts"> B.  Continuous Systems </a> <p>
+ </h3> 
+
+ <dd> <a href="xpptut.html#odefile"> II. Creating and running an <b> ODE </b>
+file.
+ <h3> 
+ <dd> <a href=xpptut.html#quit> Quitting and aborting a calculation </a> <p> 
+ <dd> <a href="xpptut.html#exam1_int"> Integrating the equations </a> <p>
+ <dd> <a href="xpptut.html#exam1_change"> Change parameters </a> <p>
+ <dd> <a href="xpptut.html#exam1_graph"> Graphics tricks </a> <p>
+ <dd> <a href="xpptut.html#exam1_data"> Examining the numbers </a> <p>
+ <dd> <a href="xpptut.html#exam1_fixpt"> Fixed points and stability </a> <p> 
+ <ul>
+ <dd>	<a href="xpptut.html#hw1.1">  Homework 1.1 </a>
+ <dd>	<a href="xpptut.html#hw1.2">  Homework 1.2 </a>
+ </ul>	
+ </h3>
+<dd> <a href="xpptut2.html#nonlin1"> III. Nonlinear ODES 
+<h3>
+ <dd> <a href=xpptut2.html#exam2_int> Adding a nonlinear conductance </a>  
+<dd> <a href=xpptut2.html#user> User defined functions </a> 
+<dd> <a href=xpptut2.html#auxiliary> Auxiliary quantities  </a>  
+<ul>
+ <dd>	<a href="xpptut2.html#hw1.3">  Homework 1.3 </a>
+</ul>
+ <dd> <a href=xpptut2.html#fixed> Fixed  quantities  </a> 
+<ul>
+  <dd> <a href=xpptut2.html#hw1.4> Homework 1.4 </a>
+</ul>
+ <dd> <a href=xpptut2.html#hysteresis> Multiple equilibria </a>
+<dd> <a href=xpptut2.html#numerics> The numerics menu explored</a>
+
+<dd> <a href=xpptut2.html#newwind> Creating another window</a>
+<ul>
+<dd> <a  href="xpptut2.html#hw1.5">  Homework 1.5 </a>
+</ul>
+<dd> <a href=xpptut2.html#auto> AUTO the first run through </a>
+ <ul>
+ <dd> <a href=xpptut2.html#cusp> Two-parameter curves and cusps </a>
+ <dd> <a href=xpptut2.html#hw1.6> Homework 1.6 </a>
+</ul>
+</h3>
+<p>	<dd> <a href="xpptut3.html#start"> IV. Two dimensional systems
+<h3>
+ <dd> <a href=xpptut3.html#lecar> The Reduced Morris-Lecar Equations </a>
+ <dd> <a href=xpptut3.html#plot>  More Plotting Tricks </a>
+ <ul>
+  <dd>
+   <h4> <a href=xpptut3.html#hw2.1> Homework 2.1 </a> </h4>
+   </ul>
+ <dd> <a href=xpptut3.html#phase> Phase plane analysis </a>
+  <ul>
+    <dd> <a href=xpptut3.html#nullcline> Nullclines </a>
+    <dd> <a href=xpptut3.html#hw2.2> Homework 2.2 </a> 
+  </ul>
+ <dd> <a href=xpptut3.html#3d>  Three-d windows and Kinescope </a>
+ <dd> <a href=xpptut3.html#hopf> Hopf bifurcation </a>
+<ul> 
+  <dd> <a href=xpptut3.html#period> Limit cycles </a>
+  <dd> <a href=xpptut3.html#auto1> AUTO again </a>
+  <dd> <a href=xpptut3.html#bistab> Bistability </a>
+ </ul>
+ <dd> <a href=xpptut3.html#typeI> Saddle-point excitability </a>
+  <ul> 
+  <dd><a href=xpptut3.html#separatrix> Separatrix </a>
+  <dd> <a href=xpptut3.html#auto2 > More AUTO </a>
+	</ul>
+</h3>
+<p>	<dd> <a href="xpptut4.html"> V. Beyond Two dimensions
+<h3>
+	<ul> 
+<dd> <a href=xpptut4.html#complex> Chaos, period doubling, Poincare maps
+</a>
+	<ul>
+ <dd> <a href=xpptut4.html#rossler> A simple three-dimesnional system
+</a>
+	<dd> <a href=xpptut4.html#doubling> Hopf bifurcation and
+period doubling </a>
+        <dd> <a href=xpptut4.html#chaos > Chaos </a>
+	<dd> <a href=xpptut4.html#poincare> Creating a Poincare map
+</a>
+	<dd> <a href=xpptut4.html#maps> Approximation of the return
+map by a discrete dynamical system
+	</a>
+</ul>
+<dd> <a href=xpptut4.html#weak> Weak coupling of oscillators </a>
+	<ul>
+	<dd> <a href=xpptut4.html#lecsyn> Morris-Lecar with synapses </a>
+        <dd> <a href=xpptut4.html#hfun> Computing interaction
+functions </a>
+	<ul>
+	<dd> <a href=xpptut4.html#four> Getting Fourier approximations </a>
+	</ul>
+	</ul>
+</h3>	
+
+</h2>
+</ul>
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src="gif/redbut.gif> <a href=index.html#toc> Table of Contents </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src="gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src="gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+</html>
+

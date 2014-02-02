@@ -1,0 +1,18 @@
+# One fast persistent calcium model
+# Here is the equation
+dv/dt=(i+gl*(vl-v)+gca*minf(v)*(vca-v))/c
+
+#and the initial condition
+V(0)=-60
+
+# and the calcium current
+aux ica=gca*minf(v)*(v-vca)
+
+# and the parameters
+param vl=-60,vca=120
+param i=0,gl=2,gca=4,c=20
+param v1=-1.2,v2=18
+
+# and the functions
+minf(v)=.5*(1+tanh((v-v1)/v2))
+done

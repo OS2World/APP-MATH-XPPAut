@@ -1,0 +1,8 @@
+3
+v z=2,zp=0
+aux lexp
+p a=2.93,b=-1.44,c=1.85
+o a+b*(z-c)^2
+o zp+log(abs(2*b*(z-c)))
+o zp/(t+1)
+d

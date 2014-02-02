@@ -1,0 +1,11 @@
+1
+# Passive Membrane Model with forcing
+variable v=-60
+parameter c=20,gl=2,vl=-60,i=0,a=50,w=1
+o (gl*(vl-v)+i+a*sin(w*t))/c
+done
+
+
+
+
+

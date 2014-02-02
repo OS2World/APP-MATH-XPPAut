@@ -1,0 +1,40 @@
+#---------- wcring.xtc--------------------
+# Nice big grid
+# Use Euler
+# periodic bcs and random ics
+#-------------------------------------------
+SPACE x
+TIME t 
+SET LENGTH=6.2831853072
+SET GRID=50
+SET FAST=1
+SET METHOD=0
+SET DELTA_T=.1
+SET TFINAL=.1
+SET NPERIOD=10
+SET NOUT=150
+SET TRANS=0
+SET BUFSIZE=500
+CVAR u=.05*(ran(1)-.5)
+CVAR v=.05*(ran(1)-.5)
+#CVAR u=.1*cos(x)
+#CVAR v=0
+PAR aee=5,aie=10,aei=10,aii=3,te=.25,ti=.5
+PAR se=1,si=1,taui=1
+PAR ci=.46211715726,ce=.24491866240
+# Periodize and normalize the kernels
+CPAR pernorm we=exp(-(x/se)*(x/se))
+CPAR pernorm wi=exp(-(x/si)*(x/si))
+# Make fixed continua of the nonlinearities
+CFIX fe=tanh(u-te)+ce
+CFIX fi=tanh(v-ti)+ci
+# Compute the convolutions just once.
+CFIX cone=conv(we,fe,0,6.2832,x,periodic)
+CFIX coni=conv(wi,fi,0,6.2832,x,periodic)
+u'=-u+aee*cone-aie*coni
+v'=(-v+aei*cone-aii*coni)/taui
+DONE
+
+
+
+

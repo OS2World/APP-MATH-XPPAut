@@ -1,0 +1,19 @@
+SPACE x
+TIME t
+SET LENGTH=1
+SET GRID=10
+SET FAST=0
+SET METHOD=4
+SET DELTA_T=.1
+SET TFINAL=.5
+SET NOUT=100
+SET TRANS=0
+SET BUFSIZE=800
+CVAR u=0
+PAR v=1,sig=1,phi=0
+CPAR none w=exp(-x/sig)/sig
+FUN h 1 sin(arg1+phi)
+FIX u0p=int(x1,0,1)of(w(x1)*h(u(x1)-x1/v))
+u'=int(x1,0,1)of(w(abs(x1-x))*h(u(x1)-u(x)-abs(x1-x)/v))-u0p
+AUX freq=u0p
+DONE

@@ -1,0 +1,13 @@
+# The Field-Noyes Equations.  A very hard problem for most numerical
+# integrators.  A stiff method is absolutely necessary
+init x=1,y=1,z=1
+p q=8.375e-6,s=77.27,f=1,w=.1610
+x'= s*(y-x*y+x-q*x*x)
+y'=(-y-x*y+f*z)/s
+z'=w*(x-z)
+@ METHOD=gear,BOUND=1e7,DTMIN=1e-12,DTMAX=1,DT=1,TOTAL=1000
+@ XLO=0,XHI=1000,YLO=0,YHI=120000
+d
+
+
+

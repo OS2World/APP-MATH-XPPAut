@@ -1,0 +1,17 @@
+3
+v v=-24.22,w=.305,s=.056
+param vk=-84,vl=-60,vca=120
+param i=80,gk=8,gl=2, gca=4, c=20
+# type II -- v3=2,v4=30,phi=.04 -- like HH 
+# type I -- v3=12,v4=17.4,phi=.06666667
+param v1=-1.2,v2=18,v3=12,v4=17.4,phi=.06666667
+param vsyn=120,vt=20,vs=2,alpha=1,beta=.25
+user minf 1 .5*(1+tanh((arg1-v1)/v2))
+user winf 1 .5*(1+tanh((arg1-v3)/v4))
+user lamw 1 phi*cosh((arg1-v3)/(2*v4))
+user k 1 1/(1+exp(-(arg1-vt)/vs))
+odev  (i+gl*(vl-v)+gk*w*(vk-v)+gca*minf(v)*(vca-v))/c
+odew lamw(v)*(winf(v)-w)
+# synapse
+odes alpha*k(v)*(1-s)-beta*s
+done

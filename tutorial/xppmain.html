@@ -1,0 +1,418 @@
+<html>
+<head>
+<title> XPP MAIN COMMANDS </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1><a name="commands"> Main Commands </a> <p> </h1>
+
+<h2> Contents </h2>
+<h3>
+<ul>
+<dd> <a href=#ics> Initial conditions/Integration  </a> 
+<dd> <a href=#cont> Continue an integration longer  </a> 
+<dd> <a href=#ncline> Draw Nullclines  </a> 
+<dd> <a href=#dfield> Direction fields and flows  </a> 
+<dd> <a href=#wind> Window and Zoom  </a> 
+<dd> <a href=#phase> Setting up toroidal phase-spaces  </a> 
+<dd> <a href=#kine> Making movies  </a> 
+<dd> <a href=#graph> Graphics settings  </a> 
+<dd> <a href=#para> Set problem parameters  </a> 
+<dd> <a href=#erase> Erasing the screen  </a> 
+<dd> <a href=#half> Multiple windows  </a> 
+<dd> <a href=#text> Drawing text in a window  </a> 
+<dd> <a href=#sing> Computing fixed points and stability  </a> 
+<dd> <a href=#view> Two or three-dimensional view  </a> 
+<dd> <a href=#xivst> Plot a variable versus time  </a> 
+<dd> <a href=#restore> Redrawing the window  </a> 
+<dd> <a href=#3d> Three-d parameters  </a> 
+<dd> <a href=#bdry> Running the boundary-value solver  </a> 
+</ul>
+
+</h3>
+<p>
+<center> <img src=gif/rainbowline.gif> </center> <p>
+<ul>
+<li> <a name="ics">  <b> (I)nitial conds. </b> </a>  This invokes a short list of options for integrating the  differential equations.  The choices are:
+<ul> 
+ <li> <b> (G)o </b> which uses the initial data in the IC window and the current
+ numerics parameters to solve the equation.  The output is drawn in the
+ current selected graphics window and the data are saved for later use.  The
+ solution continues until either the user aborts by pressing <b> Esc </b>, the
+ integration is complete, or storage runs out.
+ <li> <b> (N)ew </b>This prompts you at the command line for each
+initial condition. It is similar to clicking on something in the <a
+href="xpptut.html#icwindow" > initial condition window. </a>
+ Press <b> Enter </b> to accept the value presented.
+<li> <b> (L)ast </b> This uses the end result of the most recent integration as the
+ starting point of the current integration.
+<li> <b> (S)hift </b> This is like Last except that the stating time is shifted to the 
+current integration time.  This is irrelevant for autonomous systems but is
+ useful for nonautonomous ODEs.
+<li> <b> (O)ld </b> This uses the most recent initial data as the current initial 
+data.  It is essentially the same as Go.
+<li> <b> (R)ange </b>  This lets you integrate multiple times with the results shown
+ in the graphics window.  Pressing this option produces a new window with
+ several boxes to fill in.  First choose the quantity you want to range
+ over.  It can be a parameter or a variable.  The integrator will be called
+ and this quantity will be changed at the beginning of each integration.
+  Then choose the starting and ending value and the number of steps. The
+ option Reset storage only stores the last integration.  If you choose not
+ to reset, each integraion is appended to storage.  Most likely, storage
+ will be exceeded and the integration will overwrite or stop. The option 
+to use last initial conditions will automatically use the final result of
+ the previous integration as initial dat for the next integration.  Otherwise,
+ the current ICs will be used at each step (except of course for the  variable
+ through wich you are ranging.) When you are happy with the parameters, simply
+ press the OK button.  Otherwise, press the Cancel button to abort.  Assuming
+ that you have accepted, the program will compute the trajectories and plot 
+them storing none of them or all of them.  If you press <b> Esc</b> it will abort the 
+current trajectory and move on to the next.  Pressing the <b> / </b> key will abort
+ the whole process. 
+<li> <b> (M)ouse </b>  allows you to specify the values with the mouse.  Click at the
+ desired spot.
+</ul>
+<p>
+
+ <li> <a name="cont">  <b> (C)ontinue.</b></a>  This allows you to continue integrating appending the data
+ to the 
+current curve. Type in the new ending time.
+<p> <li> <a name="ncline"> <b> (N)ullclines </b> </a>  This option allows you to draw the nullclines of systems.  
+They are most useful for two-dimensional models, but XPP lets you draw them for
+ any model.  The constraints are the same as in the <a href=#dfield>
+direction fields </a> option.  The menu has 4 items.
+<ul>
+<li> <b> (N)ew </b> draws a new set of nullclines.
+<li> <b> (R)estore </b> restores the most recently computed set.
+<li> <b> (A)uto </b> turns on a flag that makes 
+XPP redraw them every time it is necessary because some other window obscured
+ them.
+<li> <b> (M)anual </b> turns this flag off so that you must restore them manually.
+ The X-axis nullcline is blue and the Y-axis nullcline is red.
+ </ul>
+<p>
+
+<li> <a name="dfield">  <b> (D)irection Field/Flow </b> </a>
+This option is best used for two-dimensional systems however,
+ it can be applied to any system.  The current graphics view must be a
+ two-d plot in which both variables are different and neithet is the time
+ variable, T.  There are two items.
+<ul>
+<li> <b> (D)irection fields </b> Choosing the direcion field option will prompt you for 
+a grid size.  The two dimensional plane is broken into a grid of the size
+ specified and lines are drwan at each point specifying the direction of 
+the flow at that point.  If the system is more than two-dimensional, the
+ other variables will be held at the values in the initial conditions
+window.
+<li> <b>  (F)low </b> Choosing the flow, you will be prompted for a grid size
+and
+ trajectories
+ started at each point on the grid will be integrated according to the
+ numerical parameters.  Any given trajectory can be aborted by pressing 
+<b> Esc</b> and the whole process stopped by pressing <b> /</b>.  The
+remaining
+ variables 
+if in more than two-dimensions are initialized with the values in the IC window.
+</ul>
+
+
+<li> <a name="wind">  <b>(W)indow</b> </a> allows you to rewindow the current graph.  Pressing this presents 
+another menu with the choices:
+<ul>
+	<li> <b>(W)indow</b>  A window pops up prompting you for the values.  
+Press OK or CANCEL when done.
+	<li> <b>(Z)oom in</b>  Use the mouse to expand a region by clicking, dragging and 
+releasing.  The view in the rectangle will be expanded to the whole window.
+	<li> <b>Zoom (O)ut</b>  As above but the whole window will be shrunk into the 
+rectangle.
+	<li> <b>(F)it</b>  The most common command will automatically fit the window so 
+the entire curve is contained within it.  For three-D stuff the window data 
+will be scaled to fit into a cube and the cube scaled to fit in the window. 
+Use this often.
+</ul>
+(NOTE:  On some displays, no rubber boxes are drawn for the zooming
+operations.  If this occurs, run with the <b> -xorflag </b> option on
+the command line. 
+<p>
+
+<li> <a name="phase"> <b>ph(A)se space</b> </a>  XPP allows for periodic domains so that you can solve 
+equations on a torus or cylinder.  You will be prompted to make (A)ll variables
+periodic, (N)o variables periodic or (C)hoose the ones you want.  You will 
+be asked for the period which is the same for all periodic variables (if they 
+must be different, rescale them) Choose them by name or by clicking the 
+appropriate names from the list presented to you. An <b> X </b> will
+appear next to the selected ones.  Clicking toggles the <b> X </b>. 
+ Type <b> Esc</b> when done or CANCEL or DONE.
+ XPP mods your variables by this period and is smart
+ enough when plotting to not join the two ends. 
+<p>
+<li> <a name="kine"> <b>(K)inescope</b> </a> This allows you to capture the bitmap of the active window and
+ play it back.  It works poorly in some versions of X, you cannot save the bitmaps, nor will
+ it run properly across the network.  This is not my fault, it is idiosyncratic
+ with X.  It is slow also.  
+<ul>
+<li> <b>(C)apture</b> which takes a snapshot of the 
+currently active window
+<li> <b>(K)ill</b> which deletes all the snapshots
+<li> <b>(A)utoplay</b> which 
+continuously plays back snapshots until you press the middle mouse
+button
+<li> <b>(P)layback</b> which cycles thru the pictures each time you click the left mouse 
+button and stops if you click the middle.  It will beep when done.
+</ul>
+
+<p> 
+<li> <a name="graph"> <b>(G)raphic stuff</b> </a> 
+This induces a popup menu with several
+choices.
+<ul>
+<li> <b>(A)dd curve</b>  This lets you add another curve to the picture. A 
+parameter box will appear asking you for the variables on each axis, a color,
+ and line type (only 1 - solid and 0 - dotted are allowed currently) All 
+subsequent integrations and restorations will include the new graph.  Up to 
+10 per window are allowed.
+<li> <b>(D)elete last</b>  Will remove most recent curve.
+<li> <b>(A)ll but first</b> Deletes all curves but first.
+<li> <b>(E)dit curve</b>  You will be asked for th curve to edit.  The first is 0,
+ the second 1, etc.  You will get a parameter box like the add curve
+option.
+<li> <b>(P)ostscript</b>  This will ask you for a file name and write a 
+postscript representation of the current window.  Nullclines, text, 
+and all graphs will be plotted.  You can use plot black and white or color. 
+ Black and white will try to make each differently colored curve a different
+linestyle.
+<li> <a href="xppfreeze.html#freeze" > (F)reeze</b> </a>  This will create a permanent curve in the window.  Usualiy, 
+when you reintegrate the equations or load in some new data, the current curve 
+will be replace by the new data.  Freeze prevents this.  Up to 26 curves can be
+ frozen.  
+
+</ul>
+<p> 
+<li> <a href="xppnum.html#numerics"> n(U)merics </a> This menu controls the
+numerical aspects of the program. 
+<p>
+<li> <a href="xppfile.html#file"> (F)ile </a>  
+This brings up a menu with several options.
+<p>
+
+
+<li> <a name="para" > <b>(P)arameters</b> </a>  
+  Type the name of a parameter to change or click on its name 
+in <a href="xpptut.html#paramwin"> parameter
+window. </a>.  Type 
+<b> default </b> to get back the values when you started XPP.  
+<p>
+<li> <a name="erase">  <b>(E)rase</b> </a>
+ erases the contents of the active window, redraws the
+axes, 
+deletes all 
+text in the window, and sets the redraw flag to Manual.
+<p>
+<li> <a name="half"> <b>(H)alfwindow</b> </a> This name is a holdover from the DOS version.  The option allows
+ you to create and destroy graphics windows. There are several
+choices.
+<ul>  
+<li> <b>(C)reate</b> makes a copy of the currently active window and makes itself active.
+  You can change the graphs in this window without affecting the other windows. 
+
+<li> <b>(K)ill all</b>  Removes all but the main graphics window.
+
+<li> <b>(D)estroy</b>  This destroys the currently active window.  The main window
+ cannot be destroyed.  
+
+<li> <b>(A)uto</b> turns on a flag so that the window will automatically be
+redrawn when needed.
+
+<li> <b>(M)anual</b> turns off the flag and the user must restore the picture manually.
+
+<li> <b>(B)ottom</b> puts the active window on the bottom.
+</ul>
+<p>
+<li> <a name="text">  <b>(T)ext etc</b> </a> allows you to write text to the display in a variety of sizes and in two different fonts.  You can
+also add other symbols to your graph. 
+<ul>
+<li> <b>Text</b> This prompts you for the text you want to add.  Then you
+are asked for the size; there are five choices (0-5): 0-8pt, 1-12pt, 2-14pt,
+3-18pt, 4-24pt. Next you are asked for the font: 0-TimesRoman,
+1-Symbol. Note that not all X-servers will have these fonts, but the
+postscript file will still draw them. Finally, place the text with the
+mouse.
+<li><b>Arrow</b> This lets you draw an arrow-head to incicate a direction
+on a trajectory.  You will be prompted for the size, which should be
+some positive number, usually less than 1.  Then you must move the the
+mouse and select a direction and starting point.  Click on the
+starting point and holding the mouse buttton down, drag the mouse to
+indicate the direction of the arrow-head. Then release the
+mouse-button and the arrow will be drawn.  
+<li><b>Pointer</b> This is like an arrow, but draws the stem as well as
+the arrow head.  It can be used to point to important features of your
+graph. The prompts are like those for <tt> Arrow.</tt>
+<li><b>Edit</b> This lets you edit the text,arrows, and pointers in one of
+three ways:
+<ul>
+<li><b>Move</b> lets you move the object to another location without
+changing any of its properties.  Choose the object with the mouse by
+clicking near it.
+You will then be prompted as to whether you want to move the item that
+XPP selected.  If you answer <tt> yes </tt> use the mouse to reposition it.
+<li><b>Change</b> lets you change the properties: for text, the text
+itself, size, and font can be change; for arrows and pointers, only
+the size of the arrow head can be changed. As above, select the object
+with the mouse and then edit the properties.
+<li><b>Delete</b> deletes the object that you select with the mouse.
+</ul>
+<li><b>Delete All</b> Deletes all the objects in the current window.
+</ul>
+
+<li> <a name="sing">  <b>(S)ing pts</b> </a>
+  This allows you to calculate equilibria for a system. There
+ are three options.
+<ul> 
+	<li> <b>(G)o</b> begins the calculation   using the values in the initial 
+data box as a first guess.  Newton's method is applied.  If a value is found XPP
+ tries to find the eigenvalues and asks you if you want them printed out.  If so,
+ they are written to the console.  Then if there is a single real positive or
+ real negative eigenvalue, the program asks you if you want the unstable or
+ stable manifolds to be plotted.  Answer yes if so and they will be
+ approximated. The calculation will continue until either a variable
+goes out
+ of bounds or you press (Esc).  If (Esc) is pressed, the other
+branch is
+ computed. 
+ The program continues to find any other invariant sets until it has gotten 
+them all.  (These are stored and can be accessed by clicking <a
+href=xppmain.html#ics> (I) </a> (H).)  The program will continue integrating
+beyond the current numerical parameters until you press (Esc).
+Once an 
+equilibrium is computed a window 
+appears with info on the value of the point and its stability.  The top of 
+the window tells you the number of complex eigenvalues with
+positive,<b> (c+) </b>, 
+negative <b> (c-)</b>, zero <b> (im) </b>  real parts and the number of
+real positive
+<b>  (r+) </b>  and 
+real negative <b> (r-)</b>  eigenvalues. I
+f the equation is a difference equation, 
+then the symbols correspond the numbers of real or complex eigenvalues 
+outside <b> (+) </b> the unit circle or inside <b> (-) </b>
+This window remains and can be iconified. 
+<li> <b>(M)ouse</b>  This is as above but you can specify the initial guess by 
+clicking the mouse.  Only the two variables in the two-D window will reflect 
+the mouse values.  This is most useful for 2D systems.
+<li> <b>(R)ange</b>  This allows you to find a set of equilibria over a range
+ of parameters.  A parameter box will prompt you for the parameter, starting
+ and ending values, number of steps.  Additionally, two other items are 
+requested.  Column for stability will record the stability of the equilibrium 
+point in the specified column.  If you elect to shoot at each, the invariant 
+manifolds will be drawn for each equilibrium computed.  The stability can be 
+read as a decimal number of the form <b>  u.s  </b> where <b> s </b>  is the
+number of stable and <b> u </b>  
+ the number of unstable eigenvalues. So 2.03 means 3 eigenvalues
+with negative real parts (or in the unit circle) and 2 with positive
+real parts (outside the unit circle.)  The result of a range calculation is saved 
+in the data array and replaces what ever was there.  The value of the parameter
+ is in the time column, the equilibria in the remaining columns and the 
+stability info in whatever column you have specified. 
+ (Esc) aborts one step and 
+(/)  aborts the whole procedure.
+</ul> 
+<li> <a name="view">  <b>(V)iew axes</b> </a>
+ This selects one of 2 different types of graphs: 
+a 2D box or a 3D Box.
+If you select the 2D curve, you will be asked for limits 
+as in the window command as well as the variables to place on the axes
+and the labels for the axes.   
+3D is more complicated.  You will be asked for the 3 variables for the 3 axes, 
+their max and min values and 4 more numbers, <b> XLO </b> ,  etc.  XPP first scales the 
+data to fit into a cube with corners (-1,-1,-1) and (1,1,1).  Rotation of this
+ cube is performed and then projected into the two-D window.  <b> XLO
+</b>
+, etc define
+ the scales of this projection and are thus unrelated to the values of your 
+data.  You are also asked for labels of the axes.
+Use the <a href="#wind"> (W) </a> (F)  option 
+to automatically choose the sizes for the graph.
+
+
+<li> <a name="xivst" >  <b>(X)i vs t</b> </a>  This chooses a certain 2D view and prompts you for the variable name. 
+ The window is automatically fitted and the data plotted.  It is a
+shortcut to choosing a view and windowing it.
+<li> <a name="restore">  <b>(R)estore</b> </a> 
+ redraws the most recent data in the browser in accordance with the
+ graphics parameters ofthe active window.
+<li> <a name="3d"> <b>(3)d params</b> </a>
+  This lets you choose rotations of the axes and
+persepctive  planes. 
+ Play with this to see. You must be have a 3D view in the active graph
+to use this.
+<li> <a name="bdry"> <b>(B)ndry val</b> </a>  This solves boundary value problems by numerical shooting. There
+ are 4 choices.
+<ul> 
+<li> <b>(S)how</b>  This shows the successive results of the shooting and 
+erases the screen at the end and redraws the last solution.  The program
+ uses the currently selected numerical integation method, the current starting
+ point, <b> T0 </b> as the left end time and  <b> T0+TEND </b> as the right
+end. These are set in the <a href="xppnum.html"> nUmerics </a> menu.
+ Thus, if the
+ interval of interest is  (2.5,6)then set <b> T0=2.5 </b> and <b>
+TEND=3.5 </b> in the numerics menu.  
+<li> <b>(N)o show</b> This is as above but will not show succesive solutions.
+<li> <b>(R)ange</b>  This allows you to range over a parameter keeping starting or
+ ending values of each of the variables.  A window will appear asking you for
+ the parameter, the start, end, and steps.  You will also be asked if you want 
+to cycle color which means that the results of each successful solution to the
+ BVP will appear in different colors. Finally the box labeled<b>  side
+</b>
+ tells the
+ program whether to save the initial <b> (0) </b> or final<b> (1) </b>
+values of 
+the solution. 
+ As the program progresses, you will see the current parameter in the info
+ window under the main screen.  You can abort the current step by
+pressing
+(Esc)
+and the whole process by pressing (/). 
+<li> <b>(P)eriodic</b> Periodic boundary conditions can be solved thru the
+usual methods, but one then must write an addition equation for the
+frequency parameter.  This option eliminates that need so that a 2-D
+autonomous system need not be suspended into a 3D one.  You will be
+asked for the name of the adjustable parameter for frequency.  You
+will also be asked for the section variable and section.  This is an additional
+condition that must be satisfied, namely, <i>x(0)=x_0 </i> where <i>x</i>is the
+section variable and <i> x_0 </i> is the section.  Type <b> yes </b>if you want
+the progress shown.  
+</ul>
+</ul>
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+
+
+
+
+
+

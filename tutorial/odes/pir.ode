@@ -1,0 +1,22 @@
+5
+v v,h,sa,tb,sb
+f ssyn
+p gca=1,vk=-90,fh=2,vca=120
+p gl=.1,vl=-70,i=0
+p gsyna=0,gsynb=0,vsyna=-85,vsynb=-90,tvsyn=-40
+p fka=2,rka=.08
+u ph 1 1/(1+exp((arg1+79)/5))
+u ps 1 1/(1+exp(-(arg1+65)/7.8))
+u tauh 1 ph(arg1)*exp((arg1+162.3)/17.8)+20
+#
+ov'= gl*(vl-v)+gca*(vca-v)*h*ps(v)^3+i
+oh'= (ph(v)-h)*fh/tauh(v)
+#
+osa'= fka*ssyn*(1-sa)-rka*sa
+otb'= 5*ssyn*(1-tb)-.007*tb
+osb'= .03*tb*(1-sb)-.005*sb
+#
+ossyn= 1/(1+exp(-(v+40)/2))
+done
+
+

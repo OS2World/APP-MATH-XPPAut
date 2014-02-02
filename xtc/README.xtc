@@ -1,0 +1,32 @@
+<<<<<<<<<<<<<<   XTC-1.01 >>>>>>>>>>>>>>>>>>>
+This is the first release of xtc, my PDE/integral equation solver. 
+To install it, get it off the ftp site.  Then create a directory
+and move it there.  Type
+                      uncompress xtc-1.01.tar
+	              tar xvf xtc-1.01.tar
+Then look at the Makefile to be sure it is OK for you and type
+		       make
+If all goes well, you should have a program called  xtc.  The doc
+is in LaTeX and a processed version is in postscript.
+
+This version supports up to 20 equations and color postscript output.
+Turing stability analysis will come in a few months.  
+
+Please send any bug reports along with the offending file (e.g.,
+name.xtc) to me at  phase@vm2.cis.pitt.edu.   
+
+
+!!!!     BEFORE CALLING WITH ANY QUESTIONS ......
+
+          RRRRR     TTTTTT   FFFFFF    DDDDDD   
+          R    R      TT     FF        DD    DD
+          RRRRR       TT     FFFF      DD    DD
+          R    R      TT     FF        DD    DD
+          R     R     TT     FF        DDDDDD
+
+   (read the #$#*!!@ documentation)
+
+Thanks,
+           Bard Ermentrout   May 18, 1993
+
+  

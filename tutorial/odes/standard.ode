@@ -1,0 +1,5 @@
+1
+v y
+par g=.35,delta=.5
+o y+delta-g*sin(y)
+d

@@ -1,0 +1,536 @@
+<html>   
+<head>
+  <title>  XPP TUTORIAL III </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> <a name="start"> IV. Two dimensional systems </a> </h1>
+
+<p> So far, we have looked at a scalar equation for a membrane with a
+single nonlinear channel.  We hinted <a href=xpptut2.html#oscil> above
+</a> that by letting the current vary slowly as a function of the
+current, we could induce oscillations in the membrane.  Real membranes
+do this but not by directly varing the current.  Rather, in addition
+to the fast inward calcium current, there is an additional voltage
+controlled outward current due to potassium.  That is, the potassium
+current turns on with high enough voltage and hyperpolarizes the
+membrane.  The equations for this model; the <a name=lecar>
+"Morris-Lecar" </a>  model are:
+<p>
+<a href=odes/mor_lec.ode>
+<center>
+<img src=gif/mor_lec.gif></center></a> <p>
+where
+<p>
+<center> <img src=gif/winf.gif> </center><p>
+
+We will also track the main currents, <i> ICa </i> and <i> IK. </i>
+Click <a href=newstyle.html#mlsrc> <b> HERE </b> </a> to see the source.
+
+
+<p>
+
+Let's set up the window so we can explore this system.  Time is
+measured in milliseconds so click (nUmerics) to get the <a
+href=xppnum.html> numerics </a> menu.  Change (Dt) to .25 and change
+(Total) to 100 msec.  Since the currents can get quite large, change
+(Bounds) from 100 to 1000. Click (Esc)  to return to the main window.
+Click on (W) (W)  to change the dimensions of the <a
+href=xppmain.html#wind> window:</a>
+<ul>
+<li> XLo: 0
+<li> XHi: 100
+<li> YLo: -80
+<li> YHi: 120
+</ul>
+Then click (Ok) or the type (Tab).  Type (I) (G) and a line will move
+straight across the screen.  The system has initially been set at
+rest.  Now try some different initial conditions: Click (I) (N) and
+start at, say, V=-20, keeping w the default value.
+  The voltage decays to rest.  Now try V(0)=-10. There is a big
+difference.  The voltage rises and then decays below rest before
+returning to rest.  This is called <b> excitability </b> and it is a
+typical phenomenon of neurons.  
+<p>
+<a name=plot>  <h3> More Plotting Tricks </h3> </a>
+<p>
+To understand this, it helps to look at the two currents.  Click on
+(H) (C) to <a href=xppmain.html#half> create </a> another window.  Click
+(X) and type in <b> ICa </b> followed by (Enter) and you will see the
+large negative calcium current plotted in the window.  Now in the
+mainwindow, click (G) (A) to <a href=xppmain.html#graph> add </a>
+another curve to the plot. A new window will appear.  Type <b> IK </b>
+where it asks for the <b> Y-axis </b> and type in a number from 1-9
+for the color (1=red, 9=violet) and then type (Ok) to accept it.
+  (<b> Note: </b> This is different than <a href=xppfreeze.html>
+freezing </a> a curve which keeps a <b> permanent </b> copy of the
+curve you have frozen.  <b> Adding </b> a curve just tells XPP to plot
+the variables you have added at every simulation. <i> If you change
+parameters or initial conditions, the added curves will change to
+reflect this.  Frozen curves do not change.</i>)
+<p>
+You will not see the new curve since XPP has not given you the best
+window. You can manually increase the window, or let XPP do it.  Click
+(W) (F) to fit the window. (NOTE: This only works in versions of XPP
+higher than 1.6.) Otherwise just use (W) (W) and make the vertical
+scales from -380 to 270.  
+<p>
+Click (T) for <a href=xppmain.html#text> text </a> and at the prompt
+type in "ICa" and (Enter).  Using the mouse, place the text next to
+the big negative calcium current and click it.  Repeat this for "IK."
+If you have done this, you will see something like:
+<p>
+<center>
+<img src=gif/mlcurrents.gif> </center> <p>
+Now we can see what <i> excitability </i> means.  Once the voltage
+crosses threshold there is a large inward calcium current.  After this
+reaches its peak causing the voltage to increase, the large outward
+potassium current comes into play.  This is sufficient to cause the
+membrane to repolarize back to rest.
+<p>
+<a name=hw2.1> <h3> Homework 2.1 </h3> </a>
+What is the most negative value of the calcium current and the most
+positive of the potassium. (Use the <a href=xppbrowse.html> Data
+Viewer
+</a>  (F)ind option.)
+Integrate the differential equations again with a subthreshold initial
+voltage, say V(0)=-20.  How are the currents different from the
+spiking case.  (You may have to click into the small window and then
+click on (R)estore to redraw the graphs.)  
+<p>
+<center>
+<img src=gif/rainbowline.gif> </center> <p>
+<h2> <a name=phase> Periodics and phase-plane analysis </a> </h2><p>
+Click inside the big graphics window showing the voltage. Click on (H)
+(K) to kill all extra windows and answer (Yes).  This will get rid of
+the little window.  Now click on (U) to go into the (nUmerics) window
+and change the (Total) time to 250 msec and hit (Esc) to return to the
+main window.  Click (V) (2) to get a <a href=xppmain.html#view> Two-d
+view </a> of the voltage and the potassium gating variable, <i> w
+</i>.  A new window will appear.  You must tell XPP the variables for
+the X and Y axes, the (optional) labels and dimensions of the window
+(although this can be done with the (Window) command.) We want the
+"X-axis" to have voltage and the "Y-axis" to have the gating
+variable. Fill it in as:
+<ul>
+<li> X-axis: V 
+<li> Y-axis: w
+<li> XMin: -80
+<li> YMin: -.25
+<li> XMax: 120
+<li> YMax: 1.25
+<li> XLabel: V
+<li> YLabel: w
+</ul>
+and then click (Ok) or type (Tab) to accept this.  <p>
+This is called a <b> phase-plane </b> picture and it is what the "PP"
+in XPP stands for.  The <b> phase-space </b> for the Morris-Lecar
+model is two-dimensional and this provides a nice compact way of
+seeing what the solutions do as a function of time. 
+Click (I) (N) and set V(0)=-20 and leave w as is. Note the small
+trajectory thet goes to the left.  Now initialize V(0)=-10 and see the
+difference. The trajectory loops through the two-dimensional plane
+before returning to rest. Note that the phase-plane view shows you
+that the voltage increases and the gating variable slowly increases.
+The voltage reaches a maximum but the gating variable continues to
+increase reaching a maximum and then decreasing. The voltage
+udershoots the equilibrium before returning to rest.
+<p>
+Now click on (S) (M) to use the mouse to
+make an initial guess for a <a href=xppmain.html#sing> singular </a>
+point or equilibrium.  Click the mouse near where the two trajectories
+have ended.  Answer (No) to the "Print Eigenvalues" question.  A small
+circle will appear in the phase-plane that shows the position of the
+equilibrium.  The <a href=xpptut.html#stabwind> stability window </a>
+tells you you have a rest state at V=-60.89 and w=.014, that it is
+stable, and that the two eigenvalues are complex.  
+<p>
+Click on (I) (M) to choose initial conditions in the phase-plane with
+the mouse.  Click anywhere in the plane and the trajectory will be
+plotted. In particular, try a bunch of initial conditions near w=0
+along the V-axis.   Turn off the Bell by clicking (F) (B). Now click
+(I) (L) to get a trajectory that starts close to the initial
+condition.  ((I) (L) means use the (Last) value of the previous
+trajectory as the starting point of this one.)  Now click (I) (R) to
+do a range integration. A new window will appear.
+ Choose V to be the variable to range over.
+Choose 10 Steps, with the start at -20 and the end -10.  Answer yes to
+all three questions and click (Ok).  You will see 10 colored
+trajectories with a clear point indicating threshold.  You should see
+something like this:<p>
+<center>
+<img src=gif/thresh.gif> </center> <p>
+
+(<i> If this is nothing like what you see, try going through the
+instructions again starting at <a href=#phase> the beginning. </a> </i>)
+<p>
+<center> <img src=gif/rainbowline.gif> </center> <p>
+<center> <h3> <a name=nullclines> Nullclines and direction fields </a>
+</h3> </center> <p> 
+To see what is causing the threshold behavior for the neuron, it is
+very helpful to look at the <a href=xppmain.html#ncline> <b>
+nullclines </b> </a> which are curves where
+<i> dV/dt=0 </i> and <i> dw/dt=0.</i>  The intersection of two
+nullclins is an equilibrium point.  Click (N)(N) to make new
+nullclines.  The "V" nullcline where V does not change is RED and the
+"w" nullcline, where w does not change is green.  They intersect in one
+point, the equilibrium.  Their meaning can be discerned from the
+figure below:
+<p>
+<center>
+<img src=gif/nullcline1.gif> </center> <p>
+The nullclines are labeled and divide the phase-plane into 4 regions
+according to whether the voltage V and gating variable, w, 
+are increasing or decreasing.  THis lets you qualitatively see what
+happens.  Use the (I) (M) command to start with initial conditions in
+each of the 4 regions of the phase-plane.  Click on (E) to <a
+href=xppmain.html#erase> erase </a>  the
+screen and then on <a href=xppmain.html#ncline> (N) (R) </a>
+ to restore the nullclines without having to
+recompute them.  Now use the mouse to choose initial conditions along
+the line <i> w=0 </i> (the x-axis) near the point where the
+V-nullcline intersects the x-axis.  Try some intial data to the left
+and to the right of the curve.  <i> The nullcline acts almost like a
+threshold. </i> 
+<p>
+ 
+Now set I=120 by typing (P) and then I and then the value for it.  Hit
+(Enter) twice.  If you have the <a href=xpptut.html#paramwin>
+parameter window </a> open then just click on I in the window and tyoe
+the new value in the <a href=xpptut.html#xppmain> command line. </a>
+Once again use the mouse to set the initial data. Click (I) (M) and
+then click the mouse in the plane.  You should see a
+closed circle in the phase plane, a <b> limit cycle </b> for which
+both variables are periodic.  Open another window and plot V as a
+function of t.  Click (Halfwindow) (Create).  Then click (Xivst) and
+type in V followed by (Enter).  You should se a nice oscillation of
+the membrane potential.  Click on (Xivst) and type in <i> w </i> and
+see that it oscillates as well.  
+<p>
+<h3> <a name=3d> Three-d windows and the Kinescope </h3></a>
+Create another window.  Click on (View axes) (3d) and a big window
+will appear.  Put V,w, and t on the respective X,Y, and Z axes.  Put
+the same on the labels.  Click (Ok) and then type (Window) (Fit) to
+fit the window to the variables.  You should see a real nice 3d window
+with time along the Z axis and  V,w on the planar axes.  <b> Now the next
+step sometimes causes crashes on different servers, so you may want to
+skip it. </b>  We are going to make a short 4 frame movie.  Click on
+<a href=xppmain.html#kine> (Kinescope) (Capture)</a>.  
+This will grab the 3D image.  Next, click on <a href=xppmain.html#3d> 
+(3d params) </a>.  A window will pop up.  Change <b> Theta </b> from
+45 to 60 and click (Ok).   Then take another snapshot with (K)
+(C). Again change the 3d angle <b> Theta </b> to 75 and take another
+snapshot with (K) (C).  Finally, do this once more with <b> Theta=90
+</b> and take the last snapshot.  Now click on (Kinescope) (Autoplay)
+and you should see a little rotating "movie" of the 3-d
+projection. Type (Esc) to stop it.  Finally clear all the Kinescope
+frames with (Kinescope) (Reset).   
+<p>
+
+<h3> <a name=hw2.2> Homework 2.2 </h3> </a>
+<ul>
+<li> Look at ICa and IK in a two-dimensional phase-space. 
+<li> Look at the
+nullclines in the <b> V-w </b> plane when <b> I=120 </b>
+and note that they intersect on
+the part of the <b> V-nullcline </b> with a positive slope.  Find the
+stability of the singular point where the nullclines intersect. What
+is the nature of the eigenvalues?
+Change <b> I=80 </b> and look at the nullclines and singular point
+again. How has the rest state changed? What behavior occurs for values
+of the parameter at which the rest state is <em> unstable? </em>
+<li> Try to find the value of <b> I </b> at which the singular point
+goes from stable to unstable.  ( <i> Hint: </i>Once you have found an
+equilibrium point using the (S) (M) option, try using <a
+href=xppmain.html#sing> (S) (G) </a> after
+you change <b> I </b> slightly. )
+</ul>
+<p>
+<center>
+<img src=gif/celtic_bar.gif> </center> <p>
+<h2> <a name=hopf> The Hopf bifurcation theorem -- AUTO III</a> </h2>
+
+If you have complete <a href=#hw2.2> Homework 2.2 </a> then you have
+discovered that the rest state can lose stability by a pair of <em>
+complex-conjugate </em> eigenvalues crossing the imaginary axis. You
+should have also discovered that there is a periodic solution when the
+rest state is unstable.  The existence of a periodic orbit is a
+consequence of one of the most <em> useful </em> results in dynamical
+systems theory: <b> the Hopf Bifurcation Theorem. </b>  This powerful
+theorem says roughly that <em> if a pair of complex conjugate
+eigenvalues  crosses the imaginary axis as some parameter changes, then
+there is a branch or periodic orbits emanating from rest. </em> <p>
+We will use AUTO to find that branch of periodics as well as discover
+some other interesting behavior.   Set <b> I=0 </b> and initialize <b>
+V=-60.899, w=.01487.</b>  Now click (F) (A) to invoke AUTO.  Now, setr
+up the axes by clicking on (Axes), choosing (Hi-Lo) and filling in the
+window as:
+<ul>
+<li> Y-axis: V
+<li> Main Parm: i
+<li> 2nd Parm: vl
+<li> Xmin: -10
+<li> Ymin: -80
+<li> Xmax: 250
+<li> Ymax: 120
+</ul>
+Click (Ok) and then click on the (Numerics) menu to set AUTO up.
+Change the following:
+<ul>
+<li> Ds: 0.02
+<li> Dsmin: 0.0001
+<li> Dsmax: 5
+<li> Par Min: -10
+<li> Par Max: 245
+<li> Norm Max: 1000
+</ul>
+<p>
+We are almost ready to roll!!. AUTO and XPP let us record aspects of
+the bifurcation curves at chosen values of parameters and periods of
+limit cycles.  We want to get information at  <b> I=100 </b> and,
+say, <b> I=120.</b>
+This is done by clicking on (Usr Period). Do this and
+choose 2.  A window pops up.  Fill in the first two entries like:
+<ul>
+<li> Uzr1: i=100
+<li> Uzr2: i=120
+</ul>
+and click (Ok).  <p>
+Now we can run!  Click on (Run) and choose (Steady state).  A thick
+line which is thin in the middle is drawn across the screen.  The
+thick parts are where the steady state is stable, the thin, unstable.
+<p> How does the steady state lose stability?  Click on (Grab) and
+move the cross-hairs until they are close to the instability.  Look at
+the information line as you do this. You should see a symbol <b> HB
+</b> at around <b> I=101.8 </b>   How does this compare with your
+estimate of the value of current which leads to instability 
+in the homework? The symbol <b> HB </b> means that there is a <b> Hopf
+bifurcation </b> so we can expect to see a branch of solutions
+emanating from the rest state.  When the cross-hair is on the <b> HB
+</b> point, click
+(Enter) to accept it.  When you accept a point in AUTO, this sets the
+parameters and dependent variables to the initial condition
+corresponding to the point.  It also gives AUTO some necessary
+information.  <p>
+
+Now that we have grabbed the Hopf point, we can try to find the
+periodic orbit.  <em> Note:  The next command may induce AUTO to
+loop around so once it looks like AUTO is retracing stuff it already
+found, click on (ABORT). </em>  So forewarned, click on (Run).  Choose
+(Periodic) to get AUTO to trace the orbit.  Stop it if it looks like
+its retracing!  When the diagram is complete it will look like:
+<p>
+<center><img src=gif/autohopf.gif> </center> <p>
+
+Filled circles represent stable periodic orbits and open circles are
+unstable.  Notice how the unstable branch that emanates from the Hopf
+bifurcation bends to the left and thet the steady state solution loses
+stability to the right.  If the direction of the bifurcating branch is
+opposite the direction at which stability of the main branch is lost,
+the branch is called <b> subcritical </b> and it is generally <b>
+unstable. </b>  Note that there are two subcritical Hopf bifurcations;
+the second one is for a high current of about 220.  (It is subcritical
+because the steady state branch loses the stability going <em> left
+</em> and the periodic branch goes <em> right. </em>) <p>
+Click (Grab). Using the (Tab) key, slowly click through the <a
+href=xppauto.html#special> special points. </a> Note the labels <tt>
+UZ </tt> and <tt> LP </tt>.  The label <tt> UZ </tt> is a user-defined
+point and since we picked <b>I=100 </b> and <b> I=120 </b>, it means
+that <b> I </b> must be one of these two values.  The label <tt> LP
+</tt> means that a limit-point or saddle node has been found.  Since
+it occurs on a branch of periodic solutions, that means that two limit
+cycle orbits coalesce at this point.  For this
+particular model, the left most limit point occurs at <b> I =
+95.72. </b>
+<p>  
+
+In many biological examples, subcritical branches from Hopf
+bifurcations <em> turn around. </em> The Morris-Lecar model, here, is
+such an example.  
+Focus your attention on the region between the Hopf bifurcation  and
+the left-most limit point, <b> 95.72 &lt I &lt 101.8 </b>  For
+currents in this interval, there are 3 different possible
+solutions. (Imagine a vertical line drawn in this interval; it passes
+through three branches.) There is a <em> stable steady state, unstable
+periodic, stable periodic. </em>  
+<ol>
+<li> Using (Grab) load the second point on
+the bifurcation diagram for which <b> I=100 </b> (label 8). 
+<li> Now click (File) (Import Orbit). Special points have more
+information than regular points.  Grabbing any point changes the
+parameter and initial conditions in XPP. But you can actually load the
+complete trajectory of a periodic orbit if it is a special one.  
+<li> In the XPP main window, you should have a phase-plane projection
+of V and w.  If not, then <a href=xppmain.html#view> do so now </a>
+with  <em> -80 &lt V &lt 120 </em> and <em> -.25 &lt w &lt 1.25. </em>
+Click on (Restore) in the XPP main window.  (Since the nullclines are
+probably wrong, erase the screen by clicking on (Erase) then draw new
+nullclines for this value of I by clicking (N) (N), then click (R) to
+restore.) You should see a very small periodic orbit surrounding the
+fixed point marked by the intersection of the nullclines.  Check the
+stability of the rest state by clicking (S) (M) in the XPP window and
+clicking the mouse at the intersection -- answer (No) to the
+eigenvalue question.  It is stable.
+<li> Lets get a permanent copy of the small orbit.  Click (G) (F) (F)
+to <a href=xppfreeze.html> freeze </a> the small orbit. Choose color 4
+and make the key have the label "UPO."   
+<li> Go back to the AUTO window and click grab again.  This time load
+the third instance for which the current is 100.  This is labeled
+point 10.  Again, click (F) (I) in the AUTO window to import this
+orbit.   
+<li> Go back to the main XPP window and freeze this using (G) (F) (F)
+and choosing color 7 and labeling the key, "SPO". You should see two
+periodics in the picture, one stable and one unstable.
+<li>  Finally, choose a variety of initial conditions by clicking (I)
+(M) in the XPP window and clicking the mouse inside the small
+periodic, between the two periodics, and outside the large periodic.
+(It might be easier to see if you <a href=xppmain.html#wind> zoom </a>
+in so that the picture contains the two periodics.  Click (W) (Z) and
+use the mouse key to zoom in. )  
+</ol>
+
+<p>  If you have followed these instructions, then you will have
+discoverd another type of <b> bistability </b> between a stable fixed
+point and a stable periodic orbit.  All initial conditions <em> inside
+</em> the unstable periodic orbit end up at the stable fixed point.
+All initial data <em> outside </em> the unstable periodic end up on the stable
+periodic state.  The unstable periodic orbit is a threshold for
+repetitive firing.  Create another window and plot V as a function of
+t for some represetative trajectories.
+
+<h3> <a name=freq> Frequency information </a> </h3>
+
+Go into the AUTO window and click (Axes) (fRequency) to look at the
+frequency of the periodics as a function of the current. Click (Ok) in
+the window that appears.  Now click (Axes) (Fit) and then (reDraw) to
+fit the window to the frequency and redraw the diagram.  Only the
+periodics appear on this.  Focus on the solid circles.  The frequency
+initially goes up and then goes down.  Note that the minimal frequency
+is not zero.  (Also, note that this is frequency in the time scale of
+the model which is milliseconds.  Multiply by 1000 to get it in
+Hertz.) Click (Axes) (last 1 par) and then (reDraw) to get the
+original diagram back.  
+
+<p> This concludes the tutorial on periodic, bistability, and AUTO.
+You can play around some more with this diagram (for example, pick
+some currents at the high end where there is also bistability.) 
+When you are done, reset the bifurcation diagram to delete unwanted
+files from the disk: In the AUTO window, reset the diagram by clicking
+(File) (Reset) and answering (Yes).  Exit XPP or try the next homework
+which is quite extensive.
+
+<p><center><img src=gif/rainbowline.gif> </center> <p>
+<h3> <a name=hw2.3> Homework 2.3 </h3> </a>
+
+In this exercise, you will explore the Morris-Lecar model as it was
+originally formulated.  Fire up the <a href=#lecar> Morris-Lecar </a>
+equations if you don't all ready have them loaded.  Change the 
+<a href=xppmain.html#para> parameters </a> from the loaded values to :
+<ul>
+<li> V3=12
+<li> V4=17.4
+<li> I=0
+<li> phi=.066666667
+</ul>
+Set up the numerics so that<ul>
+<li> Dt=.25
+<li> Bound=1000
+<li> Total=250
+</ul> 
+and a two-dimensional view with -80 &lt V &lt 120 on the x-axis and
+-.25 &lt w &lt 1.25 on the y-axis.  <p>
+<ol>
+<li>Look at the nullclines for I=0, I=30, I=50.  Look at trajectories and
+determine the stability of all fixed points.  At what value of I does
+repetitive firing occur?  For I=30, what determines the threshold?
+Try the following with I=30.  Draw the nullclines.  Click on (S) (M)
+to use the mouse to find singular points and choose the middle
+intersection of the nullclines.  Answer (No) to the eigenvalue
+question and (Yes) to the invariant sets. Watch the trajectories that
+appear. (Click Esc to make it draw the next one, -- it will try to
+draw 4 of them)  Note the pair that come out almost vertically.  Click
+some initial conditions on either side of them and note the behavior.
+They determine the threshold. 
+<li> Now, set I=0 and initialize V to -59.474 and w to 0.  Fire up the
+AUTO window if it is not already there (F) (A).  If it is there,make
+sure the diagram has been reset (Click (File) (Reset Diagram)).  Now
+set up the axes and numerics just like the example <a
+href=#hopf>above. </a> Run AUTO starting from a steady state. How is
+the steady state I-V curve different from the first example? Notice
+that even though it is "kinked" there are never two stable rest states
+for the same parameters.
+<li>  How does the upper steady state gain/lose stability?  Use (Grab)
+to find out if there is a Hopf bifurcation.  Grab it and trace out the
+curve of periodics.  Compare this scenario with the above one.  Look
+at the frequency as a function of I.  Concentrate on the stable
+branch.  What is the minimal frequency?  
+<li>  In this scenario, the periodic orbit emerges with large
+amplitude and zero frequency.  It is called Type I behavior.  The
+limit cycle disappears exactly at the value of current for which the
+two lower steady states come together.  
+</ol>
+
+Finally, set phi=.25 and repeat the entire exercise above.  Note how
+the periodic is lost this time.  It runs into the middle branch. Set
+I=31 and explore the phaseplane.  In particular, look at the stability
+and invariant sets of the middle branch.       
+<p><center><img src=gif/rainbowline.gif> </center> <p>
+<h3> <a name=hw2.4> Homework 2.4 </h3> </a>
+Wang and Rinzel have suggested a simple two-dimensional model for
+reticular oscillations in the thalamus. This <a
+href=newstyle.html#pir> post-inhibitory rebound model </a> has
+oscillations if the current is negative. There are also equations for
+two different types of inhibitory synapses, thus it is a
+five-dimensional model, but all the dynamics is in the <i> V-h </i>
+variables.
+ Explore the phase-plane and
+compute the bifurcation diagram for this using AUTO and the current as
+a parameter.  Try, <b> -2 &lt I &lt 0 </b> as the range for the
+current. (<b> AUTO Hint </b>  When <b> I=0 </b> the equilibrium is 
+<tt> V=-59.401, h=.019457,sa=.00152,tb=.041924,sb=.20099 </tt>)
+<b> CAUTION </b>  AUTO seems to crash when you follow the right-most
+Hopf bifurcation point too far to the left, so stop the continuation
+before the "knee" in the steady states.  
+
+
+
+  
+
+<center>
+<h2> Just one more part...</h2> 
+</center><p>
+<center> <img src=gif/badday.gif> </center>
+ 
+<hr>
+<p>
+<h3> <a href=xpptut2.html> BACK TO PART II </a>
+<p>
+     <a href=xpptut4.html> FORWARD TO PART IV</a>
+</h3> <p>
+<h3><a href=xpptut.html> HOME </a> </h3>
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+

@@ -1,0 +1,17 @@
+# Makefile for XPPAut-3.03 and XTC for OS/2
+# (c) Klaus Gebhardt, 1997
+
+INSDIR = h:/apps/science/xppaut-3.03
+
+all:
+	cd xpp & make -f makefile.os2
+	cd xtc & make -f makefile.os2
+
+clean:
+	cd xpp & make -f makefile.os2 clean
+	cd xtc & make -f makefile.os2 clean
+
+install: all
+	cp xpp/*.ode xpp/*.bitmap xpp/*.ani $(INSDIR)/xpp
+	cp xpp/mpgfile xpp/default.opt xpp/*.exe $(INSDIR)/xpp
+	cp xtc/*.xtc xtc/*.bit xtc/*.exe $(INSDIR)/xtc

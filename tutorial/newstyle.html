@@ -1,0 +1,805 @@
+<html>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> Format of ODE Files and Examples </h1>
+<h2> Contents </h2>
+<ul>
+<dd> <a href=#newstyle> Format for ODE files  </a>
+<dd> <a href=#symbols> Miscellaneous functions  </a>
+<dd> <a href=#passive> Passive membrane  </a>
+<dd> <a href=#mlsrc> Morris-Lecar equations  </a>
+<dd> <a href=#pir> Post-inhibitory rebound  </a>
+<dd> <a href=#hh> Hodgkin-Huxley  </a>
+<dd> <a href=#mlsyn> Morris-Lecar with synapse  </a>
+<dd> <a href=#phase> Phase model  </a>
+<dd> <a href=#standard> Standard map  </a>
+<dd> <a href=#lorenz> Lorenz equations  </a>
+<dd> <a href=#triple> Unfolding of triple zero eigenvalue  </a>
+<dd> <a href=#cable> Cable equation  </a>
+<dd> <a href=#delay> Differential delay model  </a>
+<dd> <a href=#kepler> A model with Markov processes  </a>
+<dd> <a href=#tyson> Tyson's model with discontinuities  </a>
+<dd> <a href=#volterra> Volterra integral equation  </a>
+</ul>
+</h3>
+
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<h2> <a name=newstyle> ODE file format</a> </h2> <p>
+Every ODE file consists of a series of lines that start with a <b>
+keyword </b> followed by numbers, names, and formulas or declare a
+named formula such as a differential equation or auxiliary quantity.
+  Only the first
+letter of the keyword is important; <i> e.g. </i> the parser treats
+"parameter" and "punxatawney" exactly the same. The parser can understand
+lines up to 256 characters.  You can use line
+continuation by adding a backslash character. The first line of the
+file cannot be a number (as this tells XPP that the file is in the
+old-style) but can be any other charcter or declaration.  It is
+standard form to make the first line a comment which has the name of
+the file, but this is optional. 
+<pre>
+# comments
+<a href=#option> option </a> &lt;filename&gt;
+...
+<a href="#oderhs">d&lt;name&gt;/dt</a>=&lt;formula&gt;
+<a href="#oderhs">&lt;name&gt;'</a>=&lt;formula&gt;
+...
+<a href="#vderhs">&lt;name&gt;(t)</a>=&lt;formula&gt;
+<a href="#vderhs">volt </a> &lt;name&gt;=&lt;formula&gt;
+...
+<a href="#map">&lt;name&gt;(t+1)</a>=&lt;formula&gt;
+...
+<a href="#fixrhs">&lt;name&gt;</a>=&lt;formula&gt;
+...
+<a href="#funrhs">&lt;name&gt;(&lt;x1&gt;,&lt;x2&gt;,...,&lt;xn&gt;)</a>=&lt;formula&gt;
+...
+<a href="#icnew">init</a> &lt;name&gt;=&lt;value&gt;,...
+...
+<a href="#icnew">&lt;name&gt;(0)</a>=&lt;value&gt;
+...
+<a href="#auxrhs">aux</a> &lt;name&gt;=&lt;formula&gt;
+...
+<a href="#bdr">bdry</a> &lt;expression&gt;
+...
+<a href="#wie">wiener</a> &lt;name&gt;,...
+...
+<a href="#par">parameter</a> &lt;name&gt;=&lt;value&gt;, ...
+...
+<a href="#num2">number</a> &lt;name&gt;=&lt;value&gt;
+...
+<a href="#tab">table</a> &lt;name&gt; &lt;filename&gt;
+...
+table &lt;name&gt; % &lt;npts&gt; &lt;xlo&gt; &lt;xhi&gt; &lt;function(t)&gt;
+...
+<a href="#glo">global</a> sign {condition} {name1=form1;...}
+...
+<a href="#marrhs">markov</a> &lt;name&gt; &lt;nstates&gt;
+{t01} {t02} ... {t0k-1}
+{t10} ...
+...
+{tk-1,0} ...
+...
+# comments
+...
+<a href="#intopts">@  &lt;name&gt;=&lt;value&gt; </a> ...
+done
+</pre>
+<p>
+<hr>
+
+<ul>
+<li> <a name=oderhs> <b> Ordinary differential equations </b></a> are written as 
+<pre>
+dx/dt=F(x,y,...)
+</pre>
+or
+<pre>
+x'=F(x,y,...)
+</pre>
+Similarly, <a name=map> <b> difference equations </b></a> can be written as:
+<pre>
+x(t+1)=F(x,y,...)
+</pre>
+<li><a name=vderhs><b> Volterra integral equations</b></a>
+ are written in one of the following 4 formats:
+<pre>
+x(t) =  ...int{K(u,t,t')}...
+x(t) =  ...int[q]{K(u,t,t')}...
+x(t) =  ...int{k(t)#u}...
+x(t) =  ...int[q]{k(t)#u}...
+</pre>
+with the following meanings 
+<ul>
+<li> General integral
+<li> Integral with singularity of the form 1/t^q
+<li> Convolution with k(t)
+<li> Convolution with k(t)/t^q
+</ul>
+In this format the presence of the <b> int </b> operator tells XPP
+that the definition is for an integral equation and not a function
+definition. You can force XPP to treat the equation as a Volterra
+equation by strating the line with <b> volt </b>.  
+
+<li> <a name=fixrhs> <b> Fixed or hidden values </b>  </a> are quantities that
+you define but do not satisfy differential equations and which 
+are not accessible to the user.  They are generally expressions that
+are used in several places in the dynamical system so that you avoid
+computing the same quantity several times.  They
+are just written as:
+<pre>
+zippy=f(x,t,...)
+</pre>
+Thus <tt> zippy </tt> could be used in seceral different places and
+yet is computed only once.
+<li> <a name=funrhs> <b> Functions </b> </a> are easy to define.  Just
+write like you would on paper:
+<pre>
+f(x,y) = x^2/(x^2+y^2)
+</pre>
+They can have up to 9 arguments.
+<li> <a name=icnew> <b> Initial data </b> </a> are written in two formats:
+<pre>
+x(0)=3
+y(0)=-2
+</pre>
+or
+<pre>
+init x=3,y=-2
+</pre>
+Initial data are optional, XPP sets them to zero by default and they
+can be changed within the program.
+<li> <a name=auxrhs> <b> Auxiliary quantities </b> </a> are expressions that depend on all of your dynamic variables which you
+want to keep track of.  Energy is one such example. They are declared
+like  <a href="#fixrhs"> fixed </a> quantities, but are prefaced by <tt> aux
+</tt>. You have access to these within XPP and can plot them, etc.
+<li><a name=marrhs> <b> Markov variables </b> </a> are finite
+state variables whose dynamics are defined via the transition matrix
+that follows their declaration.   They are declared by a statement that
+has the name of the process, the number of states and then the
+transition matrix.  Initial values are as <a href="#icnew"> above.</a>
+The entries of the transition matrix are
+delimited by braces.  The first row represents the transition
+probability of switching from state 1 to some other state.  The
+entries of the matrix can be any expression.  The diagonal entries are
+ignored.
+<li> <a name=wie><b> wiener </b> </a> Wiener parameters are normally
+distributed numbers with zero mean and unit standard deviation.  They
+are useful in stochastic simulations since they automatically scale
+with change in the integration time step.  Their names are listed
+separated by commas or spaces.
+<li> <a name=glo><b> global </b> </a> Global flags are expressions
+that signal events when they change sign, from less than to greater
+than zero if <b> sign=1 </b>, greater than to less than if <b>
+sign=-1</b> or eithet way if <b> sign=0.</b>  The condition should be
+delimited by braces<b> {} </b>  The events are of the form <b>
+variable=expression </b>, are delimited by braces, and separated by
+semicolons.  When the condition occurs all the variables in the event
+set are changed possibly discontinuously.  This lets you simulate
+"Delta" functions.
+<li> <a name=par><b> parameter </b> </a> This is how you declare
+parameters that you may want to change.  The values are optional; they
+are otherwise set to zero.
+<li> <a name=num2><b> number </b> </a> Number declarations are like
+parameter declarations, except that they cannot be changed within the
+program and do not appear in the parameter window.
+<li> <a name=tab><b>table </b> </a> The Table declaration allows the
+user to specify a function of 1 variable in terms of a lookup table
+which uses linear interpolation.  The name of the function follows the
+declaration and this is followed by (i) a filename (ii) or a function
+of "t".  The file is an ascii readable file in this format:
+<pre>
+number of values
+xlo
+xhi
+y(xlo)
+.
+.
+.
+y(xhi)
+</pre>
+The function form of the table require the percent symbol followed by
+the number of points, <b> tlo, thi </b> and the function of t. 
+<li><a name=option> <b> Option files </b> </a> contain default values for such
+things as the step size for integration, the total 
+amount of time to integrate, etc.  Their use has been basically
+supplanted by the ability to declare such things within the ODE file
+using the <a href=#intopts> @ operator. </a>
+<li> <a name=bdr><b> bndry </b> </a> The boundary declaration tells
+XPP about boundary values.  Since a boundary value problem is defined
+on an interval [a,b] XPP uses the variable names to mean the value at
+<b> a </b> and primed variable names to mean the value at <b> b. </b>
+The program tries to set the expression to zero.  Thus <b>x</b>
+implies that <b> x(a)=0 </b> and <b> x'-2 </b> implies that <b>
+x(b)-2=0 </b>. 
+</ul> 
+
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+
+<h1> <a name=symbols> Miscellaneous functions</a> </h1> <p>
+<ul>
+<li> <b> heav(x)</b> the step function.
+<li> <b> sign(x)</b> is 1 for x&gt;0, -1 for x&lt;0, and 0 for x=0.
+<li> <b> ran(arg)</b> produces a uniformly distributed random number
+between 0 and arg.
+<li> <b> besselj, bessely </b> take two arguments, </i> n,x </i> and return
+respectively, <i> J(n,x) </i>  and <i> Y(n,x). </i>
+<li> <b> erf(x),erfc(x) </b> are the Error function and the
+complementary error function.
+<li> <b> normal(arg1,arg2)</b> produces a normally distributed random number
+with mean <i> arg1 </i> and variance <i> arg2</i>.
+<li> <b> max(arg1,arg2)</b> produces the maximum of the two arguments
+and <b> min(arg1,arg2) </b>, the minimum of them.
+<li> <b> if(expr1)then(expr2)else(expr3)</b> evaluates <b> expr1 </b>
+If it is nonzero it evaluates to <b> expr2 </b> otherwise it is <b> expr3 </b>.
+<li> <b> delay(var,expr)</b> returns variable <b> var </b> delayed by
+the result of  evaluating <b> <exp></b>.  
+In order to use the delay you must inform
+the program of the maximal possible <a href="xppnum.html#delay"> 
+delay</a> so it can allocate storage.
+<li> <b>  ceil(arg),flr(arg)</b>  are the integer parts of <b> arg
+</b> returning the
+ smallest integer greater than and the largest integer less than
+<b>arg </b>.  
+<li> <b>  t </b> is the current time in the integration of the differential equation.
+<li> <b>  pi</b>  is 3.1415926...
+<li> <b> shift(var,expr)</b>  This operator evaluates the expression
+<b> expr </b>  converts it to an integer and then uses this to indirectly
+address a variable whose address is that of  <b> var </b> plus the
+integer value of the expression.  This is a way to imitate arrays in
+XPP.  For example if you defined the sequence of 5 variables, 
+<b> u0,u1,u2,u3,u4 </b> one right after another, then <b>
+shift(u0,2)</b>
+ would
+return the value of <b> u2.</b> 
+<li> <b> sum(ex1,ex2)of(ex3)</b> is a way of summing up things.
+The expressions <b> ex1>,<ex1> </b> are evaluated and their integer
+parts are used as the lower and upper limits of the sum.  The index of
+the sum is <b> i' </b> so that you cannot have double sums since there is
+only one index.  <b> ex3 </b>  is the expression to be summed and will
+generally involve <b>  i' </b>  For example  <b> sum(1,10)of(i') </b> will
+be evaluated to 55.  Another example combines the sum with the shift
+operator.  <b> sum(0,4)of(shift(u0,i')) </b> will sum up <b> u0 </b> and the
+next four variables that were defined after it.  
+</ul>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+
+<h3> <a name=intopts> Internal Options </a> </h3> <p>
+
+<p>
+
+
+XPP has many many internal parameters
+that you can set from within the program and four parameters that can
+only be set before it is run.  All of these internal parameters can be
+set from the ``Options'' files described above 
+However, it is often useful to put the
+options right into the ODE file.  <i> NOTE: Any options defined in
+the ODE file overide all others such as the ones in the OPTIONS
+file.</i>
+
+The format for changing the options is:
+<pre>
+@ name1=value1, name2=value2, ...
+</pre>
+where  <b> name </b>  is one of the following and <b> value </b> is either an
+integer, floating point, or string.  (All names can be upper or lower
+case). The first four options <i> can
+only be set outside the program </i>  They are:
+<ul>
+<li> MAXSTOR=<tt> integer</tt> sets the total number of time steps that
+will be kept in memory.  The default is 5000.  If you want to perform 
+very long integrations change this to some large number.  
+<li> BACK= <tt> {Black,White} </tt> sets the background to black or white.
+<li> SMALL=<tt> fontname </tt> where <tt> fontname </tt> is some font available
+to your X-server.  This sets the ``small'' font which is used in the
+Data Browser and in some other windows.  
+<li> BIG=<tt> fontname </tt> sets the font for all the menus and popups.  
+</ul>
+<p>
+The remaining options can be set from within the program. They are 
+<ul>
+ <li> XP=name sets the name of the variable to plot on the x-axis.
+The default is <tt> T </tt>, the time-variable.
+<li> YP=name sets the name of the variable on the y-axis.
+<li> ZP=name sets the name of the variable on the z-axis (if the plot
+is 3D.) 
+<li> AXES=<tt>{2,3} </tt> determine whether a 2D or 3D plot will be
+displayed.
+<li> TOTAL=value sets the total amount of time to integrate the
+equations (default is 20).
+<li> DT=value sets the time step for the integrator (default is 0.05).
+<li> NJMP=<tt> integer</tt> tells XPP how frequently to output the
+solution to the ODE.  The default is 1, which means at each
+integration step.
+<li> T0=value sets the starting time (default is 0). 
+<li> TRANS=value tells XPP to integrate until <tt> T=TRANS </tt> and then
+start plotting solutions (default is 0.)
+<li> NMESH=<tt> integer </tt> sets the mesh size for computing nullclines
+(default is 40).
+<li> METH=<tt> {
+discrete,euler,modeuler,rungekutta,adams,gear,volterra, backeul} </tt>
+sets the integration method (see below; default is Runge-Kutta.)
+<li> DTMIN=value sets the minimum allowable timestep for the Gear
+integrator.
+<li> DTMAX=value sets the maximum allowable timestep for the Gear
+integrator
+<li> TOLER=value sets the error tolerance for the Gear integrator.
+<li> BOUND=value sets the maximum bound any plotted variable can
+reach in magnitude. If any plottable quantity exceeds this, the
+integrator will halt with a warning.  The program will not stop
+however (default is 100.)
+<li> DELAY=value sets the maximum delay allowed in the integration
+(default is 0.)
+<li> XLO=value,YLO=value,XHI=value,YHI=value set the limits for
+two-dimensional plots (defaults are 0,-2,20,2 respectively.) Note that
+for three-dimensional plots, the plot is scaled to a cube with
+vertices that are +- 1 and this cube is rotated and projected onto
+the plane so setting these to +- 2 works well for 3D plots.
+<li>
+XMAX=value, XMIN=value, YMAX=value, YMIN=value, ZMAX=value, ZMIN=value set
+the scaling for three-d plots.
+</ul>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+
+<h1> <a name=examples> Examples </a> </h1> <p>
+
+<a name=passive> <h2> The passive membrane </h2> </a>
+<pre>
+# passive membrane model
+
+# The parameters:
+parameter c=20,gl=2,vl=-60,i=2
+
+# the differential equation:
+dv/dt=(gl*(vl-v)+i)/c
+
+# initial data:
+v(0)=0
+# The initial data is not needed here as the default is 0
+
+# tell it you are done  
+done
+</pre>
+
+It is pretty much self-explanatory.  Initial data are declared like:
+<pre>
+name(0) = value
+</pre>
+where  "name" is the name of a variable which satisfies a differential
+equation.  This is fine for one or two variable systems, but if you
+have many, then it is a pain to write each one on a line.  Instead,
+you can write:
+<pre>
+init name1=value1, name2=value2, ...
+</pre>
+Differential equations in the new format are declared as
+<pre>
+name' = right-hand-side
+# OR
+dname/dt = right-hand-side
+</pre>
+The order of most declarations in the is unimportant since
+the program makes two passes through the file.
+<p>
+<a HREF="xpptut.html#oldstyle">Return to tutorial</a>
+<center> <img src=gif/rainbowline.gif> </center>
+
+<a name=mlsrc> <h2> Morris-Lecar Equations </h2> </a>
+<p>
+<pre>
+# Morris-Lecar reduced model 
+dv/dt=(i+gl*(vl-v)+gk*w*(vk-v)+gca*minf(v)*(vca-v))/c
+dw/dt=lamw(v)*(winf(v)-w)
+# where
+minf(v)=.5*(1+tanh((v-v1)/v2))
+winf(v)=.5*(1+tanh((v-v3)/v4))
+lamw(v)=phi*cosh((v-v3)/(2*v4))
+#
+param vk=-84,vl=-60,vca=120
+param i=0,gk=8,gl=2, gca=4, c=20
+param v1=-1.2,v2=18,v3=2,v4=30,phi=.04
+# for type II dynamics, use v3=2,v4=30,phi=.04
+# for type I dynamics, use v3=12,v4=17,phi=.06666667
+v(0)=-60.899
+w(0)=0.014873
+# track some currents
+aux Ica=gca*minf(V)*(V-Vca)
+aux Ik=gk*w*(V-Vk)
+done
+</pre>
+
+<p>
+
+<a href="xpptut3.html#lecar"> Return to tutorial </a>
+<p>
+
+
+
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<a name=pir> <h2> Post-inhibitory Rebound  </h2></a>
+This model is the simplest neural oscillator.  There is only one
+active channel.  The equations are due to Wang and Rinzel.  The
+equations include the activation of the fast GABA_A  and slow GABA_B
+synapses.  
+<p>
+<center> <a href="odes/pir.ode"> <img src=gif/pir.gif> </a> </center>
+<p>
+
+A good set of parameters is: <tt> gca=1,vk=-90,fh=2,vca=120,
+gl=.1,vl=-70,i=0, gsyna=0,gsynb=0,vsyna=-85,vsynb=-90,tvsyn=-40,
+fka=2,rka=.08.
+ </tt>  Try looking at the phase-plane
+with  <i> -75 &lt V &lt 20 </i> and  <i> -.125 &lt h &lt .5. </i> By
+letting the current be slightly negative, try and get this baby to
+oscillate.  Look at the nullclines as a function of the current.
+<p> <b> Hint </b> Integrate it for about 200 msec with <tt>
+DeltaT=.1. </tt>
+<p>
+If you still don't think
+you can create the ODE file yourself,<a href="xpphw.html#pir"> click
+here! </a>
+<p>
+
+<a href="xpptut4.html"> Go to part 4 </a> 
+<p>
+
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<a name=hh> <h2> The Hodgkin-Huxley Equations </h2> </a>
+<p>
+The Hodgkin-Huxley equations are the classic model for action
+potential propagation in the squid giant axon.  They represent a patch
+of membrane with three channels, sodium, potassium, and a leak.  The
+equations are:
+<p>
+<center> <a href="odes/hhh.ode"> <img src=gif/hh.gif> </a> </center> <p>
+You should explore them as the current, <b> I </b> increases.  Try to
+find the <a href="xpptut3.html#hopf"> Hopf bifurcation. </a>
+Show that there is a region where there is bistability between a
+periodic and fixed point.  This bistability was the basis for an
+experiment done by Rita Gutman in the 70's. 
+<p>
+The ODE file is:
+<pre>
+# Hodgkin-huxley equations
+dv/dt=(I - gna*h*(v-vna)*m^3-gk*(v-vk)*n^4-gl*(v-vl))/c
+dm/dt= am(v)*(1-m)-bm(v)*m
+dh/dt=ah(v)*(1-h)-bh(v)*h
+dn/dt=an(v)*(1-n)-bn(v)*n
+par vna=50,vk=-77,vl=-54.4,gna=120,gk=36,gl=.3,c=1,i=0
+am(v) =  .1*(v+40)/(1-exp(-(v+40)/10))
+bm(v) =  4*exp(-(v+65)/18)
+ah(v) =  .07*exp(-(v+65)/20)
+bh(v) =  1/(1+exp(-(v+35)/10))
+an(v) =  .01*(v+55)/(1-exp(-(v+55)/10))
+bn(v) =  .125*exp(-(v+65)/80)
+init v=-65,m=.052,h=.596,n=.317
+done
+</pre>
+<a href=xpptut4.html> Back to the tutorial </a> <p>
+<center> <img src=gif/rainbowline.gif> </center><p>
+
+<p>
+<a name=mlsyn> <h2> Morris-Lecar with synapse </h2> </a>
+<p>
+<pre>
+# Morris-Lecar reduced model 
+dv/dt=(i+gl*(vl-v)+gk*w*(vk-v)+gca*minf(v)*(vca-v))/c
+dw/dt=lamw(v)*(winf(v)-w)
+ds/dt=alpha*k(v)*(1-s)-beta*s
+minf(v)=.5*(1+tanh((v-v1)/v2))
+winf(v)=.5*(1+tanh((v-v3)/v4))
+lamw(v)=phi*cosh((v-v3)/(2*v4))
+k(v)=1/(1+exp(-(v-vt)/vs))
+param vk=-84,vl=-60,vca=120
+param i=80,gk=8,gl=2, gca=4, c=20
+param v1=-1.2,v2=18,v3=12,v4=17.4,phi=.066666667
+param vsyn=120,vt=20,vs=2,alpha=1,beta=.25
+# for type II dynamics, use v3=2,v4=30,phi=.04
+# for type I dynamics, use v3=12,v4=17.4,phi=.06666667
+v(0)=-24.22
+w(0)=.305
+s(0)=.056
+done
+</pre>
+<a href=xpptut4.html#reduction> Back to the salt mines ...</a> 
+<a name=phase> <h2> A simple phase-difference model </h2> </a>
+<p>
+<pre>
+# phase model based on ML example
+p a0=.667,delta=0,a1=-.98,b1=.8174,g=.25
+h(phi)=a0+a1*cos(phi)+b1*sin(phi)
+x1'=delta+g*h(x2-x1)
+x2'=g*h(x1-x2)
+d
+</pre>
+<p>
+<a href=elvis.html> Return to sender </a>
+
+
+<p>
+<a name=standard> <h2> Standard map </h2> </a>
+<p>
+This discrete dynamical system has the oldstyle format:
+<pre>
+# standard map
+y(n+1)=y+delta-g*sin(y)
+par g=.35,delta=.5
+done
+</pre>
+<p>
+<center> <img src=gif/rainbowline.gif> </center><p>
+
+<a name=lorenz> <h2> Lorenz equations </h2> </a>
+<p>
+The Lorenz equations are a three dimensional dynamical system
+representing turbulence in the atmosphere:
+<p>
+<center> <a href=odes/lorenz.ode> 
+   <img src=gif/lorenz.gif></a> </center> <p>
+where <tt> r=27,s=10,b=8/3. </tt>  The ODE file 
+is:
+<pre>
+# the famous Lorenz equation
+init x=1,y=2
+p r=27,s=10,b=2.66666
+x'= s*(-x+y)
+y'= r*x-y-x*z
+z'=  -b*z+x*y
+d
+</pre>
+<center> <img src=gif/rainbowline.gif> </center><p>
+
+<a name=triple> <h2> Unfolding of the triple zero </h2> </a>
+The ODE file :
+<pre>
+# triple zero unfolding
+x'=y-mu*x
+y'=z-nu*x
+z'=q*x*x-gamma*x
+p mu=1,nu=2,gamma=1,q=2
+done
+</pre>
+<p>
+The ODE file for <a name=tripmap> the approximate map </a> for this
+system  is 
+<pre>
+#map for triple-xero
+z(0)=2
+par a=2.93,b=-1.44,c=1.85
+z(t+1)= a+b*(z-c)^2
+done
+</pre>
+The ODE file for computing the <a name=liapunov> Liapunov exponent
+</a> for the map is:
+<pre>
+# Liapunov exponent
+init z=2,zp=0
+aux lexp=zp/(t=1)
+par a=2.93,b=-1.44,c=1.85
+z(n+1)= a+b*(z-c)^2
+zp(n+1)= zp+log(abs(2*b*(z-c)))
+d
+</pre>
+
+
+<center> <img src=gif/rainbowline.gif> </center><p>
+<a name=other> <h2> Other examples with some commentary </h2> </a>
+<p>
+<h3> <a name=cable> 
+A boundary value problem: steady state cable equation with leak </a>
+</h3>
+In studying a dendrite, one is often interested in the steady-state
+voltage distribution.  Consider a case where the dendrite is held at
+<i> V=V_0 </i>  at <i> x=0 </i>  and has a leaky boundary condition at
+<i> x=1. </i>  
+Then the steady state cable equations 
+ are:<p>
+<center> <a href="odes/cable.ode"> <img src=gif/cable.gif></a> </center> <p>
+<strong> Hint </strong> Solve this equation by setting the <a
+href="xppnum.html">
+total integration </a>  time to 1 and then using the <a href="xppmain.html#bdry">
+boundary-value solver command </a> (B) (S).  Try ranging from b=0 to
+b=10 and plotting the results in different colors.
+<p>
+<p>
+Since this is a second order equation and XPP can only handle first
+order, we write it as a system of two first order equations in the
+file is:
+<pre>
+# Linear Cable Model
+
+# define the 4 parameters, a,b,v0,lambda^2
+p a=1,b=0,v0=1,lam2=1
+# now do the right-hand sides
+v'=vx
+vx'=v/lam2
+
+# The initial data
+v(0)=1
+vx(0)=0
+
+# and finally, boundary conditions
+# First we want V(0)-V0=0
+b v-v0
+#
+# We also want aV(1)+bVX(1)=0
+b a*v'+b*vx'
+# Note that the primes tell XPP to evaluate at the right endpoint
+d
+</pre>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+
+Note that I have initialized <i> V </i> to be 1 which is the appropriate
+value to agree with the first boundary condition.  
+
+<h3> <a name=delay> Delayed inhibitory feedback net </a></h3>
+A simple way to get oscillatory behavior is to introduce delayed
+inhibition into a neural network.  The equation is
+<p><center><a href="odes/delay.ode"> <img src=gif/delay.gif> </a>
+</center> <p>
+<strong> Hint </strong> Set the <a href="xppnum.html"> maximal delay
+</a> to 10 by clicking (U) (E), setting it, and returning to the main
+menu.  Then integrate the equations varying <i> tau </i> which
+is the delay. For what value of delay is the rest state unstable?  <p>
+The equations are:
+<pre>
+# delayed feedback
+
+# declare all the parameters, initializing the delay to 3
+p tau=3,b=4.8,a=4,p=-.8
+# define the nonlinearity
+f(x)=1/(1+exp(-x))
+# define the right-hand sides; delaying x by tau
+dx/dt = -x + f(a*x-b*delay(x,tau)+p)
+x(0)=1
+# done
+d
+</pre>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<h3> <a name=kepler> A population problem with random mutation  </a></h3>
+This example illustrates the use of Markov variables and is due to Tom
+Kepler.  There are two variables, <i> x1,x2 </i> and a Markov state
+variable, <i> z. </i>  The equations are:
+<p> <center> <a href="odes/kepler.ode"> <img src=gif/kepler.gif> </a>
+</center><p>
+where the Markov variable <i> z </i> has two states and a transition
+matrix dependent on <i> x1 </i> given by:
+<p> <center> <img src=gif/keplert.gif> </center> <p>
+<strong> Hint </strong>  Set the <a href="xppnum.html"> total </a>
+integration time to 40, <a href="xppmain.html#wind"> window </a> the
+X-axis between 0 and 40, and <a href="xppmain.html#graph"> add a graph
+</a> of  <i> x2 </i> along with <i> x1. </i>  Integrate this several
+times to see that <i> x2 </i> spontaneously arises once <i> x1 </i> is
+large enough and then like all really cool <a
+href="gif/mutant.gif">mutants </a> takes over and kills <i> x1. </i>  
+<p>
+Without further ado ...
+<pre>
+# Kepler model
+
+# another way to do initial data
+init x1=1.e-4,x2=1.e-4
+p eps=.1,a=1
+x1' = x1*(1-x1-x2)
+x2'= z*(a*x2*(1-x1-x2)+eps*x1)
+# the markov variable and its transition matrix
+markov z 2
+{0} {eps*x1}
+{0} {0}
+d
+</pre>
+
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<h3> <a name=tyson> A system with discontinuities   </a></h3>
+John Tyson describes a model which involves cell growth:
+<p>
+<center> <a href="odes/tyson.ode"> <img src=gif/tyson.gif></a> </center>
+<p>
+This is a normal looking model with exponential growth of the mass.
+However, if <i> u </i> decreases through 0.2, then the ``cell'' divides in
+half.  That is the mass is set to half of its value.<p>
+<strong> Hint </strong>  Set the <a href="xppnum.html"> total </a>
+integration time to 800 and <tt> <a href="xppnum.html"> nOut </a> </tt>
+to 10, integrate the equations, and then plot the mass versus <tt> t </tt>.  
+<p>
+ We want to
+flag the condition <i> u=.2 </i> with <i> u decreasing </i> through .2 so
+we want the <tt> sign=-1. </tt>  
+Here it is:
+<pre>
+# tyson
+i u=.0075,v=.48,m=1
+p k1=.015,k4=200,k6=2,a=.0001,b=.005
+u'=  k4*(v-u)*(a+u^2) - k6*u
+v'= k1*m - k6*u
+m'= b*m
+global -1 {u-.2} {m=.5*m} 
+done
+</pre>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<h3> <a name=volterra> A simple Volterra integral equation   </a></h3>
+Suppose we want to solve:
+<p>
+<center> <a href="odes/volterra.ode"> <img src=gif/volterra.gif> </a>
+</center> <p> 
+Note that it is a convolution equation, so XPP can take advantage of
+that and speed up the problem considerably.  I show you the ODE file
+with and without the convoltuion speed up.  The closed form solution
+to this equation is  <i> u(t)=</i>sin<i>(t).</i> <p>
+<strong> Hint </strong> Plot the solution along with the auxiliary
+variable, <tt> utrue </tt> to see that the solutions are the same.
+<p>
+The source <em> without using the convolution speed up </em> in the
+is:
+<pre>
+# Volterra equation with actual solution
+u(t) = sin(t)+.5*cos(t)-.5*t*exp(-t)-.5*exp(-t)+int{(t-t')*exp(-(t-t'))*u}
+a utrue=sin(t)
+d
+</pre>
+<p>
+A much <a href="odes/volterra2.ode"> faster version </a> takes advantage
+of the convolution structure.  The ODE file is:
+<pre>
+# Faster version of testvol.ode
+u(t)=sin(t)+.5*cos(t)-.5*t*exp(-t)-.5*exp(-t)+int{t*exp(-t)#u}
+a utrue=sin(t)
+done
+</pre>
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+Have a <a href="gif/barney.gif"> nice day! </a>
+
+
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+

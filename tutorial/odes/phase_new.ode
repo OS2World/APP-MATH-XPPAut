@@ -1,0 +1,6 @@
+# phase model based on ML example
+p a0=.667,delta=0,a1=-.98,b1=.8174,g=.25
+h(phi)=a0+a1*cos(phi)+b1*sin(phi)
+x1'=delta+g*h(x2-x1)
+x2'=g*h(x1-x2)
+d

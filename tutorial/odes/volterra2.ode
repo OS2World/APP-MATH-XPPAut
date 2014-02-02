@@ -1,0 +1,7 @@
+2
+# Faster version of testvol.ode
+v u
+a utrue
+i sin(t)+.5*cos(t)-.5*t*exp(-t)-.5*exp(-t)+int{t*exp(-t)#u}
+o sin(t)
+d

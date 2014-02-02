@@ -1,0 +1,15 @@
+SPACE x
+TIME t
+SET LENGTH=1
+SET MAXDERIV=4
+SET FAST=1
+SET GRID=20
+PAR dif=1.02,bih=1,non=10,del=0
+CVAR v=.01*ran(1)
+BDRY v 0 periodic
+BDRY v 1 periodic
+v'=-bih*biharm(v,x,periodic)-4*dif*pi*pi*v_xx-non*v^3+del*v_x
+DONE
+
+
+

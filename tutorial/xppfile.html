@@ -1,0 +1,83 @@
+<html>
+<head>
+<title> XPP FILE </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> Miscellaneous Commands <p> </h1>
+<h2> <img align=center src="gif/bangbang.gif" > Click on (F) from the main menu to get this menu <p> </h2>
+<ul>
+<li><a name=#quit>  <b>(Q)uit</b>  </a> 
+ This exits XPP first asking if you are sure.
+<li> <b>(P)rt info</b> This prints info about the current simulation to the
+console. The equations, the numerical parameters, the initial data,
+boundary conditions and all parameters are printed.
+<li> <b>(W)rite set</b> This creates a file with all of the info about the
+current numerics, etc as well as all of the currently highlighted
+graphics window.  It is not meant to be readable by the user. It in
+some sense saves the current state of XPP and can be read in later.
+<li> <b>(R)ead set</b>  This reads a set that you have previously written.
+ The files are very tightly connected
+ to the current ODE file so you should not load a saved file from one equation 
+for a different problem.
+<li> <b>(S)ave info</b> This is like  <b> (P)rt info </b>
+ but saves the info to
+a file.  It is human readable.
+<li> <b>(C)alculator</b> This pops up a little window.  Type formulae in
+the command 
+line involving your variables and the results are displayed in the popup.  Click
+ on Quit or type <b> Esc </b> to exit.
+<li> <b>(A)uto</b> This brings up the <a href=xppauto.html> AUTO </a>
+ window if you have installed
+AUTO. S
+<li><a name=edrhs> <b>(E)dit</b> </a>  At long last you can edit the equations from within
+XPP.  <i> Note that XPP is capable of understanding right-hand sides of up
+to 256 characters.  However, the RHS editor will not accept anything
+longer than about 72 characters. </i>  This menu item presents a
+list of three options:
+<ul>
+<li> <b>(R)HS</b> Edit the right-hand sides of the ODEs IDEs, and auxiliary
+variables. If you are happy with the editing, then type <b> TAB </b> or
+click on <b> OK. </b> The program will parse the new equations and if
+they are syntactically correct, alter the corresponding equation.  If
+there is an error, the you will be told of the offending
+right-hand-side and that will not be changed.  
+<li> <b>(F)unctions</b> This lets you alter any user-defined functions.  It
+is otherwise the same as the above.
+<li> <b>(S)ave as</b> This creates an ``ODE'' file based on the current
+parameter values, functions, and right-hand sides.  You will be asked
+for a filename.
+</ul>
+<li> <a name="bell" > <b>(B)ell on/off</b> </a>  This toggles the stupid noisy bell on and off.
+
+</ul>
+
+
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+

@@ -1,0 +1,310 @@
+<html>
+<head>
+<title> XPP PHASE STUFF</title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> Phase Equations </h1>
+Many times equations that you are interested in are not defined on all
+of Euclidean space but instead are restricted to lie in some other
+space such as a torus or a cylinder.  XPP has methods that make
+plotting this type of equation easy.  Recall that <a
+href=xpptut4.html#average> by averaging </a> we could reduce a pair of
+coupled oscillators to a pair of equations for the <b> phases </b> and
+that this set of equations lies on a  <a href=xpptut4.html#torus>
+torus. </a>  We performed this reduction on the Morris-Lecar equations
+coupled with a synapse and found that the interaction function was
+essentially sinusoidal.  In this  short section, we look at <a
+name=myphase>  a pair of
+symmetrically coupled phase equations </a> that are nearly identical except
+for a small difference in frequency:
+<p>
+<center> <a href=odes/phase.ode> <img src=gif/myphase.gif> </a>
+</center> <p>
+Here <em> g </em> is the scaled coupling strength or maximal synaptic
+conductance and  <em> Delta </em> is a difference in frequency due,
+for example, to a different bias current to neuron 1.  Fire up XPP for <a
+href=newstyle.html#phase> this model </a> so we can look at some
+special plotting flags for models that lie on tori. <p>
+
+Notice on the menu item <a href=xppmain.html#phase> (phAse space).</a>
+This lets us place the two variables in our maodel, <tt> X1, X2 </tt>
+on a circle.  Click (phAse space) and then (Choose).  Click (Enter) to
+accept the period of 2 Pi, since our model is  2 Pi-periodic.  A new
+window appears.  Use the mouse to click on both variables.  Note a
+little <tt> X </tt> appears next to the names of the variables.  (This
+tells XPP that each time one of these variables leaves the interval
+[0, 2 Pi] that it should be shifted by some multiple of  2 Pi to get
+it back in the interval.  The plotting of such variables is "smart"
+enough to know not to draw extraneous lines for where the variables
+seem "discontinuous" because they really are not: 0 and 2 Pi are the
+same on a circle. ) Click (Ok) when both variables have <tt> X </tt>
+next to them.  (Note: we could have just clicked (phAse space) (All)
+and that would make all plottable quantities lie on the circle, but I
+wanted you to see the little choice window.) 
+<p>
+Now choose a <a href=xppmain.html#view> two-dimensional view </a> with <tt> X1, X2 </tt> as the
+variables and [0, 6.3] and [0, 6.3] as the window dimensions. (Click
+(V) (2) and fill in accordingly.)   
+<p>
+Go into the nUmerics menu and change the total time to 200 and the
+time-step to <tt> Dt=.2 </tt>.  Go back to the main menu and use the
+mouse to click in some initial data in the plane. (Use (I) (M) and
+position the mouse.)  Trajectories all seem to end up on the diagonal
+line <tt> X1 = X2. </tt>  This says that the oscillators always tend
+to synchronize since the phase-difference between them is zero.  This
+is just what <a href=xpptut4.html#identical> the theory </a> told us:
+for this particular phase interaction function, synchrony is stable.
+<p>
+<em> NOTE: </em>  If we had not defined <tt> X1, X2 </tt> to lie on
+the torus, we would have gotten an <b> Out of Bounds </b> warning
+after integrating the equations.  Typically, phase variables
+monotonically increase in a nearly linear fashion with time as they
+cycle around their periodic phase-space.  Thus the utility of using
+the (phAse space) option in XPP is clear.
+<p>
+
+Go back to the nUmerics menu and change <tt> Dt </tt> to -.2.  This
+means <b> integrate the equations backwards in time. </b> Escape back
+to the main menu and click on initial conditions with the mouse. You
+will see that all solutions tend to a shifted diagonal line that
+intersects the coordinate axes at <b> Pi. </b>  This is the other
+phase-locked solution and it represents a phase-shift of <b> Pi. </b>
+ Since all solutions tend to it <em> backwards
+in time </em> this means it is <em> unstable. </em>  Again as <a
+href=xpptut4.html#identical> the theory </a> told us, <b> anti-phase
+</b> solutions are unstable. 
+<p>
+Return to the nUmerics menu and change <tt> Dt </tt> back to .2 and
+return to the main menu.  Change the frequency difference, <tt> delta
+</tt> from 0 to .3 and intergate the equations with different initial
+conditions.   Note that it still goes to a diagonal line, but this
+intersects the <tt> X1 </tt> axis at slightly less than 1.  Thus, the
+phase difference between the two oscillators is about 0.9 with <tt> X1
+</tt> leading <tt> X2. </tt>  This is because <tt> X2 </tt> has a
+faster intrinsic rhythm since <tt> delta>0. </tt>  Make <tt> delta
+</tt> negative and you will see that <tt> X2 </tt> leads <tt>   
+X1. </tt>  In
+either case, there is a stable phase-locked solution for this model.
+<p>
+<h2> <a name=poincare> Poincare Maps  I </a> </h2>
+
+Now, change <tt> delta </tt> to .5.  And integrate the equations.  You
+should see the trajectory curve all over but not converge to a
+phase-locked solution.  In fact, the trajectory eventually densely
+covers the torus.  The motion is "quasi-periodic."  The frequency
+difference between the two oscillators is too great for the coupling
+to lock them.  
+<p> We can attempt to understand this behavior a little better by
+reducing the equations via a map: the Poincare section.  Imagine a
+vertical line through <tt> X1=3 </tt> for example.  Looking at the
+phase plane, one sees that the trajectory hits this line at different
+values of <tt> X2. </tt>  Given a value of <tt> X2 </tt> on the line,
+the dynamics yields a new value of <tt> X2 </tt> the next time it hits
+that line.  The line is called a <b> Poincare Section </b> and the map
+<em> X2(n-1) --> X2(n) </em> is called the <b> Poincare Map. </b>  The
+Poincare map always reduces the dimension of the system by one and
+changes the dynamics from <a href=xpptut.html#cts> continuous </a> to
+<a href=xpptut.html#disc> discrete. </a> <p>
+
+XPP provides a tool for studying Poincare sections. Click on
+(nUmerics) to get to the numerics menu and then on <a
+href=xppnum.html#poin> (Poincare) </a> to set up the Poincare map.
+Choose (Section) since we are interested in when the trajectory
+crosses a particular value of <tt> X1 </tt> and not on maxima or
+minima. XPP is presently limited to looking at sections that are along
+the coordinate axes of the dynamic variables.  (Eventually, I will make
+it more general.)  
+<ul>
+<li> Type <tt> X1 </tt> as the variable for the section
+<li> Type 3 for the section
+<li> Type 1 for the direction. <a href=xppnum.html#poin> (See the doc for
+the definition of this.) </a> 
+<li> Type N for the last entry.
+<li> Click on (Ok)
+</ul>
+Change the total amount of integration time from 200 to 2000. Click
+(Esc) to go back to the main menu and then integrate starting from the
+end of the last integration by clicking <a href=xppmain.html#ics> (I)
+(L). </a>   You should see a bunch of lines drawn from the left to the
+section.  Since the Poincare map is discrete, we should plot points
+instead of lines.  Click <a href=xppmain.html#graph> (G) (E) </a> and
+type in 0 to edit the principle curve.  A window pops up.  Change the
+<tt> Linetype </tt> entry from 1 to 0 to indicate points are to be
+drawn. Click on (Ok).  Click on (R) to restore the graph.  You should
+see a sequence of points along the <tt> X1=3 </tt> axis. Click on (Xi
+vs T) and type <tt> X2 </tt> followed by (Enter) to see the points
+plotted as a function of time.  
+<p>
+<h3> <a name=density> Invariant density </a> </h3>
+<b> NOTE </b> This is optional: you can <a href=#stdmap> skip to the next section </a> or follow along. <p>
+   They are not really uniformly distributed, but seem to be denser
+around  <tt> X2=1.5 </tt>  Let's verify that now by computing a <a
+href=xppnum.html#histogram> Histogram </a> for the data.  
+<ul>
+<li> Since the histogram will have numers larger the 2 Pi, we will
+turn off the XPP (phAse space) by clicking (A) (N). 
+<li> We will also want solid lines, so click (G) (E) and type 0 to
+edit the main curve.  Then change the <tt> Line type </tt> to 1 and
+click (Ok). 
+<li> Enter the nUmerics menu and choose (stocHastic) and then
+(Histogram). (Click (U) (H) (H) ) 
+<li> Choose the default of 10 for the number of bins, 0 for the low,
+6.28 for the high, and <tt> X2 </tt> for the variable.  Just type
+(Enter) for the condition as there are none.  This will produce a
+histogram for the values of <tt> X2 </tt> between 0 and 6.28 with 10
+bins. <b> The histogram is always put in the second column and the
+bins in the first column. </b>
+<li> Click (Esc) to return to the main window, click (Xi vs T) and
+type in <tt> X1 </tt> to plot the second versus the first column.  You
+should see a graph with a big peak between 1 and 2 and another one at
+around 5.  This shows that the density is not uniform. You can view
+the actual histogram by looking at the first two columns of the
+browser.  
+<li> Click (U) to return to the numerics menu and click (stocHastic)
+(Data) to load the data back. (You could recompute the histogram at
+this point using a larger number of bins to get a better idea of the
+peak of the invariant density.  Too large a bin number is useless, so
+be careful. Make sure you get the data back when you are done.) Click
+(Esc) to go back to the main menu.
+<li> Change the line type back to points (Click (G) (E) 0 ...)
+and change the phase space back to a torus (Click (phAse space) (All)
+(Enter) as a shortcut.) 
+</ul>
+  
+    
+
+
+<h3> <a name=stdmap> Getting the standard map </a> </h3> 
+Now I assume you have the data from the Poincare map in the browser.
+From our discussion above, it would appear the each succesive point in
+the <tt> X2 </tt> column depends on the previous point. (In fact this
+must be true, since we start with the initial conditions at a value of
+<tt> X2 </tt> and with <tt> X1=3 </tt> so by the uniqueness theorem
+for differential equations, we get a unique value of <tt> X2 </tt> the
+next time the trajectory crosses <tt> X1=3. </tt> ) Thus, to see the
+nature of this map, it would be useful to plot the <em> (n+1)st </em>
+point versus the <em> nth </em> point.  This is easily done in
+XPP. <p>
+First set up the window so that it is a 2D plot with <tt> X2 </tt> on
+both axes: Click (View axes) (2d)  and put <tt> X2 </tt> on both axes
+which should both be windowed between 0 and 6.3.  You will see a
+diagonal line representing <tt> X2 vs X2 </tt> as expected.  (It will
+not be a solid line, but, instead, a series of points.)  Now, click
+(nUmerics) to enter the numerics menu and then click on <a
+href=xppnum.html#ruelle> (rUelle plot) </a> to set <b> negative </b>
+shifts of the data.
+(This is named for David Ruelle who showed that dynamical sysyems could
+be reconstructed from time series by looking at the data plotted
+against a shifted version of itself. ) We will shift the <tt> X
+coordinate </tt> by 1 so that we will then plot <tt> X2(n) vs X2(n-1)
+</tt>  where <tt> X2(n) </tt> is the y-coordinate and <tt> X2(n-1)
+</tt> is the x-coordinate. Thus, we can see if there is a reasonable looking map.  <p>
+At the command-line prompt, set
+<ul>
+<li> <b> x-axis shift: </b> 1  
+<li> <b> y-axis shift: </b> 0  
+<li> <b> z-axis shift: </b> 0  
+</ul>
+and then (Esc) to the main menu and click (Restore) to redraw the
+graph. You should see something like:
+<p>
+<center> <img src=gif/phasemap.gif> </center> <p>
+with or without the diagonal line.  Clearly, there is some sort of
+smooth function plotted here.<p>
+<h4> <a name=cobweb> Cobwebs</a> </h4>
+To understand what is happening with this map, we can use a technique
+called <em> cobwebbing </em> which is often used in one-dimensional
+discrete dynamical systems.  Unfortunately, XPP does not support
+cobwebbing but it is something you can do on a piece of paper once you
+have the map.  Here is an example for the present map:
+<p>
+<center> <img src=gif/phasecob.gif> </center> <p>
+Given a starting point, you compute the new value using the map (1),
+then project back down by reflecting on the line <tt> y=x </tt> to get
+the next point (2) and so on. <p>
+<h3> <a name=disc> A bit about discrete dynamical systems </a> </h3> 
+This map is actually very close to the so-called <a name=std2>
+<b> standard map </b> </a>
+in the weakly perturbed regime:
+<p>
+<center> <a href=odes/standard.ode> 
+	<img src=gif/standard.gif> </a> </center> <p>
+This is an example of a <a href=xpptut.html#disc> discrete dynamical
+system.</a>   The <a href=newstyle.html#standard> ODE file </a> is
+similar to that of an ordinary differential equation. 
+XPP has a method for solving this type of model.
+Instead of integrating the equations, XPP iterates them.  Since this
+is again a model on the circle, you should invoke the (phAse space)
+command followed by (All) and then accepting the default of 2
+Pi. Next, change the linestyle to 0 (Click (Graphics) (Edit) 0 and
+change the linestyle entry to 0.)  Finally, go into the numerics menu
+and change the total amount of time to, say, 1000, and change the
+<a href=xppnum.html#method> method of integration</a> to (Discrete).
+This tells XPP to treat this iteratively rather than as a continuous
+dynamical system. (Esc) to the main menu and integrate the equations.
+Plot using (Xi vs t).  It looks similar to what you have already
+plotted for the Poincare map.  The standard map is a good
+approximation for out Poincare map as long as the parameter <tt> g
+</tt> in the standard map is small.  If this parameter is too large,
+then even with <tt> delta=0 </tt> the map becomes <a
+href=xppchaos.html> chaotic </a> an interesting phenomenon that we
+will look at shortly.
+
+<a name=hw3.3> <h3> Homework 3.3 </h3> </a>
+<ul>
+<li>
+Try looking at a pair of phase models like <a href=#myphase> the one
+</a> we just explored, but add one new term to the interaction function:
+<pre>
+h(phi) = a0 + a1*cos(phi) + b1*sin(phi)+a2*sin(2*phi)
+</pre>
+First study the stable and unstable phase-locked behavior for <tt>
+delta=0 </tt> as you vary the amplitude of <tt> a2 </tt> letting it be
+both positive and negative.  Then, let <tt> delta </tt> be such that
+phase-locking is lost.  Study the Poincare map.  
+<li>
+Play around with the standard map with <tt> g </tt> increasingly
+larger, say up to -5.  Integrate for at least 2000 timesteps.  Use the
+Ruelle plots to look at <tt> Y(n) vs Y(n-k) </tt> for
+<tt>k=1,2.</tt> Deduce that the map is not invertible.
+<p>
+ Note that if <tt> Y(n)=Y(n-1) </tt> then there is a fixed point for
+the map.  Use the Ruelle plot to show there is only one fixed point.
+<p>
+Similarly, if <tt> Y(n)=Y(n-2) </tt> that means that there is a fixed
+point of the second iterate, a so called <b> period two </b> point.
+For <tt> delta=0,g=-5 </tt> use the Ruelle plot to determine how many
+period two points there are. (<em> Hint: </em> First plot without a
+shift to get 
+the diagonal line.  Then plot with a shift without erasing the first
+line.)
+</ul>
+
+
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+

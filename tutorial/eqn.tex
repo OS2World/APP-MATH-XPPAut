@@ -1,0 +1,220 @@
+\documentstyle[12pt]{article}
+\begin{document}
+\[
+ X_{n+1} = F(X_n,n)
+\]
+
+\[
+\frac{dX}{dt} = F(X,t)
+\]
+
+\[
+ w_{n+1} - w_n \equiv \Delta w = F(E,w)
+\]
+
+\begin{eqnarray*}
+C\frac{dV}{dt} &=& -I_{ionic}(V,n,m,h) + I_{appl} \\
+\frac{dm}{dt} &=& (m_\infty(V)-m)/\tau_m(V) \\
+   &\ldots&
+\end{eqnarray*}
+
+\[
+ C \frac{dV}{dt} = g_L(V_L-V) + I
+\]
+
+
+\[
+\bar V = V_L-I/g_L
+\]
+
+\[
+t\to\infty
+\]
+
+\[
+ C \frac{dV}{dt} = g_L(V_L-V) + I+A \sin(\omega t)
+\]
+
+\[
+ C\frac{dV}{dt} = I + g_l(V_L-V)+g_{Ca} m_\infty(V)(V_{Ca}-V)
+\]
+
+\[
+ m_\infty(V) = .5(1+\tanh((V-V_1)/V_2))
+\]
+
+\[
+ml\frac{d^2x}{dt^2} = - mg\sin(x)-f\frac{dx}{dt}
+\]
+
+\[
+\tau\frac{da}{dt} = -a + wf(a)+i
+\]
+
+\[
+ f(a) = 1/(1+e^{-\beta(a-\theta)})
+\]
+ 
+\[
+ E = \frac{1}{2} ml^2\left(\frac{dx}{dt}\right)^2 + mgl(1-\cos(x))
+\]
+\[
+\frac{dV}{dt} = -V + \frac{1}{1+e^{-(wV-\theta)}}
+\]
+
+\begin{eqnarray*}
+C \frac{dV}{dt} &=& -g_L(V-V_L)-g_{Ca}m_\infty(V)(V-V_{Ca})-g_Kw(V-V_K) + I \\
+\frac{dw}{dt} &=&\lambda_w(V)(w_\infty(V)-w)
+\end{eqnarray*}
+\begin{eqnarray*}
+w_\infty(V) &=& .5(1+\tanh((V-V_3)/V_4)) \\
+\lambda_w(V) &=& \phi\cosh((V-V_3)/(2V_4))
+\end{eqnarray*}
+\begin{eqnarray*}
+\lambda^2\frac{d^2V}{dx^2} &=& V(x) \\
+V(0)&=& V0 \\
+a\frac{dV(1)}{dx} + b V(1) &=& 0
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{dx(t)}{dt} &=& -x(t) + f(ax(t)-bx(t-\tau)+P) \\
+f(u)&=& \frac{1}{1+\exp(-u)}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+x_1' &=& x_1(1-x_1-x_2) \\
+x_2' &=& z(ax_2(1-x_1-x_2)+\epsilon x_1)
+\end{eqnarray*}
+\[
+ T = \left(\begin{array}{cc}
+      0 & \epsilon x_1 \\
+      0 & 0
+\end{array}
+\right)
+\]
+\begin{eqnarray*}
+\frac{du}{dt} &=& k_4(v-u)(a+u^2)-k_6u \\
+\frac{dv}{dt} &=& k_1m-k_6u \\
+\frac{dm}{dt} &=& bm 
+\end{eqnarray*}
+
+\[
+ u(t) = \sin(t) + .5\cos(t)-.5te^{-t} - .5e^{-t} + \int_0^t (t-t')e^{-(t-t')} u(t')\ dt'
+\]
+
+\begin{eqnarray*}
+C\frac{dv}{dt} &= &I - g_{Na} m^3h (V-V_{Na})-g_Kn^4 (V-V_K) -g_L (V-V_L) \\
+ \frac{dm}{dt}& = & a_m(V) (1-m)-b_m(V) m \\
+ \frac{dh}{dt}& = &a_h(V) (1-h)-b_h(V) h \\
+ \frac{dn}{dt}& = &a_n(V) (1-n)-b_n(V) n \\
+ a_m(V) &=&  .1 (V+40)/(1-\exp(-(V+40)/10)) \\
+ b_m(V) &=&  4 \exp(-(V+65)/18) \\
+ a_h(V) &=&  .07 \exp(-(V+65)/20) \\
+ b_h(V) &=&  1/(1+\exp(-(V+35)/10)) \\
+ a_n(V) &=&  .01 (V+55)/(1-\exp(-(V+55)/10))\\
+ b_n(V) &=&  .125 \exp(-(V+65)/80) 
+ \end{eqnarray*}
+
+ \begin{eqnarray*}
+ x' &=& y-\mu x \\
+ y' &=& z-\nu x \\
+ z' &=& qx^2-\gamma x
+ \end{eqnarray*}
+ \[
+ z_{n+1} = a+b(z_n-c)^2
+ \]
+
+ \begin{eqnarray*}
+ \frac{ds}{dt} &=& \alpha K(V) (1-s) - \beta s \\
+ K(V) & = & 1/(1+e^{-(V-V_t)/V_s})
+ \end{eqnarray*}
+
+ \[
+ J = \left(\begin{array}{ccc}
+      0 & 1 & 0 \\
+      0 & 0 & 1 \\
+      0 & 0 & 0 
+	   \end{array}
+      \right)
+ \]
+\begin{eqnarray*}
+V'&=&I_{app}+g_l(V_l-V)+g_{na}m_\infty(V)h(1-V)\\
+h' &=&  \lambda_h(V)(h_\infty(V)-h)\\
+m_\infty(V) &=&  .5(1+\tanh((V-V_1)/V_2))\\
+h_\infty(V) &=& .5(1+\tanh((V-V_3)/V_4))\\
+\lambda_h(V) &=& \phi\cosh((V-V_3)/(2V_4))\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+V' &=&  g_l (V_l-V)+g_{ca}h p_s^3(V) (V_{ca}-V)+I\\
+h' &=&  2(p_h(V)-h)/\tau_h(V) \\
+s_a' &=&  f_{ka} s_{syn} (1-s_a)-r_{ka} s_a \\
+t_b' &=&  5 s_{syn} (1-t_b)-.007 t_b \\
+s_b' &=&  .03 t_b (1-s_b)-.005 s_b \\
+p_h(V) &=& 1/(1+\exp((V+79)/5)) \\
+p_s(V) &=&  1/(1+\exp(-(V+65)/7.8))\\
+s_{syn} &=&  1/(1+\exp(-(V+40)/2))\\
+\tau_h(V) &=& p_h(V)\exp((V+162.3)/17.8)+20
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{d\theta_1}{dt} &=& \epsilon H_1(\theta_2-\theta_1) \\
+\frac{d\theta_2}{dt} &=& \epsilon H_2(\theta_1-\theta_2)
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{dX_1}{dt} &=& F(X_1)+\epsilon G_1(X_2,X_1) \\
+\frac{dX_2}{dt} &=& F(X_2)+\epsilon G_2(X_1,X_2) 
+\end{eqnarray*}
+
+\[
+H_1(\phi) = \frac{1}{T} \int_0^T Z(t)\cdot G_1(X_0(t+\phi),X_0(t))\ dt
+\]
+
+\begin{eqnarray*}
+\frac{ds}{dt} &=& \alpha k(v)(1-s)-\beta s\\
+k(v) &=& 1/(1+\exp(-(v-v_t)/v_s))
+\end{eqnarray*}
+
+\[
+ H(\phi) \approx a_0 + a_1 \cos \phi + b_1 \sin \phi
+\]
+
+\[
+\frac{d\phi}{dt} = -\epsilon(H_1(\phi)-H_2(-\phi))\equiv -\epsilon g(\phi)
+\]
+
+\begin{eqnarray*}
+\frac{d\theta_1}{dt} &=& \delta+g H(\theta_2-\theta_1) \\
+\frac{d\theta_2}{dt} &=&  gH(\theta_1-\theta_2) \\
+H(\phi) &=& a_0 + a_1 \cos \phi + b_1 \sin \phi
+\end{eqnarray*}
+
+\[
+ y_{n+1} = y_n + \delta - g \sin y_n
+\]
+\begin{eqnarray*}
+\frac{dx}{dt} &=& s(y-x) \\
+\frac{dy}{dt} &=& rx-y-xz \\
+\frac{dz}{dt} &=& -bz+xy
+\end{eqnarray*}
+
+\[
+ \lambda_{max} = \lim_{n\to\infty} \frac{1}{n}\log \prod_n |f'(x_n)|
+\]
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

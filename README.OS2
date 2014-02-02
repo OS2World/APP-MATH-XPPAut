@@ -1,0 +1,102 @@
+XPPAut -- X-Windows Phase Plane plus Auto.
+
+
+
+Overview
+--------
+
+Dynamical systems theory provides the language and the machinery for the
+analysis and understanding of the behavior of physical systems that change
+over time. There are many ways in which such systems can change and many
+types of equations that arise. These include discrete and continuous
+dynamical systems. I will use this tutorial to give you a simple intro
+to the field as well as show you how to simluate and numerically solve
+these equations. We will use XPP which can handle
+
+  Differential equations
+  Delay equations
+  Volterra integral equations
+  Discrete dynamical systems
+  Markov processes
+  Bifurcation
+
+all of which arise in different situations.
+
+Also included in the package is the PDE/integral equation solver XTC.
+
+
+
+Used Compiler and Libraries
+---------------------------
+
+XPPAut for OS/2 is compiled using EMX-GCC 0.9C (with EMXFIX03) and
+Xfree86/2 3.3.1.
+
+
+
+Other Files of Interest
+-----------------------
+
+
+xpp303b.zip or xppaut-3.03-b??.zip:
+              The binary distribution.
+xpp303p.zip or xppaut-3.03-p??.zip:
+              This archive contains always the update to the newest build.
+xpp303p.zip or xppaut-3.03-p??.zip:
+              The patched source code.
+
+
+
+Installation
+------------
+
+1.  Install Xfree86!
+2.  Unzip the archive into a directory of your choice.
+3.  If you have already installed newer versions of the DLLs EMX.DLL,
+    EMXLIBCS.DLL and EMXLIBCM.DLL, remove them those coming with XPPAut.
+4.  Edit your CONFIG.SYS:
+    Add the subdirectories XPP and XTC to your PATH and
+    add the subdirectory DLL to your LIBPATH in your CONFIG.SYS.
+    For example if you have unzipped the archive into
+    h:\apps\science\xppaut-3.03, your CONFIG.SYS should contain:
+
+  LIBPATH=..;h:\apps\science\xppaut-3.03\DLL;...
+  PATH=..;h:\apps\science\xppaut-3.03\XPP;h:\apps\science\xppaut-3.03\XTC;...
+
+
+
+Running XPPAut
+--------------
+
+1.  Start XFree86 for OS/2.
+2.  In a Xterm simple start the program by typing XPPAUT.
+
+
+
+Known Limitations, Modifikations and Bugs
+-----------------------------------------
+
+None.
+
+
+
+Comments, Bugs, Problems, Ideas, ...
+------------------------------------
+
+If you have any problem installing or using this port, let me know!
+
+If you have an idea to make XPPAut for OS/2 a better program, send me a mail.
+Also any comments are welcome.
+
+My email addresses are:
+
+INTERNET:    gebhardt@crunch.ikp.physik.th-darmstadt.de
+CompuServe:  100114,1371
+
+**************************************************************************
+**        NO MAIL FROM INTERNET TO MY COMPUSERVE ADDRESS!               **
+**************************************************************************
+
+Klaus Gebhardt [TEAM OS/2]
+Institut fuer Kernphysik
+Technische Hochschule Darmstadt

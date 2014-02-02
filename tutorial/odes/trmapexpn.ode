@@ -1,0 +1,7 @@
+# Liapunov exponent
+init z=2,zp=0
+aux lexp=zp/(t=1)
+par a=2.93,b=-1.44,c=1.85
+z(n+1)= a+b*(z-c)^2
+zp(n+1)= zp+log(abs(2*b*(z-c)))
+d

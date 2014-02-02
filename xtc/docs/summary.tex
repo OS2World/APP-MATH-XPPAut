@@ -1,0 +1,114 @@
+\documentstyle{article}
+\begin{document}
+\begin{center}
+{\LARGE SUMMARY}
+\end{center}
+\begin{center}
+{\bf\Large Format}
+\end{center}
+\begin{verbatim}
+SPACE <name of space variable>
+TIME <name of time variable>
+SET <option>=<value>
+...
+# Comments (anywhere in file, preceded by #)
+
+CVAR <name>=<expression>
+...
+BDRY <name> <0|1> <zero|noflux|periodic|leaky|dynamic> {a} {b} {c}
+# a u_x + b u=c #
+# b u_t = a u_x + c #
+...
+VAR <name>=<number>, <name>=<number>,...
+...
+PAR <name>=<number>, <name>=<number>,...
+...
+CPAR <none|normal|pernorm|periodize|readfile> <name>=<expression>
+...
+WEIGHT <none|normal|readfile> <name>=<expression>
+...
+FUN <name> <nargs> <expression>
+...
+CFIX <name>=<expression>
+...
+FIX <name>=<expression>
+...
+AUX <name>=<expression>
+...
+CAUX <name>=<expression>
+...
+<name>'=<expression>
+...
+<name>'=<expression>
+SET PLOTVAR=<name>
+DONE
+\end{verbatim}
+\newpage
+\begin{center}
+{\bf \Large Options}
+\end{center}
+\begin{itemize}
+\item EXTEND 0-periodic, 1-zero, 2-even, 3-odd. 
+\item NPERIOD {\tt<}int{\tt>} For periodizing kernels.
+\item GRID {\tt<}int{\tt>} Spatial grid size.  
+\item LENGTH {\tt<}float{\tt>} Length of the domain.
+\item FAST {\tt<}1,0{\tt>} 1 Speeds it up.
+\item METHOD (0)-Euler (1)-BackEul, (2)-Gear, (3)-ModEul. 
+\item DELTA\_T {\tt<}float{\tt>}  The time step. 
+\item TFINAL {\tt<}float{\tt>}  The output times.
+\item TRANS {\tt<}float{\tt>}  Sets the transient time.
+\item NOUT {\tt<}int{\tt>}  Sets the number of outputs.
+\item PLOTVAR {\tt<}name{\tt>} 3D plot variable.
+\item BUFSIZE {\tt<}int{\tt>} Number of timesteps saved.
+\item DTMIN {\tt<}float{\tt>} Minimum timestep fo Gear.
+\item DTMAX {\tt<}float{\tt>} Maximum time step for Gear
+\item TOLERANCE {\tt<}float{\tt>} Sets the Gear tolerance.
+\item EPSILON {\tt<}float{\tt>}  Tolerance for backward Euler.
+\item JACUSE {\tt<}int{\tt>}  Number of times to reuse the Jacobian in backward Euler.
+\item MAXITER {\tt<}int{\tt>} Maximum iterates in backward Euler.
+\item TSTART {\tt<}float{\tt>} Initial time. 
+\item MAXDERIV {\tt<}int{\tt>}  Maximum number of spatial derivatives 
+\item RGB (0)-red/blue (1)-spectral (2) periodic.
+\end{itemize}
+\newpage
+\begin{center}
+{\bf \Large Operators}
+\end{center}
+
+\begin{itemize}
+\item  {\tt conv(u,v,y0,y1,x,type)}  
+\[
+ \int_{y0}^{y1}u(x-y)v(y) dy
+\]
+type={\tt PERIODIC, ZERO, EVEN, and ODD}.
+\item {\tt fftconv(w,u,x,type)}
+\[
+ \int_0^L w(x-y) u(y) dy
+\]
+type={PERIODIC,ZERO,EVEN}.
+\item {\tt weight(w,u,y0,y1,x)} 
+\[
+\int_{y0}^{y1} w(x,y)u(y)
+\]
+\item {\tt rweight(w,u,y0,y1,x)} 
+\[
+\int_{y0}^{y1} w(y,x)u(y)
+\]
+\item {\tt average(u,v,y0,y1)} 
+\[
+\int_{y0}^{y1} u(s)v(s)ds
+\]
+\item {\tt biharm(u,x,type)} 
+\[
+ u_{xxxx}(x)
+\]
+type = {\tt  PERIODIC, EVEN, ODD}.
+\item {\tt int(z,z1,z2)of(<expr>)}  
+\[
+\int_{z=z_1}^{z=z_2} \hbox{expr}(z) \, dz
+\]
+\end{itemize}
+
+
+\end{document}
+

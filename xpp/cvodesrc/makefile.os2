@@ -1,0 +1,25 @@
+# Makefile for XPP's cvode library.
+# (c) Klaus Gebhardt, 1997
+
+CFLAGS = -m486 -mieee-fp -O3 \
+        -malign-loops=2 -malign-jumps=2 -malign-functions=2 \
+	-DAUTO -DCVODE_YES -D__ST_MT_ERRNO__ -Zmtd
+CC     = gcc $(CFLAGS)
+
+%.obj: %.c; $(CC) $(CFLAGS) -c $< -o $@ -Zomf
+%.o:   %.c; $(CC) $(CFLAGS) -c $< -o $@
+
+all: ../libcvode.a
+
+SRCS  = cvode.c cvdense.c dense.c cvband.c band.c cvdiag.c cvspgmr.c spgmr.c \
+	iterativ.c vector.c llnlmath.c cv2.c
+OBJS  = cvode.o cvdense.o dense.o cvband.o band.o cvdiag.o cvspgmr.o spgmr.o \
+	iterativ.o vector.o llnlmath.o cv2.o
+
+../libcvode.a: $(OBJS)
+	rm -f ../libcvode.a
+	ar rcv ../libcvode.a $(OBJS)
+	ar s ../libcvode.a
+
+clean:
+	rm -f *.o *.obj *.a *.lib *.exe *.dll

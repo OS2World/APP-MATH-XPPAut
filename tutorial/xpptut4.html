@@ -1,0 +1,358 @@
+<html>   
+<head>
+  <title>  XPP TUTORIAL IV </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> <a name="start"> V. Beyond 2 dimensions</a> </h1>
+<p> We have considered planar dynamical systems and if you have done
+the homework, you have explored some aspects of homoclinic orbits,
+bifurcations, and stability.  The appearance of limit cycles through
+Hopf bifurcations, etc, is not restricted to planar systems.  For
+example, an analysis similar to what we did with the <a
+href=xpptut3.html#lecar> Morris-Lecar </a> model can be done with the
+<a href=newstyle.html#hh> Hodgkin-Huxley equations </a> a 4
+dimensional dynamical system.  In this part of the tutorial, we will
+explore some other features of XPP.  We will see how to use XPP to
+find the phase interaction function for weakly coupled oscillators.
+We will also study period doubling bifurcations, Poincare sections,
+and discrete dynamical systems.  This is where we generally have to
+rely most heavily on numerical methods.  
+<h2> <a name=average> Averaging and weakly coupled oscillators: Phase
+models
+ </a> </h2>
+When a system of differential equations has a stable limit cycle
+solution, one is often interested in the behavior when several such
+systems are coupled together.  One of the main ideas in dynamical
+systems is to consider situations where the behavior of an uncoupled
+system can tell you something about the coupled system.  Thus, we can
+ask what happens when two or more limit cycle oscillators are coupled
+together.  This is generally an impossible question to answer, but
+there are cases when a great deal can be said.  In particular, if the
+coupling between the two systems is small enough so as to not disrupt
+the repetitive activity too much.  The idea is illustrated below:
+<p> <a name=torus>
+<center> <img src=gif/torus.gif> </center> </a> </p>
+That is, in absence of coupling, one can describe the state of an
+oscillator by its phase or position on its cycle. (Imagine the limit
+cycle as a flexible loop which we then deform into a circle.) Two
+uncoupled limit cycles can be described by a pair of phase
+coordinates.  Since phases are on a circle, the pair of phases lies on
+a torus.  Now if the limit cycles are stable, then when they are
+"weakly" coupled, the torus persists.  The <b> method of averaging
+</b> tells us that the phases satisfy a very simple pair of
+differential equations:
+<p> <center> <a name=phseq> <img src=gif/phase.gif></a> </center> <p>
+ XPP has several useful features for dealing with 
+ I show some of the features that XPP has
+for dealing with these <a href=xppphase.html> <b> phase
+equations. </b></a>   <p>
+The main task at hand is to compute the phase interaction function.
+XPP gives you a very powerful tool for numerically computing the phase
+interaction function.  But, first, to understand how to use this
+feature in XPP, I must once again go into <a href=gif/mathmode.gif>
+math mode. </a> <p>
+Suppose we have a system that is zipping along nicely on its limit
+cycle.  Then at a particular phase in its cycle, we perturb one of
+the component quantities.  This results in a small timing change in
+the oscillator, a <b> phase shift. </b>  <p>
+<p>
+<center> <img src=gif/prc.gif> </center> <p>
+The phase shift that results
+will depend on  both the component of the limit cycle that was
+perturbed and the time in the cycle at which the perturbation occured.
+In the limit that the perturbations become infinitesimally small, this
+phase shift function tends to a computable vector quantity called the
+<b> adjoint </b> or <b> response function. </b>  Each component of the
+adjoint gives the phase shift that results from administering a
+perturbation of the corresponding component in the limit cycle at the
+corresponding time of its cycle.  Call this function <b>Z(t).</b> If
+the basic limit cycle in <i> n </i> dimensional so is <i> Z(t). </i>
+<p>
+Suppose we couple two identical oscillators <i> X1'=F(X1) </i> and <i>
+X2'=F(X2) </i> 
+with weak coupling <i> epsilon G1(X2,X1) </i>:
+<p>
+<center> <img src=gif/couple.gif> </center> <p>
+Then, the interaction function <i> which depends only on the
+phase-difference </i> is computed by averaging the effect of the
+coupling with the response function or adjoint:
+<p>
+ <center>  <img src=gif/average.gif> </center> <p>
+<p>
+With this bit of stuff out of the way, it is clear what has to be
+done. After computing a limit cycle, the adjoint must be computed.
+Then the average of this must be computed.  XPP provides simple steps
+for doing that which we will illustrate by starting with the <a
+href=xpptut3.html#lecar> Morris-Lecar equations </a> and adding a
+synapse function which will serve to define a synaptic activity.
+
+<h3> <a name=reduction> Computing the response and interaction
+function for an oscillator </a> </h3>
+
+  We will confine our attention to a three-dimensional model of a
+neuron with a synapse.
+(Two dimensions for the dynamics of the membrane and one for the
+synapse; coupling two of them will then be six-dimensions.  The
+reduction we perform here makes this into a 2 dimensional system.)
+We thus use the Morris-Lecar model and add an equation for the
+synaptic activation:
+<p> <center> <a href=odes/ml_syn.ode> <img src=gif/synapse.gif></a> </center> </p>
+Here <a href=gif/alpha.gif> <tt> alpha </tt> </a> and 
+<a href=gif/betta.gif> <tt> beta </tt> </a>  
+determine the rise and fall time of the synapse.
+Now we will solve this equation along with the
+Morris-Lecar equations
+for a choice of parameters that gives nice oscillations for the
+membrane. (<a href=newstyle.html#mlsyn> View the source? </a>)  <p>
+Having fired up XPP, we can integrate the equations several times to
+get on a nice limit cycle.  Click <a href=xppnum.html#timestuff>
+(U)(T) </a> to set the total integration
+time to 46.9 which is about the period.  The idea is to get just one
+period of the limit cycle in the browser.  Click (D) to set <tt>
+DeltaT </tt> to 0.1 which will speed things up a bit. 
+Click (Esc) to get back to
+the main menu and then click <a href=xppmain.html#ics> (I) (G) </a> to
+integrate the equations.  In the ode file I have set the initial data
+on the limit cycle.  Click <a href=xppmain.html#xivst> (X) and type in
+V </a> to plot the voltage versus time.  Click (I)(L) twice to
+integrate the equations twice more strating at the values the previous
+integration left them. The graphs should almost superimpose showing
+you have a good estimate of the period. (<em> NOTE: </em>  How did I
+find the period?  Here is how I do it:  Integrate for a while to get
+several periods.  Then use the <a href=xppbrowse.html> data viewer
+</a> to find the times between peaks of the voltage and use this as
+the period.) <p>
+Now we are ready to compute the response function.  Click <a
+href=xppnum.html#average> (U) (A) </a> to bring up the
+adjoint/averaging menu.  This menu allows you to compute the response
+function <b> Z(t) </b> and the interaction function <b> H(phi) </b>
+for arbitrary oscillators.  <em> You must first compute a response
+function or adjoint before computing an H function. </em>   <p>
+Click (N) to begin the calculation of the new adjoint. It should not
+take long.  Click (Esc) to get to the main menu and then click (X)
+(Enter) to plot "V" versus t.  XPP has replaced the periodic orbit
+with the components of the adjoint or response function.   You should
+see something like 
+<p>
+<center> <img src=gif/adj.gif> </center> <p>
+although there may be a phase shift.  If the colors look wrong, it was
+probably in the food you ate.   You can switch between the <b>
+periodic orbit </b> and the <b> adjoint </b> by clicking (U) to get to
+the numerics menu and then (A) to get the adjoint menu and choosing
+(A) or (O) for the adjoint or orbit respectively. Then with a click of
+(Esc) go back to the main menu and plot with the (X) click. If you
+want you can look at the other components of the adjoint. (Note that
+the "s" component is zero as the synapse has no effect on the <em>
+presynaptic </em> cell.) <p>
+We now want to compute the interaction function.  This assumes that we
+couple two identical cells.  Let <b> X, Y,  </b> be the vector
+components of the two oscillators.  Let the <b> G(X,Y) </b> be the
+coupling of cell <b> Y </b> to <b> X. </b> Like <b> X, G </b> is also
+a vector with components, <em> g1,g2,... </em> Thus, to compute the
+interaction function, we must tell XPP each of the components of the
+coupling function.  XPP knows the names of the variables for the
+oscillator <b> X </b> so how do we tell it the names for <b> Y </b>?
+The names are the same as for <b> X </b> but have primes attached to
+them.  Thus if <tt> V </tt> is then name of one component in <b> X
+</b> then <tt> V' </tt> is the name of the corresponding component in
+<b> Y. </b>   Thus the three components of <b> G </b> are:
+<pre>
+s'*(Vsyn - V)
+0
+0
+</pre>
+That is the <tt> s </tt> component of the <b> Y </b> oscillator
+influences the <tt> V </tt> component of <b> X </b> oscillator. 
+ All other components of <b> G </b> are
+zero.  <p>
+So, assuming you have the Numerics menu on the window (if not
+click (U) from the main window) click on (A) to get the adjoint menu
+and then click on (M) to <b> make </b> an interaction or <b> H </b>
+function.  In the command line you will be asked for the three
+components of the coupling. You should type in the above expressions
+for the three components.  Then after a bit of time XPP will beep to
+say it is done.  (On slow computers this can take a bit. It takes 2-3
+seconds on the HP and about 10 on my laptop.)  Click (Esc) and then
+(X) and type in <tt> V </tt> to plot the interaction function.  XPP
+has replaced the first component of the orbit with the interaction
+function.  The odd part of the interaction function appears in the
+second component of the orbit and the even part replaces the third
+component of the orbit (if there is one.)  Plot "w" versus time and
+note that it is very close to a sine function.  Plot "s" versus time
+and see that it is close to a cosine function plus a constant.  This
+observation suggests that we may be able to approximate the
+interaction function very simply as 
+<p> <center> <img src=gif/happrox.gif> </center> <p>
+How do we find the coefficients?  Since <em> H </em> is periodic, that
+means it has a Fourier series so we can try to get the Fourier
+coefficients.  One standard way to get Fourier coefficients is the <b>
+FFT </b> however, that is limited to data that has <em> 2^n </em>
+points.  XPP computes the Fourier coefficients the way you would by
+just integrating. Since we generally only want the first few, this is
+not really slow.  Certainly, it is no slower than computing the
+interaction function, <em> H. </em>   Assuming you still have the <em>
+H </em> function in the browser, get to the nUmerics menu and click on
+<a href=xppnum.html#stoch> (stocHastic) </a>  and then <a
+href=xppnum.html#fourier> (Fourier) </a> to compute the Fourier
+coefficients of whatever is in the browser.  You will be prompted for
+the number of modes (10 is the default and is fine for this) and for
+the variable.  Choose <tt> V </tt> since that is the column in the
+browser that holds the <em> H </em> function.  In a second or two XPP
+beeps and if you look in the Data Browser, you will see 10 rows of
+numbers.  The first column is the mode (0-10 in this case), the second
+is the cosine coefficient and the third is the sine coefficient.  If
+you did this correctly, you should get roughly: 
+<pre>
+0  202    0
+1 -298  239
+2   29  -30
+3   26   1.7
+ .......
+</pre>
+As our intuition told us 90% of the power is in the first 2 terms, so
+by dividing by 300 (a nice round number) we get <em> a0=.667, a1=-.98,b1=.8174
+</em> as our approximate H scaled by 1/300.  <p>
+
+In fact, it is fun to compare the real <em> H </em> with the
+approximate.  
+<ul>
+<li> Click on (nUmerics) (stocHastic) and then on (Data) to
+get the orbit back.  (You haven't lost the <em> H </em> function so
+don't despair.)  
+<li> Now in the browser, click on (Add co) to add a new
+column. At the prompt, name it <tt> Happrox </tt> and for the formula,
+insert <tt> 202-298*cos(2*pi*t/46.9)+239*sin(2*pi*t/46.9) </tt> and
+click (Enter). 
+<li> Next, plot <tt> happrox </tt> versus time.  Click
+(XivsT) in the main XPP menu and type in <tt> happrox. </tt> Now <a
+href=xppfreeze.html> freeze it </a> by clicking (Graphics) (Freeze)
+(Freeze) and then filling <tt> key </tt> entry of the window  with
+<tt> Happrox. </tt>  
+<li> Now click (nUmerics) (Adjoint) (H) to load the
+browser with the <em> real H </em> function. Click (Esc) to get back
+to the main window.  
+<li> Finally, click (Xivst) and enter <tt> V </tt> to see the two
+compared.
+</ul>
+If you did this right you will see a pretty good match:
+<p>
+ <center> <img src=gif/hcompare.gif> </center> </p>
+(Some people shouldn't be allowed to get near computers.)
+
+<a name=identical> <h3> Symmetrically coupled oscillators </h3> </a>
+A special case of coupling is when both oscillators are coupled
+symmetrically.  Then <em> H1 = H2 </em> and we can write a very simple
+equation for the phase-difference between the two oscillators.  Recall
+the the <a href=#phseq> phase equations </a> derived from averaging
+satisfy a very simple set of differential equations that depend only
+on the phase difference <em> theta_1 - theta_2. </em> In fact, we can
+exploit this and write an equation for the phase-difference, <em> phi
+= theta_2-theta_1. </em>  <p>
+<center> <a name=phi> <img src=gif/phi.gif> </a> </center> <p>
+A fixed point of this equation means that the phase-difference between
+the two oscillators is fixed and we say they are <b> phaselocked. </b>
+If the interaction functions are identical as for symmetrically
+coupled oscillators, then <em> g </em> is the <b> odd part </em> of
+the interaction function.  This is why XPP computes the odd part of
+the interaction function: <em> the zeros tell you the phase-locked
+solutions; those for which <b> g has a positive slope are stable </b>
+and those for which <b> g has a negative slope are unstable </b> </em>
+<p> 
+For the present case, there are two roots to the odd part. (Look at
+the <tt> w </tt> component of the H function -- click (nUmerics)
+(Adjoint) (Hfun) (Esc) (Xi vs t) <tt> w </tt> (Enter) to see it.) One
+of the roots is 0, or <b> synchronous </b> firing of the neural
+oscillators and the other is half a cycle a way or <b>
+anti-phase. </b> For this model synchrony is stable and anti-phase is
+unstable.  The homework below shows other interesting behaviors.
+<p> 
+<a name=hw3.1> <h3> Homework 3.1 </h3> </a> 
+<ol>
+<li>Change <tt> Vsyn </tt> from 120 to -75 to make it an inhibitory
+synapse and compute <em> H </em>  Since this only changes the coupling
+and not the dynamics, it is not necessary to recompute the orbit or
+the adjoint. If coupling is symmetric what are the stable phase-locked
+solutions. Does coupling speed up or slow down the oscillations? 
+<li> Change <tt> Vsyn </tt> to 0 mV a more realistic value and again
+compute the interaction function.  What are the stable phase-locked
+states in this case for symmetrically coupled oscillators?
+<li> Compute the interaction function for <em> diffusively coupled
+</em> oscillators. The components for coupling are
+<pre>
+ v'-v
+0
+0  
+</pre>
+What are the stable phase-locked states for this type of coupling?
+<li> Set the following parameters <tt> V3=12, V4=8, I=40 </tt> Compute
+the periodic orbit.  Find the response function and note that it is
+almost strictly positive.  Compute the interaction function for
+<tt> Vsyn=120 and Vsyn=-75 </tt>  and find all the phase-locked states
+for symmetrically coupled oscillators.
+<li> Use the same model for the synapse with <tt> alpha=5 , beta=.5
+</tt> on the <a href=newstyle.html#hh> Hodgkin-Huxley </a> equations
+with <tt> I=20 </tt> Compute the interaction function for <tt>
+Vsyn=50, Vsyn=0, Vsyn=-70 </tt> and again when the time-constant of
+the synapse is slowed to <tt> beta=.05. </tt>  Find all pahse-locked
+solutuions and their stability.  (You will have to write an ODE file
+yourself: copy the HH file and add the synaptic equations to it; use
+the Morris-Lecar synaptic model as a template. )
+  
+</ol> 
+<p> 
+<a name=hw3.2> <h3> Homework 3.2 </h3> </a>
+
+Fire up the <a href=newstyle.html#pir> post-inhibitory rebound model </a>
+that you studied in <a href=xpptut3.html#hw2.4> Homework 2.4. </a> Set
+<tt> I=-1 </tt> and set <tt> Dt=.25 </tt>   Find the periodic solution
+for this value of current.  (<em> Hint: </em> It has a period of about
+140.75.)  Compute the adjoint or response function.  Then compute the
+interaction function using
+<ul>
+<li> <b> Vsyna,sa' </b> as the synaptic reversal potential and the
+synaptic gating variable.  This is the fast GABA A synapse.
+<li> <b> Vsynb,sb' </b>  This is the slow GABA B synapse.
+</ul>
+Contrast the stability of synchrony and anti-phase solutions for these
+two different inhibitory interactions.  Conclude that it is not just the
+"sign" of the coupling but the timing that is important for the
+interactions between oscillators.
+<p>
+
+
+<a href=xppphase.html> Learn more about Phase Equations </a> <p>
+<a href=xppchaos1.html> I want CHAOS!! </a> <p>
+</h2>
+
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+
+
+
+

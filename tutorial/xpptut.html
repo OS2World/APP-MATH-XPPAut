@@ -1,0 +1,515 @@
+<html>   
+<head>
+  <title>  XPP TUTORIAL PART 1 </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> XPP Tutorial: Basic Idea and Introduction </h1>
+
+
+<p>
+<center> <img src=gif/rainbowline.gif> </center>
+<p>
+<h1> <a name="intro"> I. Introduction </a> </h1>
+
+Dynamical systems theory provides the language and the machinery
+for the analysis and understanding of the behavior of physical systems
+that change over time.  There are many ways in which such systems can
+change and many types of equations that arise.  These include 
+<a href="#disc"> discrete </a> and <a href="#cts"> continuous </a>
+dynamical systems. I will use this tutorial to give you a simple intro
+to the field as well as show you how to simluate and numerically solve
+these equations. We will use <b> XPP </b> which can handle 
+<ul> 
+ <li> Differential equations
+ <li> Delay equations
+ <li> Volterra integral equations
+ <li> Discrete dynamical systems
+ <li> Markov processes
+ <li> Bifurcation 
+</ul>
+all of which arise in different situations.  
+  
+<p>
+
+
+Return to the <b> <a href="start.html#toc"> Table of Contents </a> </b> <p>
+<hr>
+
+<h2> <a name="disc"> A. Discrete dynamics </a> </h2>
+
+Discrete dynamical systems have the form <p>
+<img align=center src="gif/eq1.gif" > </a>
+<p>
+where <i> X </i> is a vector in n-dimensional Euclidean space and <i>
+F(X,n) </i> is a function that may or may not depend on the iteration
+number, <i> n </i>.  Discrete dynamical systems are often found in the
+neural network 
+literature, for example in a model for back-propagation, the weights
+are adjusted according to some error rule: <p>
+
+  <img align=center src="gif/eq3.gif" > </a> <p>
+
+where <i> E </i>  is some error function.  I will pretty much ignore discrete
+dynamics in order to concentrate on continuous time systems which for
+the basis for most models of biophysics and networks of neurons. 
+
+
+
+<h2> <a name="cts"> B. Continuous dynamics </a> </h2>
+
+Most of the examples and applications that we will discuss  evolve
+continuously in time.  Delay equations, Volterra equations, Markov
+processes, etc are all examples of continuous time processes.  
+A typical example of a continuous dynamical systems is the Hodgkin-Huxley
+model:
+<p>
+<img align=center src="gif/eq2.gif"> </a> <p>
+ 
+
+
+<hr>
+
+<h1> <a name="odefile"> II. Creating and running an ODE file </a> </h1>
+The basic unit for XPP is a single ASCII file that has the equations,
+parameters,
+ variables, boundary conditions, and functions for your model.The methods
+ of solving the equations, the graphics and postprocessing are all done within
+ the program using the mouse and various menus and buttons. <p>
+ You
+should regard the ODE file as a framework for exploring the system;
+its main role is to set up the number of variables, parameters and
+functions.  The actual right hand sides can be changed within the as
+can values of initial data, parameters, and boundary conditions.
+However, the dimension, the names of the variables and the names of
+the parameters are always fixed.  
+<p>
+ODE files are ASCII readable files that the XPP parser reads to create
+ machine useable code. They consist of combinations of lines each
+starting with a key letter.  Lines cannot presently be continued onto
+the next line but the length of the lines is 256 characters. 
+ By convention XPP files end with the
+<b> .ode </b> extension.  
+<p>
+I will start with an elementary 1 dimensional example and its
+corresponding ODE file. The simplest types of a continuous dynamical
+systems are those in which there is one scalar quantity.  For example,
+the passive membrane:  
+<p>
+<a href=odes/passive.ode> 
+<img align=center src="gif/eqn4.gif" > </a> <p>
+Thus equation is easy to solve but will serve as a basis for the more
+complicated systems approached later.  Since equations are required to
+have the form <i> dX/dt = ... </i> we divide by <i> C </i> to put
+it in the proper format. <a name=oldstyle>The ODE file has the following
+form: </a>
+
+  <p>
+<img align=center src="gif/odefile1.gif" > </a> <p>
+
+I have attempted to explain all of the parts of the file in blue. <b>
+NOTE: </b>  The sources for all of the equation files that are used in
+this tutorial are in the old format.  But, in the tutorial, I will
+only use the new format.  All of the equations files are available in
+both formats.  
+
+
+<p>
+
+
+To
+continue on with the interactive part of the tutorial click  on the
+equation for the passive membrane.  
+
+<p>
+If you have set up your .mime.types and .mailcap files correctly then
+when you click on the equation, <b> XPP </b> will fire up. <i> If you
+have not set up your files correctly, you will get the source of the
+file in the <b> old style format. </b> </i>
+<p>
+There are up to 8 windows, 7 of which appear in the iconified fashion. 
+<p>
+<a name="xppmain"> <img align=center src="gif/xppmain2.gif"> </a> <p>
+ The
+main window contains the command line on top, menu items along the
+left, a graphics area in the middle and an information line at the
+bottom.  The other windows are:
+<ul>
+<li><a name="paramwin">  <b> Parameter window </b> </a> -- this has the names and current values of the
+parameters.  By clicking in them, you can change their values on the
+command line in the main window.  
+<li> <a name="icwindow"> <b> Initial condition window </b> </a> -- this has the names and current values
+of initial data.  By clicking on them, you can change them on the
+command line of the main window. 
+
+<li> <a name="eqwindow" > <b> Equations window </b> </a> -- this has the differential equations listed in
+it. You can scroll through them if there are lots of them by clicking
+on <b> Up </b> and <b> Down </b>.
+<li> <a name="delaywindow" > <b> Delay window </b> </a>  -- This lets you alter
+the delay initial data to define variables for negative time.  Click
+on an entry and edit in the command line of the main window. If you
+have no delays in your model, this does not appear.
+
+<li><a name="bcwindow">  <b> Boundary conditions </b> </a>  -- this contains the boundary conditions for
+the boundary-value solver. Click on an entry to alter i in the command
+line of the main window.
+<li> <a href="xppbrowse.html"> The Data Browser </a>
+</ul>
+
+ In other situations, more windows may pop up from time to time.
+<p>
+
+<h2> <a name="quit"> Quitting XPP </a> </h2>
+For every menu item, there is an associated keyboard shortcut.  This
+is the letter in the parentheses.  Thus, you can click on the item or
+use the keyboard  shortcut.  <i> For the remainder of this tutorial, I
+will use the keyboard notation of the <b> hot </b> key in parentheses
+to indicate that you chould either click on that item or press that
+key.</i>
+To quit XPP anytime it is <i> not </i> 
+ in the middle of a computation, click on (F)ile to get the <a
+href=xppfile.html> FILE </a> menu and then click on (Q)uit to quit the
+program.  You will be asked if you are sure.  Click (Yes) to really
+quit.   Thus the  FQY sequence of key presses or corresponding mouse
+clicks will exit XPP.  <p>
+If XPP is in the middle of a calculation, the usual way to abort it is
+to use the <b> (Esc) </b> key.  This will stop almost all calculations
+except some in which many integrations are performed.  You abort those
+type of calculations by typing <b> (/) </b> on the keyboard, the <b>
+slash </b> key.  
+<p>
+
+<h2> <a name="basics"> Basic Behavior of XPP </a> </h2>
+The main way to interact with XPP is with the mouse and the
+keyboard. There are several aspects of mouse and keyboard
+ use that are important:
+<ul>
+<li> Clicking with the first button inside a graphics region makes
+that region the active one. All drawing commands from the main window
+will go to the active graphics window.
+<li> Clicking the mouse on the border of the browser, the main window,
+or the AUTO window makes that window the keyboard focus.
+<li> Holding the button down and moving inside an active graphics window
+will give you the coordinates of that point in the info area of the
+main window.  This is useful to get approximate values to important
+points on your graphs.
+<li> Tips on the menus appear in the info area of the main window.
+<li> Keyboard editing is limited to using the (Home), (End), (Left),
+(Right), (BackSpace), and (Delete) keys.
+</ul>
+
+
+<h2><a name="exam1_int">  Integrating the equations </a> </h2> 
+ </i> Click <a href=xppmain.html#ics> (I) </a> (G)  to compute a trajectory. 
+The solution will
+ be plotted in the main window.  Since the viewing area window is
+quite small you will probably see nothing.  Click <a href=xppmain.html#xivst> (X)
+</a> to plot a variable "X" versus time.  You will be prompted for a
+variable name, the default is the first variable you define.  This is
+"V" the voltage so you can just accept it by typing (Enter).  An
+exponentially decaying solution will be shown.  The axes tell the
+values of time and voltage.  
+
+<h2><a name="exam1_change">  Change parameters </a> </h2> 
+
+Two things you would like to change are initial data and parameters.
+There are several ways to change them.  
+
+<ul>
+<li>You can uniconify the parameter
+window by clicking on it.  Then click on the parameter you want to
+change and edit it. Type (Enter) to accept this value or click on (Ok)
+to accept it and return keyboard control to the main window. You can
+also type (Tab) to accept all changed values and return keyboard
+control to the main window. 
+<li> Click <a href="xppmain.html#para"> (P) </a> from the main menu
+Then, type the
+name of the parameter you want to change.  Type (Enter) twice to exit
+the parameter changing loop.
+<li> Use the parameter sliders.  
+</ul>
+
+Let's bind the parameter "gl" to a parameter slider. Click on the word
+"Parameter?" above one of the sliders.  A new window will appear.
+Type in  <i> gl </i>  for the name of
+the parameter, <i> 2 </i> for the current value, <i> 0 </i> for the
+lowest value and <i> 4 </i> for the highest value.  Click on (Ok) to
+accept this or just type (Tab).  Move the slider around and see the
+parameter change.
+<p>
+
+Change "gl" from 2 to 4 and reintegrate the equations.  Use any of the
+three ways to do this.  To see
+the entire trajectory you can click (X) (Enter) as above or use the <a
+href="xppmain.html#wind" > (W) </a> windowing command.  Try <a
+href="xppmain.html#wind"> (W) </a> (F) to change the
+graph so the entire trajectory will fit into it.  Try <b> zooming </b> into
+areas of this rather boring solution by clicking <a href="xppmain.html#wind">
+(W)</a> (Z) and using the
+mouse to define a rectangle.  Finally, use <a href="xppmain.html#wind"> (W)</a> (W)
+to manually define the viewing area.  
+<p>
+In order to label the axes on your graph, click on <a href="xppmain.html#view">
+(V) </a> (2) to change the view.  (This is how you plot phase-planes and
+lots of other stuff. Three dimensional plots are also possible.) 
+A <b> new window </b> will pop up.  Fill in the
+last two entries with the labels for the "X" and "Y" axes.  Click on
+(Ok) or type (Tab) to accept this.  
+
+<h2><a name="exam1_graph">  Graphics tricks </a> </h2> 
+<p>  XPP always deletes the data from an integration each time one is
+run, thus in order to plot curves with various parameters, you have to
+<a href="xppfreeze.html#freeze"> Freeze </a> the current curve before changing the
+parameters and reintegrating.  Click <a href="xppmain.html#graph" > (G) </a> <a
+href="xppfreeze.html#freeze" > (F) </a> to invoke the "freeze" menu.  Click (F)
+again to bring up a window with entries.  Change the color to, say, 5,
+and the key to say "gl=4".  There are 10 colors 0 is white and 1-9 are
+red through blue.  Accept this (click on (Ok) or type (Tab).)  (<b>
+NOTE </b> Netscape and Mosaic are sometimes greedy with colors, so
+that it may be that the colors you choose do not show up.  If that is
+the case, try another color -- generally higher colors are more likely
+to be plotted.)
+<p>
+
+Now change "gl" back to 2  and reintegrate. Freeze this curve with the
+key "gl=2".  Now, click <a href="xppmain.html#graph"> (G) </a> (F) (K) (K) to turn the "key" on and
+position it with the mouse.  Click when done.  The key should have
+appeared along with your two curves. It should look like:
+<p><center>
+<img src="gif/example1.gif">
+</center>
+<p>
+
+( <b> NOTE: </b> Some of the pictures may look slightly different in
+that the parameter sliders will not be shown.  These were made with
+earlier verions of XPP.)
+<p>
+
+Now save this as a postscript file by clicking <a href="xppmain.html#graph"> (G)
+</a> (P) and type in a filename in the <a href="#xppmain" > command
+line </a>.
+<p>
+<b> NOTE 1. </b>  If you are following this tutorial then the filename
+for the ODE file is some terrible thing.  Give your postscript file a
+nice name. 
+<p>
+<b> NOTE 2. </b>  Typing (Esc) will abort most commands such as saving
+to a file or integrating equations. 
+<p>
+
+<h2><a name="exam1_ics">  Changing initial data </a> </h2> 
+
+<p>
+As with parameters, it is also easy to change the initial data.  The
+easiest way to do it is to uniconify the initial condition window and
+click on one of the variables. Edit it and type (Enter) to accept it
+and move to the next one.  Click on (Ok) or type (Tab) when done.
+ Note that when you change the initial data in via the IC
+window, XPP does not automatically integrate the equations.
+You can also click <a href=xppmain.html#ics > (I) </a> for other
+choices.  The most common are
+<ul>
+<li> (I) (N) which prompts you for New initial data and then
+integrates the equations; 
+<li> (I) (G) which uses the current initial conditions to integrate;
+<li> (I) (L) which uses the end values of the last integration as the
+start for the new one.
+</ul> 
+<p>    
+Finally, <a href=xppmain.html#cont> (C) </a> will continue the
+integration for a longer period of time. Set <i> V(0)=30 </i> and
+integrate.  Then continue the integration for 20 more milliseconds
+(until 40). 
+Don't forget to replot (X) (Enter) so that all of the time axis is
+shown.  
+
+<p>
+A useful option is also <a href=xppmain.html#ics> (I) </a> (R) lets
+you perform multiple integrations as you vary a parameter or initial
+condition.  Before you do this you might turn off the <a
+href=xppfile.html#bell> BELL. </a>  <p>  
+Set the current I to be zero. 
+The rest state is at -60 mV so let's integrate with with initial data
+from -100 to 0 mV in 10 steps of 10 mV each.  First use the window
+command to set the window size to go from -100 mV to 0 mV and 0 to 20
+ms. Type (W) (W) to bring up the <a href="xppmain.html#wind" > 
+window </a> menu and type in the new dimensions. Type (I) (R) to bring up
+the <a href=xppmain.html#ics> integrate </a> range menu. This has
+several items and should be filled in as shown:
+<p>
+<center>
+<img src=gif/irange.gif> </center>
+<p>
+The first item tells XPP which variable or parameter is to vary. Next
+tell how many steps you will take.  Then first and last points should
+be stored.  The "Cycle color" entry 
+asks whether you want each trajectory to be
+a different color.  
+ Resetting the storage tells XPP not to save every
+trajectory and "Use old i.c.'s" means to use the same initial
+conditions for each integration <i> except for the variable that is
+changing. 
+(<b> Note: </b> In newer versions of XPP, the last
+item asks whether you want to make a movie.  Throughout the tutorial,
+you should choose No for this.) 
+</i>  Click on (Ok) or type (TAB) to do the integration.
+You will see 11 curves with the first and last red. (<i> Note. </i>
+While you only asked for 10, XPP treats the loop as though it was from
+<b> i=0...i=10. </b>) 
+<p>
+It should be clear from this simulation that all roads lead to
+Rome. That is, every initial condition ultimately ends up at rest.
+<p>
+
+<h2> <a name="exam1_data"> Examining the numbers </a> </h2>
+<p>
+So far we have just looked at the actual trajectories.  XPP lets you
+examine the actual numerical values very easily and write them to a
+text file for other processing.  Click on the iconified <a
+href="xppbrowse.html"> Data Browser/Viewer </a> to manipulate
+the numbers you have computed.  You will see two columns corresponding
+to time and to membrane potential.  Use the arrow keys to move up and
+down the data file. Other keys for scrolling are (Home) (End) (PgUp)
+and (PgDn).  You can find the voltage at time <i> t=12.0 </i> by
+clicking on <a href=xppbrowse.html#find> (Find) </a>  and typing in <i> T </i> and  12 for the prompted
+quantities and then clicking (OK).  The value of the voltage at <i>
+t=12 </i> will show up on the top line.  You needn't be exact; XPP
+finds the closest value. <b> Find the approximate time at which V =
+-30 mV. </b>  <p>
+
+Suppose you want to compute 
+the total leak current, <i> gl*(V-VL) </i>.  In the original ODE file,
+you could compute this "AUXILIARY" quantity, but you don't have to
+leave the progam to do it temporarily.  Just use the <a
+href=xppbrowse.html#addcol> add column </a> capabilities of the
+Viewer.  Click on (Add Col) type in <i> IL </i> when asked for the
+name of the column to add.  Then type in the above formula and click
+(OK).  A new column is added with the name <i> IL </i> which has the
+leak current.  <b> Plot this as a function of time. </b>
+<p>
+XPP graphics is not the world's greatest so for fancier plots, you
+will probably want to save the numerical results of your simulations.
+The Data Viewer lets you <a href=xppbrowse.html#io> write </a> the
+numbers as an ascii file.  Click on (Write), type in a file name, and
+click (OK) to save all the numbers in a file.  
+ 
+<p>
+
+<h2><a name="exam1_fixpt">  Fixed points and stability </a> </h2> 
+
+<p>
+  The voltage V=-60 is called a <i> fixed point </i> or <i>
+equilibrium point </i> for the differential equation.  At V=-60 the
+rate of change of the voltage is zero.  Any set of
+variables for which the rates of each is zero is called a fixed point
+of the dynamical system.  This is because if you start there, you
+cannot ever change.  However, what happens if you are near the fixed
+point but not exactly on it?  Do you tend toward it or move away?
+This brings up the notion of <i> stability </i> which roughly says
+that a fixed point is <i> stable </i> is nearby initial conditions
+stay near to it.  We say it is <i> asymptotically stable </i> if
+nearby initial conditions actually tend toward it as t tends to
+infinity. Fixed points are often called "critical points," "rest
+states," or "singular points."  The stability of a fixed point for a
+continuous autonomous differential equation is easy to determine.
+Linearize about the fixed point obtaining a matrix, <i> A, </i>. 
+(If there are <i> n
+</i> differential equations, the matrix will be <i> n X n </i>.)  If
+all of the eigenvalues of <i> A </i> have <i> negative real parts </i>
+then the fixed point is <b> asymptotically stable </b>. If there is at
+least one eigenvalue with a <i> positive real part </i> then the fixed
+point is <b> unstable </b>.  When the eigenvalues have <i> zero real
+part </i> then we cannot tell from the linearized equations.
+
+
+<p> 
+<h3> <a name=stabwind> Stability window </a> </h3>
+<p> To find a fixed point using XPP, click on <a
+href=xppmain.html#sing> (S) </a>  (G).  This invokes a Newton solver
+to find the fixed point.  Answer (N) to both of the questions.  A new
+window appears that has information about the fixed point and
+stability:
+<p>
+<center>
+<img src=gif/equil.gif>
+</center>
+The top line tells the stability.  At the bottom is the value of the
+fixed point.  Finally, information about the eigenvalues for the
+linearized equation is given in the middle.  <b> c+ </b> is the number
+of complex eigenvalues with positive real parts, <a
+href=xppmain.html#sing>
+ etc. </a>  <b> im </b> is the
+number of eigenvalues with zero real part.  Thus, for our simple
+model, there is a fixed point at V=-60mV and it is asymptotically
+stable.
+
+<p>
+
+<h3><a name="hw1.1">  Homework 1.1 </a> </h3> 
+Change the current to 20 and determine the fixed point and its
+stability.  Change it to -15 and repeat.  Bind the current to a
+parameter slider and play around with it. Solve for the fixed point
+and show that is is always stable.  Try a bunch of different initial
+conditions as well as different positive values for <b> gl </b>.  
+<p> 
+<h3><a name="hw1.2"> Homework 1.2 </a> </h3>
+Use an editor to change the ODE file so that you can solve the
+following equation with a sinusoidally varying current:
+ <p>
+<img align=center src="gif/hw1.2.gif" > </a> <p>
+<p>
+After integrating the equation, add a column to the data browser that
+gives the instantaneous current a*sin(w*t) where "w" is the frequency.
+Plot both the instantaneous current and the voltage on the same plot
+so that you can see that the phase of the voltage trails the
+current. Use A=50 and initialize V=-60, the resting potential.  Set
+I=0 as well. 
+
+If you are stuck on how to write the file, click <a
+href=xpphw.html#hw1.2> HERE. </a>
+
+
+
+<p>
+<center>
+<h2> How you are probably feeling by about now ... </h2> 
+</center><p>
+<center> <img src=gif/badday.gif> </center>
+ 
+
+<hr>
+<p>
+ <h3> <a href=xpptut2.html> GO TO PART 2. </a> </h3>
+<p>
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+
+
+
+
+
+
+

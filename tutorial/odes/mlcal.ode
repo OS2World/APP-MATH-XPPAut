@@ -1,0 +1,43 @@
+2
+# the number of things to plot is 2
+
+# declare the variables setting v(0) to rest
+variable v=-60
+
+# declare other stuff to plot
+aux ica
+
+# declare the parameters
+param vl=-60,vca=120
+param i=0,gl=2,gca=4,c=20
+param v1=-1.2,v2=18
+
+# user defined functions 
+user minf 1 .5*(1+tanh((arg1-v1)/v2))
+
+# right-hand sides of ODES in order of declaration
+odev (i+gl*(vl-v)+gca*minf(v)*(vca-v))/c
+
+# definitions of auxiliary quantities in order of declaration
+oica gca*minf(v)*(v-vca)
+
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1336 @@
+% This is a LaTeX file.  To use it you must first process it with
+% LaTeX. Then you can render it with whatever printer you want.  If
+% you don't have TeX, then you should.  It is free and anyone doing
+% mathematics should have it.
+\documentstyle{article}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\beqa}{\begin{eqnarray}}
+\newcommand{\eeqa}{\end{eqnarray}}
+\newcommand{\beqann}{\begin{eqnarray*}}
+\newcommand{\eeqann}{\end{eqnarray*}}
+\newcommand{\nn}{\mbox{${\nonumber}$}}
+\newcommand{\labeq}[1]{\label{eq:#1}}
+\newcommand{\refeq}[1]{(\ref{eq:#1})}
+\newcommand{\xtc}{{\bf XTC \/}}
+
+\title{XTC - a tool for modeling spatial evolution equations}
+\author{Bard Ermentrout}
+\begin{document}
+\maketitle
+
+
+\section{Introduction} \xtc stands for {\it space-time continuum} and
+is a series of numerical routines as well as an interface for solving
+evolution equations in one spatial dimension that involve one,two, or
+four spatial derivatives.
+  The program is able to handle a variety of
+integral equations as well as diffusion-type PDEs of the form:
+\[
+ u_t(x,t) = F(u,x,t,u_x,u_{xx},u_{xxxx},C[u],W[u],I[u])
+\]
+where $C[u]$ is a spatial convolution of $u$ with some weight
+function:
+\beq
+C[u](x) \equiv \int_{x_0}^{x_1} w(x-y)u(y) dy.
+\eeq
+$W[u]$ is a more general integral of $u$ with a weight
+function:
+\beq
+W[u](x) \equiv \int_{x_0}^{x_1} w(x,y)u(y) dy.
+\eeq
+In both of these, $x_j$ must be numbers.
+$I[u]$ is the most general type of integration
+\beq
+I[u](x) \equiv \int_{Z1}^{Z2}{Z3} dy
+\eeq
+where $Zj$ are any valid algebraic expressions.  The $W$
+and $C$ operators have the advantage of allowing one to compute very
+quickly since they have a specific structure.  
+
+I have found that
+many models in mathematical biology can be put into a form that \xtc
+can solve.  There are several graphics routines for looking at 3D
+space-time surfaces and for looking at a variety of two-dimensional
+projections such as phase-planes and plots versus space and time.
+Postscript output is supported and it is possible to save the results
+of simulations into ascii files for plotting with other graphics
+packages. 
+Boundary conditions are restricted to either periodic, noflux, or
+``leaky'' having the form:
+\beq 
+ a(t)u_x+b(t)u=c(t)
+\eeq
+
+I have developed some numerical methods
+specifically geared toward the parabolic equations since there were no
+simple methods available for handling periodic boundary conditions.
+(For example, the solver PDECOL handles a variety of BCs but mixed are
+prohibited; similarly, PDEONE a FORTRAN driver using the method of
+lines cannot handle these since it requires a stiff solver such as
+LSODE which again will not handle perioidic Jacobians.)  Thus, I have
+written a version of Crank-Nicholson and also a Gear solver which can
+handle systems with periodicity.  More comments on the numerical
+techniques are included in a later section.  Of course, Euler and
+modified Euler (two-step) are included as well and in fact are
+recommended for speed.
+
+One of the most useful parts of \xtc is the ability to solve for
+homogeneous equilibria and then do a ``Turing'' stability analysis on
+the resulting rest state.  The ability of the program to do this is
+somewhat restricted but it works on most systems that have convolution
+kernels, biharmonics and diffusion terms.  I will say more on this later.
+
+The graphics available for 3D includes surface drawing with hidden
+lines, color coding, grey-scales, and contours.  Two-dimensional plots
+are possible as well such as a variable versus time or space at
+different points and phase-space plots. Postscript support is expected
+or perhaps even available.  Check the source code.  
+
+The interface is written in XLIB and so it is completely portable.  In
+fact, much of this code was developed using GCC under MSDOS and
+DesqView X.  It has also been compiled and run on a Sparc 2, an HP
+730, and a NeXT under X and under LINUX on a 486.  
+If you have used my other program, XPP
+(dynamical systems exploration) then the interface will be familiar.
+It is somewhat primitive but is fairly flexible and you are allowed to
+use formulas, etc for initial data and spatially varying parameters.
+
+This is a very preliminary version and so there are likely to be many
+bugs. Please note them carefully and report them to me along with the
+program that produced them.  I can be reached as {\it
+bard@popeye.math.pitt.edu}
+  
+\section{The menus} \xtc requires that you create a
+small file which sets up the problem, initializes parameters and sets
+the right-hand sides and the boundary conditions.  The latter cannot
+be changed interactively, but all parameters and initial data may be
+varied within the program. Numerical parameters and graphics are
+easily altered once you are in the program.  Let us begin with a very
+simple example; Fisher's equation on the interval $[0,10]$ subject to
+noflux boundary conditions:
+\beqa
+\partial u/\partial t &=& u(1-u)+d\partial^2u/partial x^2 \\
+u(x,0) &= &exp(-x^2) \\
+\partial u/\partial x(0,t)&=& 0 \\
+\partial u/\partial x(10,t) &=& 0 
+\eeqa
+Suppose as well as $u(x,t)$ you also want the gradient of $u, u_x.$
+The corresponding \xtc file has the form:
+\begin{verbatim}
+SPACE x
+TIME t
+SET DELTA_T=.1
+SET TFINAL=.5
+SET GRID=50
+SET LENGTH=10
+SET METHOD=2
+SET FAST=1
+SET NOUT=20
+PAR d=.2
+CVAR u=exp(-x*x)
+BDRY u 0 noflux
+BDRY u 1 noflux
+CAUX up=u_x
+u'=u*(1-u)+d*u_xx
+SET PLOTVAR=u
+DONE
+\end{verbatim}
+The first two lines tell \xtc the names of the space and time
+variables in case you want to refer to them (which you almost
+certainly will at least in the initial conditions.)  The next commands
+simply set internal parameters, many of which can be set within the
+program.  These are described below.  The next statement declares the
+only parameter in the problem and sets a value for it.  $d$ can be
+changed within the program.  Finally we declare a continuum variable
+which we call $u$ and give an initial value of $\exp(-x^2).$  This
+distinguishes between scalar variables which are represented as single
+numbers and not arrays.  The next two lines describe the boundary
+conditions at each end: 0 always refers to the left end and 1 to the
+right.  The simple expression {\tt noflux} tells the program that the
+BCs are of Neumann type. The expression beginning with {\tt CAUX} tells the program you want to be able to plot the gradient as well.
+ Finally, the evolution equation is set. The
+prime means differentiation with respect to time. The penultimate
+line is superfluous here since there is only one variable to plot. 
+
+Having written the small text file, you can now run \xtc on it and
+play around with the solutions and numerical methods and graphing. To
+run it, I will assume you have already compiled \xtc so that you have
+an executable file called {\tt xtc.}  Type {\tt xtc fisher.xtc} and
+two windows will pop up.  One contains the menus and the three-d
+graph; the second is a small two-d graph window.  The present version
+allows only these two windows. Eventually, it will be more general, I
+hope.  
+\begin{center}
+Notes on the interface
+\end{center}
+All menu items can be chosen by clicking with the mouse or pressing
+the hot key.  This is usually the first letter of the command, but
+where there is duplication, it is the first capital letter in the
+command.  Input to the program is generally through the top line of
+the main window.  You will often be prompted there for parameter
+values, initial data, and file names.  Sets of numerical and graphics
+parameters are chosen by writing into special boxes and then clicking
+on the {\tt OK} or {\tt CANCEL} buttons.  Pressing the {\tt TAB} key
+is the same as  clicking on {\tt OK.}  To move around in the text
+boxes, press {\tt Enter} repeatedly or just move there with the
+mouse.  The {\tt Esc} key can be used to stop long calculations and
+abort file operations before they have started.  {\tt Delete} and {\tt
+BackSpace} behave similarly.  The {\tt Home, End} keys move the cursor
+to the beginning and the end of the lines. The left and right arrow
+keys move one character at a time.  The input is always in INSERT
+mode. Thus, the editing of single lines is drastically improved over
+the old way.
+
+
+WARNING: Do not try to kill windows by using the window manager; this
+will stop the program and return you to the terminal. 
+\begin{center}
+    The example continues...
+\end{center}
+Click on the {\tt Go} menu item or press {\it g} on the
+keyboard and the program will begin computing.  You should see a
+``grey scale'' rendering of the travelling wave front propagating
+downward and to the right. The foreground of white is the largest and
+the background of black is the lowest scale.  You will here
+a beep when it is done integrating.  If you want to stop the integration 
+early, tap the {\tt Esc}  key until it beeps and gives you a message.
+ 
+
+Click on {\tt Redraw} and a new menu will pop up. 
+Click on {\tt 3D} and the grey
+scale will be redrawn with a box around it and the starting and ending
+times of the integration.  Click on {\tt 3D} and then on {\tt 0.
+Color} and a window will appear.  This has 6 editable items in it.
+The first two provide the max and min of the variable for scaling.
+The other parameters are described below.  The item labeled {\tt
+Variable} designates the name of the variable to plot.  It should be
+empty so that it defaults to the first continuum variable.  You could
+put a ``u'' in this and that would be the same thing.  Press the {\tt
+Tab} key or click on {\tt OK} to accept this. Click {\tt Redraw}
+followed by {\tt 3D} and you will get a fancy color plot. Red is high
+and blue is low.  There are 7 different ways to render the output. Try
+them all out by clicking on them, clicking {\tt Ok} and redrawing the
+3D window. For surface plots, there are two parameters, {\tt Alpha}
+and {\tt Zfrac} which allow you to alter the shape of the plots a bit.
+{\tt Alpha} tilts the plot in different ways and {\tt Zfrac} changes
+the height of the plot.  Fool around with them but remember that {\tt
+Alpha=.9} and {\tt Zfrac=.2} produce nice looking plots. You can
+change other aspects by resizing the 3D window in the usual manner. My
+own favorite is the color surface plots.  Click on {\tt 3D} again and 
+choose the grey scale. 
+Type {\tt up} in the box requesting the variable.  Click on {\tt OK} or
+ type {\tt Tab}.  Type {\tt wf} to get the WINDOW menu and to fit the 3D plot. 
+Then type {\tt r3} to redraw the 3D window showing the sharp spatial interface.
+  Please note that when you
+integrate the equations only the grey-scale or color options are used
+but if you redraw the graph after the integration it will be rendered
+as you have specified. Click on {\tt File } and then {\tt Quit} 
+ and answer {\tt Y} to the
+prompt to quit the program (or more quickly, type the sequence {\tt
+fqy} to leave \xtc.)  
+
+The following is a listing of the menu items.  Try them with your own
+problems or with one of the sample problems.  The end of this document
+describes how to create your own \xtc files.
+\vspace{.25 in}
+\begin{center}
+{\bf\large Initial Data }
+\end{center}
+
+This item allows you to set initial data for the problem and use old
+data or pick up where you left off.  Note that the integration does
+not begin until you tap Go. 
+\begin{enumerate}
+\item {\tt New} This brings up an additional window which contains the
+current values of all initial data.  Scalar variables contain numbers
+and continuum variables have formulae involving $x$ the space
+variable. You fill them in at the prompt line at the top of the menu.
+Choose them by clicking in the appropriate box or hitting {\tt Return}
+repeatedly to get to the one you want.  Typing {Esc} returns to the
+most recent initial condition for the variable.  Clicking on {\tt
+Cancel} undoes everything and takes you out of the command. Typing
+{\tt Tab} or clicking on {\tt Ok} accepts the data. Type {\tt G} or
+click on the Go item begin integrating.
+\item {\tt Old} This sets the initial dat to the {\em numerical} values of
+the most recent initial conditiosn.
+\item {\tt Last} This uses the end values of the most recent
+integration as the starting values for the next integration.
+\item {\tt Shift}  This does exactly the same thing as {\tt Last} but
+also sets the time variable to the current value of time.  This has no
+effect on autonomous systems but is important for temporally forced
+problems.
+\end{enumerate}
+\vspace{.25 in}
+\begin{center}
+{ \bf \large Three Dimensional Plots }
+\end{center}
+Clicking on {\tt 3D Graphs} brings up a menu of several choices.
+After selecting the type of plot, a parameter box will appear with
+several input items for you to choose. These are (i) {\bf Zmax} which
+should contain the maximum value of the quantity to plot, (ii) {\bf
+Zmin} the minimum value, (iii) {\bf Alpha} which sets the angle of the
+axes in surface plots, (iv) {\bf Zfrac} which sets the magnitude of
+the Z-axis in surface plots; smaller values lead to shallower looking
+surfaces, (v) {\bf Variable} the name of the quantity to be plotted,
+and (vi) the number of contours to plot if you choose the contour
+option.  
+The menu choices for 3D graphics are:
+\begin{itemize}
+\item {\tt 0.Color} This produces a flat plot with color coding of the
+magnitude of the plotted variable: Red is highest and Blue is lowest.
+\item {\tt 1.Surf} This makes a grid plot with hidden lines.  It is
+not very good nor is it particularly flexible.  Play around with {\bf
+Alpha} and {\bf Zfrac} to change how it looks.  
+\item {\tt 2.Grey}  This uses a dithering algorithm to produce
+halftones for two color monitors and systems.  It is also flat.
+\item {\tt 3.SurfCol} This draws a surface with colored faces.
+\item {\tt 4.SurfGrey} This draws a surface with dithered faces.
+\item {\tt 5.Contour} This produces a contour plot evenly divided
+between the max and the min values of the plot.
+\item {\tt 6.ColCont} This makes contours colored according to value.
+\item {\tt PostScript} This prompts you for a file name and produces a
+postscript picture of the current three-d plot.  As of now only the
+color and grey plots are supported.  Later, the surface and contours
+will be supported.
+\end{itemize}
+\vspace{.25 in}
+\begin{center}
+{\bf \large Two Dimensional Plots}
+\end{center}
+Two-D plots are easy to do as well. Click on {\tt 2D Graphs} and a
+long list is presented.  The default is {\tt 0. None.}  The next 4 are
+\begin{itemize}
+\item {\tt 1.XPhsPln} This lets you draw a phaseplane picture of the
+form, $u_1(x,t_1)$ versus $u_2(x,t_2)$ where $x$ runs over the domain,
+$u_1$ and $u_2$ are two variables (possibly identical) and $t_1,t_2$
+are two times.  For this model, the phaseplane option is pretty
+boring. When you choose it, a new window with 6 entries pops up.  The
+most important are the leftmost 4 which indicate the variables and
+times on the two axes.  The times chosen should be in the range in
+which you integrated.  The color choices depend on your system.  If
+you have 256 colors available, then colors 20-30 provide a nice range
+from the spectrum whereas for 16 color terminals, 0-15 are good.  If
+you have a black and white system use color 0.  There are only 2 line
+styles, dotted (1) and solid (0). 
+\item {\tt 2.TPhsPln} This is like {\tt XPhsPln} but the spatial points
+are fixed and the plots are parametrized by time, i.e.,  $u_1(x_1,t)$
+versus $u_2(x_2,t)$ is plotted where $t$ runs through the integration
+time. 
+\item {\tt 3.UvsX} This creates a plot of a variable versus space at a
+given time.  The parameter window requires color and linestyles, the
+time at which you want the plot and the variable name.  
+\item {\tt 4.UvsT} This creates a plot of a variable versus time at a
+given space point.  The parameter window requires color and linestyles, the
+time at which you want the plot and the variable name.  
+\item {\tt Add} After you have chosen a 2D graph, you can add more
+curves that are similar to the picture.  Then these curves will be
+drawn and/or saved later on.
+\item {\tt Delete} Deletes the most recent curve from the 2D list.
+\item {\tt Edit} Allows you to change the parameters of the curves;
+they are numbered 1-$n$ where $n$ is how many curves in the picture.
+\item {\tt Postscript} You will be prompted
+for a filename and a plot will be created that you can later printout.
+\item {\tt List}  This is a very useful command.  It allows you to
+make a group of curves of the same type at regularly spaced intervals.
+For example, if you are in UvsX mode then choosing this will put up a
+menu in which you set the start time, the end time, and the number of
+curves.  These will be added to your curve list.  There is a current
+limit of 30 curves, but this is easy to modify.  
+\end{itemize}
+Changing curve modes deletes all of your curves and sets the number of
+curves to 1 again.
+\vspace{.25 in}
+\begin{center}
+{\bf \large Numerics parameters}
+\end{center}
+
+This menu item allows you to modify many of the numerical parameters
+in the program. You will first be prompted for a method:
+\begin{enumerate}
+\item {\tt Euler} This is the usual first order Euler method. The time
+step must be small for accuracy and stability.
+\item {\tt BackEul}  This is a backward Euler method useful for
+systems with spatial derivatives.  It only creates banded matrices
+with a bandwidth of $(2*n+1)*N$ where $n$ is the maximum order of
+derivatives used in the program (less than or equal to 4) and $N$ is
+the number of variables in the model.
+\item {\tt Gear} This is a modification of Gears algorithm which works
+on the same banded systems as the backward Euler method.
+\item {\tt ModEuler} This is the two-step Euler method.  It is more
+accurate than Euler but requires two evaluations per time step.
+\end{enumerate}
+
+Once you choose a method, you can choose a wide variety of parameters
+by filling in the values in the parameter box.  The items in this are
+\begin{itemize}
+\item {\tt Dt} This is the time step for all but the Gear method which
+uses an adaptive step size.
+\item {\tt Tout} This tells \xtc how often to write output.
+\item {\tt Transient}  The problem will be integrated until $t$
+exceeds {\tt Transient}.
+\item {\tt TStart} This tells \xtc the time at which to start the
+integration.
+\item {\tt Epsilon}  This is the maximum error allowed for the
+Backward Euler method
+\item {\tt Tol} This is the error tolerance for the Gear algorithm.
+\item {\tt DtMin} This is the minimum timestep allowed in the Gear
+algorithm
+\item {\tt DtMax} This is the maximum timestep Gear can take.
+\item {\tt Maxiter} This is the maximum iterates allowed for backward
+Euler connvergence.
+\item {\tt Jacuse} This is the number of times to reuse the Jacobian
+for the Backward Euler method.
+\item {\tt Nout} This is the number of writeouts made for the
+integration, so that the total time integrated is Transient+Dt*Nout.
+\item {\tt Weight0} Set this to 1 for Riemann sums and .5 for the
+trapezoid rule.
+\item {\tt Grid} This is the spatial mesh.  This will reset the entire
+problem so use this with caution.  You will be warned.
+\item {\tt Bound} Global bounds.  If any variable exceeds this an
+error will occur and the integration will stop.
+\item {\tt Length} The length of the domain.  Everything will be reset
+withput warning.
+\end{itemize}
+
+As usual, type {\tt Tab} or click on {\tt Ok} when you are done.
+ 
+\vspace{.25 in}
+\begin{center}
+{\bf \large File stuff}
+\end{center}
+This menu item allows you to write data and to save parameters and
+numerical stuff as well as writing user friendly comments on the
+problem to a file or to the standard output.
+
+\begin{enumerate}
+\item {\tt Save 3d} This prompts you for a filename.  Then you are aked
+for ``skip'' values.  The default is 1 for each.  This enables you to
+only save every $k^{th}$ column or $l^{th}$ row of the
+values of the current three-d window.  The file has the form:
+\begin{verbatim}
+#xx by yy
+U(x0,t0)
+U(x1,t0)
+...
+U(xn,t0)
+
+U(x0,t1)
+...
+U(xn,t1)
+
+...
+
+U(x0,tm)
+U(x1,tm)
+...
+U(xn,tm)
+\end{verbatim}
+The first line contains the dimensions.  The file can be plotted with
+GNUPLOT using the {\tt splot} option.  It is also compatible with
+Maple Release 2 reading.
+\item {sAve 2d} This prompts you for a file name and writes all of the
+numbers in the two-d window to the file.  If the plots are PHASEPLANE
+plots, then for each of the $N$ curves, $2N$ columns are written as:
+\begin{verbatim}
+curve1_x curve1_y curve2_x curve2_y ... curveN_x curveN_y
+\end{verbatim}
+where each of the above means a column of numbers. It is useable by
+MATHCAD, Maple, and GNUPLOT.
+If the plots are UvsX or UvsT then the first column contains the space
+or time variables respectively and the remaining columns contains the
+$y-$values of the plotted curves.  Thus there are $N+1$ columns where
+$N$ is the number of curves.  
+
+The reader may wonder why all of the data cannot be saved in one file.
+The reason for this is that the format would be very difficult to
+manipulate given that ther is a mixture of scalar and vector
+functions.  Thus, I opted for a very readable format that allows you
+to save different variables in different files.
+
+\item {\tt Write set}  This prompts you for a file name and then
+writes the current problem information to a file of this name. The
+file contains all of the current initial data, the numerical
+parameters, the current problem parameters, and all of the plotting
+information. It is an uncommented ASCII file so that it is not easily
+interpreted by the user. 
+\item {\tt Read set} This prompts you for a filename and then reads in
+the information.  It is the converse of {\tt Write set}.  The two of
+these allow you to pick up where you left off.
+\item {\tt Info} This command allows you to write the numerical info,
+the parameters, the right-hand sides, and the parameters to an ASCII
+readable file or to the standard output.  The latter is chosen if you
+give no filename at the prompt (i.e. type {\tt Enter} immediately.) 
+\item {\tt save Ctm} This command saves the continuum weights or
+parameters in a file.  This is especially useful if you create some
+random values for them and you want to use them repeatedly. This lets
+you save a set of them.
+\item {\tt Quit} This command quits \xtc after first asking you if you
+are done.
+\end{enumerate}
+ 
+\vspace{.25 in}
+\begin{center}
+{\bf \large Redraw menu}
+\end{center}
+This menu redraws the windows.  Because the data in the windows can be
+very complicated, and may take a long time to redraw, I have not asked
+X to redraw everytime a window is exposed.  Thus, you must tell the
+program to redraw the graphics.  Of course, menu items are always
+refreshed.
+There are 3 items:
+\begin{enumerate}
+\item {\tt Both} This redraws both the 3D and 2D windows.
+\item {\tt 3D} redraws the 3D window
+\item {\tt 2D} redraws the 2D window
+\end{enumerate}
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Continue}
+\end{center}
+You will be asked for how much {\it more} time to integrate the
+problem.  If you have a 3D graphic in the window, it will be
+overwritten.  However, redrawing it will append the new data.
+
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Erase}
+\end{center}
+This erases both of the windows or only the 3D or 2D window. 
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Go}
+\end{center}
+This turns on the integrator and plots out the data in the 3D graph.
+The 2D plot is not updated until you redraw it.  The integrator can be
+stopped by typing {\tt Esc} until a small window pops up informing you
+that the integration was halted.
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Window}
+\end{center}
+This allows you to adjust the regions plotted in the 3D and 2D
+windows.  Note that the Zoom commands have not yet been implemented.
+\begin{enumerate}
+\item {\tt Fit 3d} This adjusts the values, {\tt ZMax} and {\tt ZMin} 
+ so that the 3D plot is completely resolved.
+\item {\tt fIt 2d} This adjusts the 2D window so every curve in it
+will fit in the window.
+\item {\tt Win 2D} This puts up a parameter box that allows you to
+manually set the dimensions of the 2D window.
+\end{enumerate}  
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Parameters}
+\end{center}
+This pops up a window that contains all of your parameters, both
+continuum and scalar.  Click on the ones you want to change and they
+will appear in the prompt line for input.  You can also call them by
+name at the prompt line.  Typing {\tt Esc} aborts the current change
+to the current parameter or leaves the parameter command if you are
+not changing parameters.  Repeatedly typing {\tt Enter} also exits
+this.  You can also click on the {\tt Done} box to accept all of the
+parameters, or click on {\tt Cancel} to abort the whole thing.  When
+you choose to change continuum parameters, you will be asked how you
+want to modify them.  This is explained below in the section on
+creating \xtc files.
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Turing}
+\end{center}
+
+One of the techniques that is used by modelers of spatio-temporal
+pattern formation is to linearize about a spatially homogeneous fixed
+point and look at the stability with respect to spatially sinusoidal
+perturbations.  The result of such a calculation is the so-called
+dispersion or stability curve that plots the real part of the maximal
+eigenvalue against the mode of the perturbation.  This is generally a
+calculation that must be done analytically.  By using the parser
+engine that I have developed for reading in evolution equations, I can
+``pick'' out the important parts of the right-hand side and thus
+perform a formal linearization of the model about a homogeneous rest
+state.  By numerically computing the Fourier transforms of the
+convolution kernels that are selected and knowing {\em de facto} the
+transforms for the diffusion and biharmonic operators, I can then
+compute a set of small stability matrices for each of the Fourier
+modes of interest.  Then, using a standard eigenvlaue finder, the
+eigenvalues of these modes are quickly computed and the result is a
+fairly accurate assessment of the stability and pattern formation
+ability of the model.  The key point in the stability analysis is that
+the results are pretty much independent of the spatial grid (see
+below) and also the computations are considerably simpler because I
+dont have to look at the system as a huge set of discretized odes.
+
+The only spatial operations currently understood are (i) biharmonic,
+(ii) diffusion, (iii) averaging with normalized symmetric functions, and (iv)
+convolutions with symmetric normalized periodized kernels.  For the
+differential operators, either ``even'' or periodic boundary
+conditions are permitted.  Because of the symmetry assumptions, only
+cosine perturbations are necessary. 
+
+The items on the menu are:
+\begin{itemize}
+\item{\tt Go} This starts the stability calculation.  It writes info
+to the terminal such as the equilibrium value found and the numerical
+values of the maximal eigenvalues at each mode.  The real and
+imaginary parts are given so you can look for Hopf bifurcations. If
+the calculation goes through with no problems, a window pops up on the
+screen graphing the real and imaginary (in red on color terminals)
+parts of the maximal eigenvalue. A message window with the equilibria
+and the wave number with maximal real part also pops up.  To continue,
+you must press on the OK in the window.
+\item{\tt Window} This prompts you for the max and min of the
+stability plot.
+\item{\tt Fit} Automatically fits the window to the stability data.
+\item{\tt Redraw} redraws the stability plot
+\item{\tt Save} prompts you for a file name and saves the data in
+column format; the first is the mode number, next the real part, and
+then the imaginary part.
+\item{\tt Params} brings up a box with numerical parameters:
+\begin{itemize}
+	\item{\tt Modes} The number of modes to test; maximaum is 200.
+	\item{\tt Grid} For convolution kernels, this lets you compute
+them more accurately to get a better approximation of their
+transforms.  It has no effect on the main part of the program.
+	\item{\tt HalfWave} For PDEs with even boundary conditions,
+you want to test against perturbations of the form $\cos(n\pi x)$
+instead of $\cos(2n\pi x)$ so setting this flag to 1 lets you do it.
+	\item{\tt Max Iter} This sets the maximum number of Newton
+iterates to try to find the homogeneous rest state.
+	\item{\tt Epsilon} This parameter sets the accuracy of the
+numerical derivatives.  Dont make it too big or too small.
+	\item{\tt Error} This is the error toerance for the Newton
+root finder.
+\end{itemize}
+\item {\tt sUmmarize} This puts up a window showing the equilibria and
+the wave mode that has the most positive eigenvalue as well as that
+eigenvalue. Pess OK when you are done looking at it to continue with
+the program. 
+\end{itemize}
+
+
+\section{The input file}
+The most important part of \xtc is the input file.  These are small
+editable ASCII files that inform the program what it must do.  The
+generally accepted way to input the files is as follows:
+\begin{verbatim}
+SPACE <name of space variable>
+TIME <name of time variable>
+LOAD <filename>
+SET <option>=<value>
+...
+# Comments (anywhere in file, preceded by #)
+
+CVAR <name>=<expression>
+...
+BDRY <name> <0|1> <zero|noflux|periodic|leaky> { a b c}
+...
+VAR <name>=<number>, <name>=<number>,...
+...
+PAR <name>=<number>, <name>=<number>,...
+...
+CPAR <none|normal|pernorm|periodize|readfile> <name>=<expression>
+...
+WEIGHT <none|norm|readfile> <name>=<expression>
+...
+FUN <name> <nargs> <expression>
+...
+CFIX <name>=<expression>
+...
+FIX <name>=<expression>
+...
+AUX <name>=<expression>
+...
+CAUX <name>=<expression>
+...
+<name>'=<expression>
+...
+<name>'=<expression>
+SET PLOTVAR=<name>
+DONE
+\end{verbatim}
+
+Not every file will have this much information, but no file will have
+any other types of expressions.  In the above, the place where numbers
+are requested are exactly that, regular floating point numbers.
+Expressions an be any algebraic expressions involving variables etc.
+Values are specific to the paticular option and are almost always just
+numbers.
+
+\vspace{.25in}
+\begin{center}
+{\bf\large Options}
+\end{center}
+There are many options that you set to initialize the program.  Some
+(but not all of these can be set within the program.  They all have
+default values which you may or may not accept. They are:
+\begin{itemize}
+\item EXTEND. This tells \xtc how to extend the variables outside the
+domain of the medium.  The default is periodic.  The following are the
+values: 0-periodic, 1-zero, 2-even, 3-odd. See below for more
+information.
+\item NPERIOD. This sets the number of periods to sum a kernel for
+periodizing it (see below).  It is set to 10 by default. It cannot be
+changed within the program.
+\item GRID.  This sets the spatial grid size.  It is set to 25 by
+default and can be changed within the program.
+\item LENGTH. This sets the length of the domain.  It is set to 1 by
+default and cannot be changed within the program.
+\item FAST.  This flag can be set to 0 or 1.  It is 0 as default.
+When set to 1, the program can perform much faster, but the righthand
+sides are limited in form to have no conditionals or complicated
+evaluations of the space variable (see below.)  For most problems, you
+can set this to 1.  It can't be changed in \xtc.
+\item METHOD.  This is the numerical method and is (0)-Euler,
+(1)-BackEul, (2)-Gear, (3)-ModEul.  It defaults to Euler and can be
+changed in \xtc.
+\item DELTA\_T.  The time step.  Defualt is 0.001 and can be changed.
+\item TFINAL. The output times (called Tout in the numerics menu). Its
+default is 0.01.
+\item TRANS. Sets the transient time. Default is 0.0.
+\item NOUT. Sets the number of outputs for the integrator. Default is 100.
+\item PLOTVAR. This is the name of the continuum variable that is to
+be plotted in the 3D window.  The default is the first defined variable.
+\item BUFSIZE.  This is very important.  It sets the allowable buffer
+size and thus puts an upper limit on the number of datapoints that can
+be saved.  That is, this sets maximum number of time steps that can be
+output.  It {\em CANNOT} be altered once in the program, however, the
+size on set up is limited only by the available memory.  The default
+is 250.
+\item DTMIN. This sets the minimum value for the timestep in the Gear
+integrator. The default is 1.e-8.
+\item DTMAX. This sets the maximum time step for Gear. Default is 1.
+\item TOLERANCE. This sets the Gear tolerance.  The default is 1.e-4.
+\item EPSILON. Error tolerance for backward Euler. Default is 1.e-4.
+\item JACUSE. Number of times to reuse the Jacobian in backward Euler.
+Default is 20.
+\item MAXITER. Maximum iterates in backward Euler. Default is 20. 
+\item TSTART. Initial time. Default is 0.0.
+\item MAXDERIV.  Maximum number of spatial derivatives you will use.
+This cannot be changed in \xtc.  The default is 2.  This is usually
+good enough, but for problems with the biharmonic you will want to set
+this to 4.
+\item RGB. This sets the way the color map is defined. It cannot be
+changed from within the program.  The values are: (0) (the default) a
+red/blue color map with red the highest and blue the lowest; (1) a
+spectral color map red the highest and blue the lowest with green in
+between; (2) a periodic color map so that the lowest is red and the
+highest is also red.
+\item BOUND.  This sets the global bounds. (See numerics)
+\end{itemize}
+All but the PLOTVAR are usually set at the beginning of the program.
+Only the PLOTVAR takes a name as its argument; all other options take
+numbers. If I don't specifically say that you cannot change this in
+the program then you can change it.  Most of the options are numerical
+and can be changed in the Numerics menu.  The PLOTVAR can be changed
+in the 3D menu.
+
+\vspace{.25 in}
+
+The {\tt LOAD} command tells the program to load a file.  The file is
+of the same format as any \xtc file.  In particular, if you find
+yourself setting the same options all the time, this can be used as a
+shortcut. I have a default file that I often use that sets things up
+such as the space and time variables as well as numerical options.
+Files can call other files as well; it is fully recursive.
+
+\vspace{.25 in}
+\begin{center}
+{\bf\large Time and Space Variables}
+\end{center}
+The names of these are set by the commands:
+\begin{verbatim}
+TIME <name>
+SPACE <name>
+\end{verbatim}
+The defaults are {\tt t} and {\tt x} respectively. The space variable
+name is quite important since in integration and weight functions, the
+dummy names must be related to your space variable name.  Thus, if you
+choose {\tt x} as the space name, then {\tt x1,x2,x3,x4,x5} are the
+dummy names.  
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Functions}
+\end{center}
+
+\xtc allows you to define functions of up to 9 arguments.  The format
+is
+\begin{verbatim}
+FUN <name> <nargs> <expr(arg1,...,arg9)>
+\end{verbatim}
+Here {\tt <name>} is the name of the function, {\tt <nargs>} is the
+number of arguments of the function, and {\tt <expr>} is an expression
+defining the function.  The dummy arguments {\it must} be named {\tt
+arg1,...,arg9}.  For example, $m_\infty$ in the Morris-Lecar equations
+is defined as:
+\begin{verbatim}
+FUN minf 1 .5*(1+tanh((arg1-v1)/v2))
+\end{verbatim}
+Previously defined functions can appear in the definitions.
+
+\vspace{.25 in}
+\begin{center}
+{\bf \large Variables etc}
+\end{center}
+\xtc distinguishes between two types of variables/parameters: scalar
+and continuum.  Scalars are just numbers.  Continua are represented as
+one-dimensional arrays with the dimension equal to GRID+1.  Thus, of
+the length of the domain is 1.0 and the gridsize is 50, the continuum
+variable, $u(x)$ is represented as an array with, $u(0.0)=U[0]$ and
+$u(1.0)=U[50].$ Continua have different representations in different
+contexts.  For example in a right-hand side, $u$ represents the value
+of $u$ at the current $x$ value, $u(.8)$ represents the value of $u$
+at spatial point .8, and in the function, {\tt biharm(u,x,periodic)}
+$u$ represents the actual array and not a value.  This may seem
+confusing, but it is very intuitive.  Think of $u(\cdot)$ representing
+a function that reurns the value of $u$ at some point.  If the point
+is not an exact gridpoint, then the value is that at the closest.  No
+interpolation is done, although that can be done easily by modifying
+the functions {\tt eval\_ctm, eval\_ctm2 } in the file {\tt spatial.c}.
+In evaluating continua outside of their domains of definition (i.e.,
+beyond the interval $[0,L]$) they are extended in one of several ways:
+\begin{itemize}
+\item Periodic. $u(x+L)=u(x).$
+\item Zero. $u(x)=0$ is $x<0$ or $x>L$
+\item Odd. $u(x)=-u(-x)$ or $u(x)=-u(2L-x)$
+\item Even. $u(x)=u(-x)$ or $u(x)=u(2L-x)$
+\end{itemize}
+The default is the periodic extension. The current version of \xtc
+forces the same extension for all variables.  There are ways around
+this however. Continuum parameters can be set to different extensions
+within the program.
+
+Continuum variables, that is quantitlies that will depend on space
+that evolve in time are declared as:
+\begin{verbatim}
+CVAR <name>=<expr>
+\end{verbatim}
+The {\tt <name>} is any name with less than 10 letters and is how the
+variable is referred to throughout the program.  {\tt <expr>} is any
+expression involving the space variable (say, $x$) that will be the
+initial condition.  Of course this can be changed in \xtc.  For
+example,
+\begin{verbatim}
+CVAR v=-100+50*exp(-x)
+\end{verbatim}
+would declare $v$ as a continuum variable with initial condition that
+is an exponentially decreasing function of $x.$ If you dont set the
+initial condition it is set to 0 by default.  Only one continuum
+variable can be declared per line.
+
+Scalar variables are declared as
+\begin{verbatim}
+VAR <name1>=<value1>, <name2>=<value2>,...
+\end{verbatim}
+so that several can be declared on one line. The optional values are
+the initial conditions which can of course be changed in \xtc.  In
+their absence, they are set to zero.
+
+{\bf Fixed} variables are like those in {\tt xpp} and act like
+temporary variables in a FORTRAN program.  Thus, if you want to use
+some complicated expression over and over again or you want to create
+a nonlinear convolution, then you should use FIXED variables to save
+time and to get the desired results. They are declared as
+\begin{verbatim}
+CFIX <name>=<expr>
+FIX <name>=<expr>
+\end{verbatim}
+for continuum and scalar variables respectively.  Each time the
+right-hand side of your evolution equations are evaluated, the
+interpreter computes the fixed variables and then uses them later for
+the right-hand sides. As an example, suppose your right-hand side is
+\[
+ -u+ \int_0^1 w(x-y)f(u(y))dy
+\]
+where $u$ is a variable and $w$ is a fixed weight.  Then since the
+convolution operator only works on arrays, you would first want to
+make $f(u(y))$ into an array:
+\begin{verbatim}
+CFIX fu=f(u)
+\end{verbatim}
+where $f$ has been previously defined.  Then the right-hand side would
+just be:
+\begin{verbatim}
+u'=-u+conv(w,f,0,1,x,periodic)
+\end{verbatim}
+assuming the domain was periodic.  The {\tt conv} operator will be
+described below.  One can avoid using FIXED variables in this case at
+a great expense in time.
+
+Auxiliary variables come in both the continuum and scalar variety.
+These are quantities that do not satisfy evolution equations but which
+you might be interested in for some reason. They are declared like
+FIXED variables:
+\begin{verbatim}
+AUX <name>=<expr>
+CAUX <name>=<expr>  
+\end{verbatim}
+for scalar and continuum auxiliary variables respectively.  The names
+and expressions as as above.  
+
+{\bf NOTE:} Any previously defined quantity can be used in the
+righthand expressions.
+
+Continuum parameters are declared as:
+\begin{verbatim}
+CPAR <type> <name>=<expr>
+\end{verbatim}
+Here type is one of the following:
+\begin{itemize}
+\item {\tt none} Evaluate the parameter exactly as is.
+\item {\tt normal} Normalize it so that its average over the domain
+is 1.
+\item {\tt periodize} Replace the continuum parameter $w(x)$ with:
+\[
+ \bar w(x) = \sum_{k=-M}^{M} w(x+Lk)
+\]
+where $M$ is defined in the setup as NPERIOD.  Note that as  $M$ tends
+to $\infty$ if the sum converges, then the resulting parameter is
+$L-$periodic.  
+\item {\tt pernorm} This periodizes the parameter and then normalizes
+it so that its integral is 1.
+\item {\tt readfile}  This reads in the continuum parameter as a file.
+The format of the files is just :
+\begin{verbatim}
+ #GRIDSIZE
+ x0
+ x1
+ .
+ .
+ .
+ xn
+\end{verbatim}
+If this doesn't agree with the current gridsize, an error will
+occur and the continuum will not be changed.  Otherwise, it will be
+changed to the numbers in the file.  NOTE: The {\tt save Ctm} command
+in XTC will save it in the correct format.
+\end{itemize}
+The {\tt <name>=<expr>} just sets the value.  All continuum variables
+can be set to new quantities and their type modifiers can be changed
+in \xtc.  For example to make a normalized periodized Gaussian, one
+would write:
+\begin{verbatim}
+CPAR pernorm w=exp(-(x/se)^2)
+\end{verbatim}
+where {\tt se} is a previously defined space constant.
+
+In addition to continuum parameters that depend only on one spatial
+variable, there are WEIGHTS which depend on two parameters.  These are
+used in the {\tt weight} and {\tt rweight} functions described later.
+They are declared as:
+\begin{verbatim}
+WEIGHT <type> <name>=<expr>
+\end{verbatim}
+{\tt <type>} is one of either {\tt none}, {\tt normal}  or {\tt
+readfile} and
+determines whether or not the weight is normalized (see below). The
+{\tt <name>} is as usual and the {<expr>} is anly expression that is a
+function of the space variable, say, {\tt x} and the next dummy space
+variable, {\tt x1.} The {\tt normal} type then adjusts the defined
+weight function so that:
+\[
+ \int_0^L w(x,x_1)dx_1 = 1
+\]
+The {\tt readfile} type is similar to that for continuum variables.
+The only difference is that the file must contain an array of numbers
+for $w(x,x_1).$ The file is of the form:
+\begin{verbatim}
+#GRIDSIZE
+w(0,0)
+w(0,1)
+...
+w(0,n)
+w(1,0)
+...
+w(1,n)
+...
+...
+w(n,0)
+...
+w(n,n)
+\end{verbatim}
+
+NOTE:  The {\tt save Ctm} command saves weights in the correct form.
+
+Scalar parameters are declared as:
+\begin{verbatim}
+PAR <name1>=<value1>, ...
+\end{verbatim}
+where {\tt value} is an optional numerical value.  Otherwise the
+parameter is set to zero.  These can be changed in \xtc  with the
+parameter command.
+
+\vspace{.25in}
+\begin{center}
+{\bf \large Boundary conditions}
+\end{center}
+Since \xtc is able to solve parabolic PDEs, boundary conditions are
+important.  Once you have set these in the file, you cannot change
+them in \xtc.  But by using {\tt LEAKY} conditions, you can
+dynamically vary them if they are not to be periodic.  You {\bf MUST}
+declare them if you want to use spatial first and second derivatives.
+They must be declared at each end.  The ends are labeled 0 and 1 no
+matter what the domain size is. They are declared as:
+\begin{verbatim}
+BDRY <name> <side> <type> { a } { b } { c }
+\end{verbatim}
+where {\tt <name>} is the name of the varibale whose biundary
+conditions you want to define, {\tt <side>} is either 0 or 1, and {\tt
+<type>} is one of the following:
+\begin{itemize}
+\item {\tt periodic}  The conditions are periodic.  Note that even
+though it is not mathematically necessary, the program requires that
+you include conditions at both ends
+\item {\tt noflux} These are the Neumman conditions $u_x(0)=0.$
+\item {\tt zero} These are Dirichlet, $u(0)=0.$
+\item {\tt leaky} If you choose leaky conditions then you must include
+the last three quantities in curly braces.  The braces are necessary.
+The quantities inside them can be parameters or numbers or even
+functions of time and define boundary conditions of the form
+\[
+ au_x +bu = c
+\]
+\end{itemize}
+For example suppose that you want no flux conditions at 1 and
+sinusoidal forcing at 0, you would write:
+\begin{verbatim}
+BDRY u 0 leaky { 0 } { 1 } { al*sin(w*t) }
+BDRY u 1 noflux
+\end{verbatim}
+
+{\bf NOTE} Both noflux and zero boundary conditions are special cases
+of leaky boundary values.  Thus, if you want to explore different
+types of boundary data, use leaky. You can not get periodic boundary
+conditions from leaky so they must be considered separately.
+
+\vspace{.25in}
+\begin{center}
+{\bf \large Right-hand sides}
+\end{center}
+
+The right-hand sides of your equations can be put in any order and
+have the form:
+\begin{verbatim}
+<name>'=<expr>
+\end{verbatim}
+where {\tt <name>} is the name of one of your variables and {\tt
+<expr>} is any expression involving fixed variables, parameters, and
+other variables.  You cannot use AUXILIARY variables in right-hand
+sides.  
+
+{\bf NOTE} Continuum variables need not explicitly show their
+dependence on $x$ in the sense of writing $u(x)$ instead of $u.$  The
+actual dependence on $x$ is assumed and, in fact, the latter is
+evaluated much quicker than the former.  (SEE EXAMPLES BELOW!!)
+ 
+When you have completed your model equations, you must end the file
+with 
+\begin{verbatim}
+DONE
+\end{verbatim}
+
+\vspace{.25in}
+\begin{center}
+{\bf\large Operators and functions}
+\end{center}
+
+\xtc understands the usual trigonometric functions, exponentials,
+logarithms, sqare root, and powers.  Powers are input as in FORTRAN as
+either {\tt x\^y} or {\tt x**y} the latter being preferred. In
+addition, there are many other functions and operators.  The reserved
+words are
+\begin{verbatim}
+sin cos tan atan atan2 sinh cosh tanh
+exp ln log log10 t pi if then else
+asin acos heav sign ceil flr ran
+max min 
+arg1 ... arg9  @ $ + - / * ^ **
+\end{verbatim}
+as well as some special functions for spatial operations.
+
+These are mainly self-explanatory. The nonobvious ones are:
+\begin{itemize}
+\item {\tt heav(arg1)} the step function, zero if {\tt arg1<0} and 1 otherwise.
+\item {\tt sign(arg)} which is the sign of the argument (zero has sign 0)
+\item {\tt ran(arg)} produces a uniformly distributed random number
+between 0 and {\tt arg.}
+\item {\tt max(arg1,arg2)} produces the maximum of the two arguments
+and {\tt min}  is 
+the minimum of them.
+\item {\tt if(<exp1>)then(<exp2>)else(<exp3>)} evaluates {\tt <exp1> }
+If it is nonzero 
+it evaluates to {\tt <exp2>} otherwise it is { \tt <exp3>}. 
+ E.g. {\tt if(x>1)then(ln(x))else(x-1)}
+will lead to {\tt ln(2)}  if {\tt x=2}  and { \tt -1 if x=0.}
+\item {\tt  ceil(arg),flr(arg)}  are the integer parts of{\tt  <arg>} 
+returning the
+ smallest integer greater than and the largest integer less than {\tt <arg>}.  
+\item {\tt  pi}  is $\pi.$ 
+\item {\tt arg1, ..., arg9} are the formal arguments for functions and
+\end{itemize}
+
+The spatial  functions are:
+\begin{itemize}
+\item  {\tt conv(u,v,y0,y1,x,type)} This performs the convolution:
+\[
+ \int_{y0}^{y1}u(x-y)v(y) dy
+\]
+evaluated at $x.$  The {\tt type} determines how to evaluate $u$ when
+the difference $x-y$ is out of the domain.  The values of {\tt type}
+are 0-3 meaning respectively, PERIODIC, ZERO, EVEN, and ODD.  You can
+use these words instead of the numbers. 
+ See the explanation above on extensions.
+$u$ and $v$ must be
+continua and cannot be arbitrary expressions. $y0,y1,x$ can be
+arbitrary expressions that evaluate to numbers.
+\item { \tt fftconv(w,u,x,type) }  This performs the convolution of
+$w$ and $u$ just like the previous operator but uses the Fast Fourier
+Transform to perform it.  There are three options, PERIODIC, EVEN, and
+ZERO.  The PERIODIC option assumes that the domain is periodic.  The
+EVEN option extends the interval to double its length and by
+reflection makes it periodic.  It then perfomrs the convolution and
+returns the original domain.  This has the advantage of taking
+constant functions to constant functions.  There is really no analogue
+in the usual convolution function.  Finally, ZERO performs the
+integral:
+\[
+   \int_0^L w(|x-y|) u(y) \ dy. 
+\]
+{\em  Because this is the FFT, there are restrictions on the GRIDSIZE.
+For EVEN and PERIODIC types, the GRIDSIZE should be a power of 2.  For
+ZERO types the GRIDSIZE should be $2^n -1$ i.e.,  3, 7,15,31,63,
+etc. Otherwise, it just defaults to the standard way of computing the
+convolution. 
+}
+NOTE:  I haven't done much testing on this but will confess that
+on the problems I have tested, the FFT version doesn't seem all that 
+fast compared to the simple method.  There may be too much overhead.  
+
+
+\item {\tt weight(w,u,y0,y1,x)} This evaluates the integral:
+\[
+\int_{y0}^{y1} w(x,y)u(y)
+\]
+The first argument must be a weight and the second must be a continuum.
+\item {\tt rweight(w,u,y0,y1,x)} This evaluates the integral:
+\[
+\int_{y0}^{y1} w(y,x)u(y)
+\]
+The first argument must be a weight and the second must be a
+continuum. It performs the weight operation on the transpose of $w.$
+\item {\tt average(u,v,y0,y1)} returns the value of:
+\[
+\int_{y0}^{y1} u(s)v(s)ds
+\]
+$u,v$ must both be continua.
+\item {\tt biharm(u,x,type)} This returns the following:
+\[
+ u_{xxxx}(x)
+\]
+subject to one of the three types: {\tt  PERIODIC, EVEN, ODD.}
+ These are only
+relevant at the boundaries.   
+\item {\tt int(z,z1,z2)of(<expr>)}  This is the most general integral
+operator since the {\tt <expr>} can be arbitrary. $z$ is a dummy
+variable (such as {\tt x1,x2,...} and {\tt z1,z2} are expressions that
+evaluate to numbers.
+\item Derivatives of variables are defined for any variable for which
+you have defined a boundary condition.  Then if the variable is $u$
+and the space variable is $x$, the first and second derivatives of $u$
+are  {\tt u\_x} and {\tt u\_xx} respectively.
+\end{itemize}
+
+\begin{center}
+{\bf Notes on speed}
+\end{center}
+The fast flag described in the section on options allows for a big
+speed increase if the right-hand sides are compatible with it.  To
+assure this you cannot use the {\tt if then else} or {\tt int of }
+constructs. If you can use the {\tt weight, conv, average} instead of
+the {\tt int} function then the program will run fairly quickly.  For
+diffusion and biharmonic equations, the Gear algorithm is quite
+efficient and can in some circumstances give you better run times than
+Euler.  It is almost always faster than the backward Euler method.
+\section {Examples}
+In this section, I will show some example files.  First, the
+Schnakenberg oscillator coupled with diffusion:
+\beqa
+u_t &=& u^2v-u+D_u u_{xx} \\
+v_t &=& -u^2v+a + D_v v_{xx}
+\eeqa
+with noflux boundary conditions on the interval $[0,10].$  Here is the
+file along with comments
+\begin{verbatim}
+#----------------- schnak.xtc----------------------
+SPACE x
+TIME t
+SET DELTA_T=.005
+SET TFINAL=.2
+SET GRID=50
+SET LENGTH=10
+SET METHOD=0
+SET FAST=1
+SET NOUT=100
+# options use Euler method, integrating with timestep .001,
+# and output every .2 for 100 times for a total of 20.0
+PAR du=.2,dv=.3,a=.95
+# only 3 scalar parameters, the two diffusions and the source.
+CVAR u=exp(-x*x)+.1
+CVAR v=1.05
+# define the two variables and give some initial data
+BDRY u 0 noflux
+BDRY u 1 noflux
+BDRY v 0 noflux
+BDRY v 1 noflux
+# the boundary conditions at each end
+u'=v*u^2-u+du*u_xx
+v'=-v*u^2+a+dv*v_xx
+# the right-hand sides    
+DONE
+\end{verbatim} 
+
+The next example is a scalar pattern formation model based on the
+biharmonic operator:
+\[
+ v_t = av^2 + bv^3 +\beta(-8v_{xx}-v_{xxxx})
+\]
+with no flux boundary conditions on the interval $[0,\pi].$ The 0
+state is linearly stable for $\beta<1/16$ and undergoes a pitchfork
+bifurcation to spatial patterns for $\beta>1/16$ as long as $a$ and
+$b$ are chosen appropriately. To illustrate this numerically, the
+following file suffices:
+\begin{verbatim}
+# ------------ class.xtc ------------------
+# Since it is biharmonic, set MAXDERIV=4. Use Gear method with reduced
+# tolerance. Look at 15 time units with steps of .1
+# 
+# Use a small bump in the middle as the initial perturbation
+#
+# Set b<0 and greater than a.
+SPACE x
+TIME t
+SET LENGTH=3.1415926
+SET MAXDERIV=4
+SET FAST=1
+SET GRID=50
+SET METHOD=2
+SET TOLERANCE=.001
+SET DELTA_T=.01
+SET TFINAL=.1
+SET NOUT=150
+PAR a=1,b=-2,beta=.1
+CVAR v=.01*exp(-(x-1.57)^2)
+BDRY v 0 noflux
+BDRY v 1 noflux
+v'=-v+a*v^2+b*v^3+beta*(-8*v_xx-biharm(v,x,even))
+DONE
+\end{verbatim}
+
+The next example is the Wilson-Cowan type neural network:
+\beqann
+u_t+ u &=& a_{ee}\int_0^{2\pi} w_e(x-y)f_e(u(y,t))dy -
+a_{ie}\int_0^{2\pi}f_i(v(y,t)) dy \\
+\tau_iv_t+ v &=& a_{ei}\int_0^{2\pi} w_e(x-y)f_e(u(y,t))dy -
+a_{ii}\int_0^{2\pi}f_i(v(y,t)) dy 
+\eeqann
+where $f_e,f_i$ are squashing functions and all parameters are
+nonnegative.  The domain is the ring of length $2\pi.$  because we
+want to take a convolution with something that is a {\em function} of
+a continuum and not a continuum itself, we use fixed variables to
+create one.  Then because convolving is very expensive
+computationwise, we will compute the excitatory and inhibitory
+convolutions just once as fixed variables. The equations
+are:
+\begin{verbatim}
+#---------- wcring.xtc--------------------
+# Nice big grid
+# Use Euler
+# periodic bcs and random ics
+#-------------------------------------------
+SPACE x
+TIME t 
+SET LENGTH=6.2831853072
+SET GRID=50
+SET FAST=1
+SET METHOD=0
+SET DELTA_T=.1
+SET TFINAL=.1
+SET NPERIOD=10
+SET NOUT=150
+SET TRANS=0
+SET BUFSIZE=500
+CVAR u=.05*(ran(1)-.5)
+CVAR v=.05*(ran(1)-.5)
+#CVAR u=.1*cos(x)
+#CVAR v=0
+PAR aee=5,aie=10,aei=10,aii=3,te=.25,ti=.5
+PAR se=.4,si=.8,taui=1
+PAR ci=.46211715726,ce=.24491866240
+# Periodize and normalize the kernels
+CPAR pernorm we=exp(-(x/se)*(x/se))
+CPAR pernorm wi=exp(-(x/si)*(x/si))
+# Make fixed continua of the nonlinearities
+CFIX fe=tanh(u-te)+ce
+CFIX fi=tanh(v-ti)+ci
+# Compute the convolutions just once.
+CFIX cone=conv(we,fe,0,6.2832,x,periodic)
+CFIX coni=conv(wi,fi,0,6.2832,x,periodic)
+u'=-u+aee*cone-aie*coni
+v'=(-v+aei*cone-aii*coni)/taui
+DONE
+\end{verbatim}
+
+As a final example, I offer a rather different model for pattern
+formation showing directly the effects of long range inhibition. This
+is just a linear diffusion with dissipation and a nonlinear inhibitory
+term that branches a certain distance and inhibits the cell that
+distance away:
+\[
+u_t = -u+du_{xx}-.5(f(u(x+\delta))+f(u(x-\delta)))
+\]
+on a periodic domain. 
+\begin{verbatim}
+#-------------weird.xtc-----------------
+# Diffusion with a half length  distant inhibition leads to pattern formation
+#
+SPACE x
+TIME t
+SET DELTA_T=.005
+SET TRANS=0
+SET TFINAL=.1
+SET GRID=50
+SET LENGTH=6.28318
+SET METHOD=0
+SET FAST=1
+SET NOUT=100
+PAR d=1,beta=2.5,dist=3.1415926
+CVAR u=.02*exp(-x*x)-.01
+BDRY u 0 periodic
+BDRY u 1 periodic
+FUN f 1 beta*tanh(arg1)
+u'=-u+d*u_xx-.5*(f(u(x+dist))+f(u(x-dist)))
+DONE
+\end{verbatim}
+Try running this with {\tt beta} and {\tt dist} different values.  For
+extra credit, analyze the stability and predict the types of
+bifurcations possible. (Hint, for {\tt beta=8} and {\tt dist=1.6}
+there are travelling waves.) 
+\end{document}
+
+
+
+
+
+
+
+
+
+
+

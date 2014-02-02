@@ -1,0 +1,6 @@
+# triple.ode
+x'=y-mu*x
+y'=z-nu*x
+z'=q*x*x-gamma*x
+par q=2,mu=3,nu=1,gamma=1.5
+done

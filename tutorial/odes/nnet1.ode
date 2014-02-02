@@ -1,0 +1,7 @@
+1
+variable v
+parameter w=6,theta=1
+u f 1 1/(1+exp(-arg1))
+o -v+f(w*v-theta)
+d
+

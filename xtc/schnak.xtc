@@ -1,0 +1,22 @@
+SPACE x
+TIME t
+SET DELTA_T=.005
+SET TRANS=0
+SET TFINAL=.2
+SET GRID=50
+SET LENGTH=10
+SET METHOD=0
+SET FAST=1
+SET NOUT=100
+PAR du=.2,dv=3,a=1.05
+CVAR u=exp(-x*x)+.1
+CVAR v=1.05
+BDRY u 0 noflux
+BDRY u 1 noflux
+BDRY v 0 noflux
+BDRY v 1 noflux
+u'=u*u*v-u+du*u_xx
+v'=-u*u*v+a+dv*v_xx
+DONE
+
+

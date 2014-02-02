@@ -1,0 +1,7 @@
+3
+v x,y,z
+p mu=1,nu=2,gamma=1,q=2
+o y-mu*x
+o z-nu*x
+o q*x*x-gamma*x
+d

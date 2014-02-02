@@ -1,0 +1,18 @@
+# PIR Model with GABA_A and GABA_B synapses
+p gca=1,vk=-90,fh=2,vca=120
+p gl=.1,vl=-70,i=0
+p gsyna=0,gsynb=0,vsyna=-85,vsynb=-90,tvsyn=-40
+p fka=2,rka=.08
+ph(v)=1/(1+exp((v+79)/5))
+ps(v)= 1/(1+exp(-(v+65)/7.8))
+tauh(v)= ph(v)*exp((v+162.3)/17.8)+20
+#
+v'= gl*(vl-v)+gca*(vca-v)*h*ps(v)^3+i
+h'= (ph(v)-h)*fh/tauh(v)
+#
+sa'= fka*ssyn*(1-sa)-rka*sa
+tb'= 5*ssyn*(1-tb)-.007*tb
+sb'= .03*tb*(1-sb)-.005*sb
+#
+ssyn= 1/(1+exp(-(v+40)/2))
+done

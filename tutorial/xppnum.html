@@ -1,0 +1,312 @@
+<html>
+<head>
+<title> XPP NUMERICS </title>
+</head>
+<body bgcolor="#ffffff" link="#CC0000" alink="#FF3300"
+    vlink="#330099">
+
+<h1> Numerics<p> </h1>
+<h2> <img align=center src="gif/bangbang.gif" > Click on (U) from the main menu to get this menu <p> </h2>
+
+<p>
+
+<h3> This is the menu through which many numerical tasks are
+accomplished.  This is the soul of XPP. 
+</h3>
+<h2> Contents </h2>
+<h3> 
+<ul>
+<dd>  <a href=#timestuff> Time stuff </a>
+<dd>  <a href=#itctrl> Nullcline control </a>
+<dd>  <a href=#bound> Global bounds </a>
+<dd> <a href=#method> Method of integration </a>
+<dd> <a href=#delay> Delay      </a>
+<dd> <a href=#color> Colorizing      </a>
+<dd> <a href=#poin> Poincare maps      </a>
+<dd> <a href=#ruelle> Ruelle plots      </a>
+<dd> <a href=#stoch> Stochastic stuff      </a>
+<dd> <a href=#histogram> Histograms      </a>
+<dd> <a href=#fourier> Fourier coefficients      </a>
+<dd> <a href=#curvefit> Curve fitting      </a>
+<dd> <a href=#average> Averaging and Adjoints      </a>
+<dd> <a href=#table> Table parameters      </a>
+<dd> <a href=#bdry> Boundary value parameters      </a>
+</ul>
+</h3>
+<p>
+<center> <img src=gif/rainbowline.gif> </center> <p>
+
+<ul>
+<a name=timestuff>  <li> <b> (T)otal </b> </a> This is the amount of time to integrate. It is called
+ TEND in the documentation.  If it is
+negative 
+then it will be 
+made positive and no data will be stored. Thus you can integrate for very long 
+periods of time without being told that the storage is full.
+<li> <b>(S)tart time</b> This is the initial time <b>T0</b> For autonomous
+systems it is usually irrelevant. 
+<li> <b>tRansient</b> The program will integrate silently for this amount
+of time before plotting output.  It is used to get rid of transients.
+<li> <b>(D)t</b> This is the step size used by the fixed step integrators
+and the
+ output step
+ for Gear's algorithm.  It is positive or negative depending on the
+direction of integration.    
+ <a name=itctrl> <li> <b>n(C)line ctrl</b> </a> will prompt you for the grid size for comptuing
+nullclines. 
+<li> <b>s(I)ng pt ctrl</b>  This prompts you for errors and epsilons for eigenvalues 
+and equilibria calculations as well as the maximum iterates.
+<li> <b>n(O)ut</b>  This sets the number of integration steps to perform
+between output 
+to
+ storage.  Thus, if you output every 10 steps with a   Dt of .05, XPP will yield
+ output at times that are 10*.05=.5 timesteps apart.  The advantage of this 
+is that lengthier records of data can be made without losing accuracy of the 
+integrator.
+<li> <a name=bound> <b>(B)ounds</b></a>  This sets a global bound on the integrator.  If any variable exceeds
+ this value in magnitude, a message appears and the integration stops.
+<a name=method> <li> <b>(M)ethod</b> </a>  allows you to choose the methods of integration.
+Only Gear is
+ adaptive
+ and is the best to use for stiff problems.  If you choose Gear, you will be
+ asked for error tolerance, minimum step, and maximum step size.  The discrete
+ method should be used for difference equations.  If the method is GEAR, the
+ output   NOUT is set to 1.  Also Gear generates several possible error messages
+ that you may have to respond to.  These suggest how to fix the error.
+ Backward Euler prompts you for a tolerance and the maximum number of iterates
+ for each step. The Volterra method is described below; it prompts for
+a tolerance, maximum iterates, and a ``memory size.''  You will also
+be asked if you want the convolution kernels to be re-evaluated after
+any parameter is changed in either the range integration or through a
+manual change in parameters.  If this flag is 1 then the kernels will
+be re-computed.  The default is to not recompute them.  
+<li> <a name=delay><b>d(E)lay</b></a>  This sets the upper bound for the maximum delay as well as some other parameters used in computing the stability of
+fixed points for delay equations.  If in your delay
+ equations, the delay exceeds this, a message will appear and the integration 
+will stop.  Each time this is changed all previous delay data is destroyed and
+ you must begin your integration anew.  Thus, it should be the first thing you
+ set when solving a delay equation.  Since the storage depends on the size of
+   Dt when you change this, then the delay storage will also be
+destroyed.  Delay equations require data for <i> t &lt;t0 </i> so that you
+should edit the   Delay ICs to achieve this.  Use the fixed step
+integrators and not GEAR for this.
+<a name=color>  <li> <b>(C)olor code</b>  </a>
+ If you have a color system, XPP can code the 
+output according to
+ the magnitude of the velocity or the magnitude of the Z-axis variable.  A choice
+ pops up for these two options or for turning off the color.  This overides any
+ color on any other curves in your picture.  Once you choose to color code, you
+ are asked to either choose max and min values or have XPP do it for you via
+ optimize.  The latter will compute the max and min and set the scales accordingly.
+ <li> <a name=poin> <b>(P)oincare map</b> </a> 
+This sets up parameters for Poincare sections. A choice of
+ three items will appear:  the    <b>Max/Min </b>option   the
+   <b>Poincare section</b>
+ option
+ and the option to turn  <b> off</b>  all maps. In this version, only
+sections
+ orthogonal
+ to the coordinates are allowed, but this will change in subsequent versions.
+  A window will pop up and you should type in the parameters.  They are
+ the variable to check and the section and the direction. That is, a point
+ will be recorded if the variable crosses the section such that it is 
+either positive going to negative or vice versa according to the direction
+ parameter.  If the direction is set to zero, the, the point will be recorded
+ from either direction.  The flag   <b>Stop on Section</b> instructs XPP to halt when
+ the section is crossed.  Note that automatic interpolation is done.  If the 
+section variable is   <b> Time, T </b> and the section is say   <i> T1</i>,
+then 
+each time   <i>T=0 modulo T1</i> the point is recorded. 
+ This is useful for periodically driven 
+systems.  If you have opted for the  <b> Max/Min </b> option, then the section is 
+irrelevant and the point will be recorded when a local maximum (if the 
+direction is 1) minimum (direction=-1) or both (direction=0) of the variable
+ is encountered.
+<a name=ruelle><li> <b>R(U)elle plot</b> </a>  This allows you to retard any of the axes by an integral
+ number of steps.  This is useful for chaotic orbits and delayed systems. 
+ Choosing a number for any of the axes will result in the variable associated
+ with that axis being delayed by the number of steps inputted.  Thus if you
+ plot X vs X then of course you will get a diagonal line, but if you make the 
+Y-axis delayed by say 50 and the output is every .1 timesteps, then the plot 
+will be X(t-5) vs X(t). This does not appear during integration of the equations
+ and is available only after a computation.  You set it up and then click 
+<a href=xppmain.html#restor> (R)estore </a> from the main menu.
+<a name=stoch><li> <b>stoc(H)astic</b></a>  This brings up a series of items that allow you
+to compute many trajectories and find their mean and variance.  It is
+most useful when used with systems that are either Markovian or have
+noise added to the right-hand sides.  The items are:
+<ul>
+	<li> <b>New seed</b>  Use this to reseed the random number
+generator.  If you use the same seed then the results will not change
+from run to run.
+	<li> <b>Compute</b> This will put up the same dialog box as the
+``Integrate'' ``Range'' choice.  Two new data sets will be created
+that will compute the mean and the variance of the point by point
+values of the trajectories over the number of trial runs you choose.
+If the system is completely deterministic and the parameters and
+initial conditions are identical for each run, then this is
+superfluous.  Otherwise, the mean and variance are computed.  You can
+then access these new arrays as described below.
+If you fire up the sample Markov problem, choose the ``Compute''
+option, and set keep the initial data constant over say 20 runs, then
+you can look at the mean trajectory and its variance for each of your
+variables.  
+	<li> <b>Data</b> This puts the results of the most recent run into
+the data browser and enables plotting of them.
+	<li> <b>Mean</b> This puts the results of the mean value of the
+most recently computed set of trials.
+	<li> <b>Variance</b> This does the same for the variance.
+        <li> <a name=histogram> <b>Histogram</b></a>  This computes a histogram for a chosen
+variable and additional conditions and replaces the ``t'' column and
+the first variable column with the bin values and the number per bin
+respectively. You will be prompted for the number of bins, a maximum
+and minimum value and the variable on which to perform the histogram.
+Finally, you will be asked for additional conditions that involve the
+other stored variables (not the fixed ones though.)  For example,
+suppose you have run an ODE/Markov system and you want the
+distribution of a continuous variable when the Markov variable is in
+state 1.  Then the additional condition would be   z==1 where  
+z is the Markov variable.  Multiple conditions are made by using the
+  & and   |  expressions.  Note that   == is the logical
+equal and is not the same as the algebraic one.  
+	<li> <b>Old Hist</b> brings back the most recently computed
+histogram.
+	<a name=fourier> <li> <b>Fourier</b> </a> This prompts you for a
+data column and the number of modes you want.  It then computes a
+Fourier transform (not an FFT, since I don't want to worry about zero
+padding and other matters) for the number of modes you have chosen.
+The results are in the Browser.  The first column (labeled ``T'') is
+the mode.  The second, the cosine component and the third, the sine
+component.   
+<a name=curvefit> <li> <b>fIt curve</b> </a> This is a routine based on
+Marquardt-Levenberg algorithm for nonlinear least squares fitting.
+A description of the method can be found in <i> Numerical Recipes in
+C.</i> In this implementation, one can choose parameters and initial data
+to vary in an attempt to minimize the least-squares difference between
+solutions to a dynamical system and data.  The data must be in a file
+in which the first column contains the independent values in
+increasing order.  The remaining columns contain data which are to be
+fitted to solutions to a DE.  Not all the columns need be used.  When
+you choose this option, a window pops up with 10 entries describing
+the fit parameters. The items are:
+<ul> 
+	<li> <b>File</b> This is the name of the data file. The first
+column must contain the times at which the data was taken.
+	<li> <b>NCols</b> This contains the total number of columns in the
+data file. This
+includes all columns in the file, even those that you will not use.
+       <li> <b>Fitvar</b> This is a list separated by commas or spaces of
+variables that you want to fit to the data.  These must not be Markov
+variables or Auxiliary variables.  They are restricted to the items
+that you define as ``Variables'' in the ODE file.  Due to laziness,
+you can only have as many variables as you can type in 25 or fewer
+characters.  
+	<li> <b>To Col</b>  This should contain a list of column numbers in
+the data file associated with each of the variables you want to
+fit. Thus, for example, if you want to fit ``x'' to column 5 and ``y''
+to column 2, you would type ``x y'' in the ``Fitvar'' entry and ``5
+2'' in the ``To Col'' entry. The number of columns in this must equal
+the number of variables to be fit.
+<li> <b>Params</b>  These items (there are 2 of them in case you have lots
+of parameters you need to vary) contain the names of parameters and
+variables.  If the name is a variable, then the initial data for that
+variable will be adjusted.  If it is a parameter, then the parameter
+will be adjusted.  On the initial call, the current initial data and
+parameter values are used. The lists of parameters and initial data
+can be separated by spaces or commas.  
+<li> <b>Tolerance</b>  This is just a small number that tells the
+algorithm when the least square error is not changing enough to be
+significant.  That is if either the difference is less than ``TOL'' or
+the ratio of the difference with the least square is less than ``TOL''
+then the program will halt sucessfully.  On should not make this too
+small as such differences are insignificant and a waste of CPU time.
+The default of .001 seems to work well.
+<li> <b>Npts</b>  This is the number of points in the data file that you
+want to fit to.  
+<li> <b>Epsilon</b>  This is used for numerical differentiation.  1e-5 is
+a good value since we really don't need precise derivatives.
+<li> <b>Max iter</b> This is the maximum number of iterates you should use
+before giving up.  
+</ul> 
+
+On return, the program will put the best set of parameters that it has
+found.  It currently is quite verbose and prints a lot of stuff to the
+console.  This is mainly info about the current values of the
+parameters and the least square.  
+</ul>
+	
+
+
+<a name=table> <li> <b>loo(K)up </b></a> This allows you to change the definitions of
+tabulated functions by reading in a different file.  Thus, if you have
+many experimental sets of data, you can read them in one by one and
+integrate the equations. You are prompted for the name of a tabulated
+function.  Then you give the filename to read in.  You will continue
+to be prompted and can type a few carriage returns to get out. If the
+table was defined as a function instead of a file, then you will be
+prompted for the number of points, the limits of the range ( 
+Xhi,Xlo) ad finally, the formula of for the function defining the
+table.  Note that it must be a function of   t.  Note that if the
+function contains parameters and these are changed, it will be
+automatically recomputed.
+
+
+<li><a name=bdry>  <b>bndry(V)al</b> </a>prompts you for the maximum iterates, the error tolerance, and the
+ deviation for the numerical Jacobian for the shooting method for solving BVPs.
+<a name=average><li> <b>(A)djoint</b></a>  This allows you to compute the adjoint and do averaging for weakly
+ coupled oscillators.  To use this option, you must successfully compute
+ a periodic orbit using the periodic option of the BVP menu. (You
+needn't actuall use the BVP solver, a good close approximation is
+usually adequate.) 
+ It does not
+work well with stiff systems so good luck. The menu that pops up is:
+<ul>
+	<li> <b>(N)ew adj</b>  This makes the adjoint from the computed periodic
+ data.  Success or failure will be noted. Separate storage is
+maintained for the adjoint.  The program automatically puts the data
+from the adjoint into  the browser so it can be viewed and plotted or
+saved. 
+<li> <b>(A)djoint</b>  This will place the adjoint data in the browser,
+<li> <b>(O)rbit</b>  This places the periodic orbit in the browser.
+<li> <b>(M)ake H</b> This will prompt you for the coupling function and the result
+ will be averaged and placed in 2 columns of storage, the first is the time, 
+then the H function. If there are enough columns, the odd and even
+parts of the averaged function will be retained. As with the adjoint,
+this list is automatically placed in the browser.  
+The user will be prompted for the coupling functions and 
+should type in the formulas. The coupling is between two identical
+units.  Say you want to couple two oscillators via a variable called
+  V Then, you   V refers to the oscillator getting the input
+and   V' refers to the oscillator providing it.
+ 
+<li> <b>(H) function</b>  This places the computed H function in the browser.
+</ul>
+Anytime you integrate, etc, the data will be placed back into the storage area.
+</ul>
+
+
+
+<p>
+<center> <img src=gif/celtic_bar.gif> </center> <p>
+<h1> References </h1>
+<h2>
+<ul>
+<dd> <IMG src=gif/redbut.gif> <a href=start.html#toc> Table of Contents </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppmain.html> Main Menu Items</a>
+<dd> <IMG src=gif/redbut.gif> <a href=newstyle.html> ODE Files and Examples</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppnum.html> Numerics Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfile.html> File Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppfreeze.html> Freeze Menu</a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppauto.html> AUTO Menu </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppbrowse.html> Data Browser </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppio.html> I/O and Hardcopy </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut.html> XPP Basics </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut2.html> Nonlinear ODEs </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut3.html> Two-dimensions </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xpptut4.html> Three-dimensions
+and Beyond  </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppphase.html> Phase Equations </a>
+<dd> <IMG src=gif/redbut.gif> <a href=xppchaos.html> Chaos </a>
+</ul>
+</h2>
+

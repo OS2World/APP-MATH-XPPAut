@@ -1,0 +1,40 @@
+# Makefile for xtc/2 1.3
+# (c) Klaus Gebhardt, 1997
+
+VERSION = xtc-1.3
+
+CFLAGS = -m486 -mieee-fp -O3 \
+	-malign-loops=2 -malign-jumps=2 -malign-functions=2 \
+	-D__ST_MT_ERRNO__ -Zmtd
+CC     = gcc $(CFLAGS)
+LIBS   = -lX11 -lm -lnuma
+
+%.obj: %.c; $(CC) $(CFLAGS) -c $< -o $@ -Zomf
+%.o:   %.c; $(CC) $(CFLAGS) -c $< -o $@
+
+INCLUDES = ctm.h newhome.h parser.h readpde.h struct.h
+
+BITMAPS  = graph.bit xtc.bit turing.bit
+
+XTCFILES = biharm.xtc brussel.xtc nnet.xtc schnak.xtc weird.xtc \
+	tel.xtc wcring.xtc class.xtc phs.xtc
+
+SOURCES  = main.c button.c pop_list.c ggets.c commands.c color.c \
+	graphics.c plot_2d.c plot_3d.c lampde.c form_pde.c \
+	parser.c spatial.c pde_rhs.c bandsol2.c bandgear.c \
+	backeul.c save_dat.c get_par.c info.c ps_dev.c turing.c \
+	eigen.c convlv.c strcasecmp.c
+
+OBJECTS  = main.o button.o pop_list.o ggets.o commands.o color.o \
+	graphics.o plot_2d.o plot_3d.o lampde.o form_pde.o \
+	parser.o spatial.o pde_rhs.o bandsol2.o bandgear.o \
+	backeul.o save_dat.o get_par.o info.o ps_dev.o turing.o \
+	eigen.o convlv.o strcasecmp.o
+
+all: xtc.exe
+
+xtc.exe: $(OBJECTS)
+	$(CC) -o xtc.exe $(OBJECTS) $(LIBS)
+
+clean:
+	rm -f *.o *.obj *.a *.lib *.exe *.dll

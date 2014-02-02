@@ -1,0 +1,4 @@
+# standard map
+y(n+1)=y+delta-g*sin(y)
+par g=.35,delta=.5
+done

@@ -1,0 +1,6 @@
+# converted nnet1.ode 
+init v=0  
+par w=6  theta=1  
+f(arg1)=1/(1+exp(-arg1))
+v'=-v+f(w*v-theta)
+done

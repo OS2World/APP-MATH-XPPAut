@@ -1,0 +1,294 @@
+**************   NOTE   ************************************
+I have tried to provide some pointers for creating the binary
+on most UNIX machines.  I have direct access to SGI, LINUX, 
+ALPHA, SUN OS, SOLARIS, and HP.  I have compiled it on all of 
+these successfully.  Please read the notes below.  If you are
+still unable to compile it, then let me know.  
+Thanks,
+Bard
+*************************************************************
+
+
+****************  NOTE  *****************************************
+If you install the new version of XPP  over existing versions
+it is best to start from a clean set of files.  Type  rm *.o 
+first.  
+*******************************************************************
+VERSION 3.05  June 7 1977
+
+Fixed more bugs
+Animation hardcopy via MPEG
+Other minor stuff which I forget
+
+VERSION 3.0   Mar 3 1997
+
+1. Fixed more bugs
+2. Added new version for initial conditions with arrays
+3 !!!  ANIMATION PACKAGE FOR MAKING CARTOONS WITH SIMULATIONS !!!
+
+Make this from scratch
+
+
+VERSION 2.71  Nov 18 1996
+
+1. Changed flow field to integrate both forward and backward in time
+2. Added m(I)ce option to initial data so that you can click on many
+   initial conditions in a row
+3. Added fancy space-time plot to go along with array capabilities
+4. Fixed miscellaneous bugs :)
+
+SOON --  version with LOCBIF another bifurcation package will be available
+SUMMER 1997  Windows 95 version maybe
+ 
+VERSION 2.6   Oct 3 1996
+
+NOTE: !! Please make this version from scratch ( rm *.o ) !! 
+
+1. Main new feature is the addition of the industrial strength stiff 
+   solver  CVODE, a C language version of LSODE.
+   This is a big piece of code and I only implement
+   a small portion of it.  It is optional for now but if you don't 
+   want it you must change the Makefile.  See below.  
+2. Added AUTOFREEZE option.  Every curve that is integrate is automatically
+   saved.  This way you dont have to freeze after every integration. 
+   Up to 26 curves can be frozen.
+3. Fixed array options for markov processes
+4. Fixed arrow head bug
+5. Added some new options for @ directives
+
+
+VERSION 2.52   July 29 1996
+New Features:
+1. Parameter sliders -- move sliders to change parameters
+2. Edit the initial conditions, parameter, BC,etc windows directly
+3. Tips on all the menus
+4. "Array" handling.  The following is valid:
+            x[1..10]'= -x[j]
+5. Silent mode -- supports computation without X windows and produces
+   a space delimited ascii file for output
+6. Transposition of data arrays.
+7. Click and move to get x-y values in any window
+
+VERSION 2.00 of XPP/XPPAUT
+New features:
+1. Added two new integrators:  
+  i) a quality step Runge-Kutta algorithm  that is good for nonstiff problems
+  ii) An alternate stiff integrator based on a Rosenbrock method
+2. AUTO interface supports discrete problems
+
+
+VERSION 1.80 of XPP/XPPAUT
+New Features:
+1.  -convert command line argument converts old-style to new style
+2.  Symbol font and Times fonts in 5 sizes.  All Text is editable 
+3.  Add arrows and pointers to plots
+4.  Import bifurcation diagrams into main window
+5.  Include information about the graphics, numerics, storage, and X
+    fonts in the ODE files
+6.  Make 3D movies and movies of trajectories as a parameter varies
+7.  Stability for delay equations 
+
+		Installation of XPP and XPPAUT
+
+Create a directory and change to it. (I suggest the name xpp)
+FTP the program (xppaut2.60.tar.Z) 
+to the directory in which you want to install it. I have included as
+part of this distribution a modified version of the f2c libraries but
+they do not seem to work on every machine.  If you find that they do
+not work then you will need to ftp  f2clib.tar.Z also in the same
+directory.  I have also included sources for the CVODE library.
+
+
+The program is a compressed tar file and must be uncompressed with the
+command:
+
+uncompresss xppaut2.60.tar.Z
+
+Then you should untar the file with the command;
+
+tar xf xppaut2.60.tar
+
+
+A. You must create the CVODE library.  (This is optional -- see below)
+ 1)  Change to the directory  cvodesrc  (type: cd cvodesrc)
+ 2)  Type  make   to create the library.  If all goes well then you
+     should have a file called 
+                  libcvode.a
+     If something goes wrong, then I guess you won't have CVODE. Oh well.
+ 3)  Type
+             mv libcvode.a ../.
+ 4)  Type
+	     cd ..
+
+B.  You must create the f2c library
+
+Your system may already have f2c libraries on it.  On LINUX, the
+library is called libf2c.a and on my SPARC there are two of them,
+libI77.a and libF77.a.  I prefer to use the reduced libs anyway.  
+
+Case 1.  Compiling the reduced version of the f2c libraries.  
+  1) Change to the directory called libI77.  
+  2) Type 
+                make
+  3) If this goes well type the following
+  	mv libf2cm.a ../.
+  4) Type cd ..
+
+
+** DON'T DO THE NEXT STEP UNTIL YOU ARE SURE THE DISTRIBUTED VERSION
+   DOESNT WORK   **
+
+If you find that you need the f2c libraries (although my reduced set
+should work) then type
+
+uncompress f2clib.tar.Z
+tar xf f2clib.tar
+*********************************************************************
+
+Case 2.  If for some reason the reduced f2c libraries did not work
+then do the following.  Be sure you have uncompressed the f2clib.tar.Z
+file. 
+  1) cd libI77
+  2) Type make.  
+  3) If all goes well type
+     mv libI77.a ../.
+  4) Type
+     cd ../libF77
+  5) Type make.  
+  6) If all goes well type
+     mv libF77.a ../.
+  7) Type cd ..
+
+Case 3. Your system already has the libraries.  Then cd to the XPP
+directory. 
+
+Case 4. You cannot compile the f2c libraries.
+You should try to get the libraries for an original source  -- probably
+`netlib.att.com:/netlib/f2c' There you will find installation notes.)
+
+C. Create the xppaut binary
+   You should be in the main xpp directory.
+  1) Edit the Makefile to suit your machine (see below)
+   	NOTE: If for some reason you decided not to use the CVODE, then
+	delete  the  -DCVODE_YES directive in your  CFLAGS line.
+	Also, delete any references to  libcvode  in the linking stage.  
+  2) Type make
+
+There will be lots of warnings!  But you can generally ignore them.
+If this works then you are done.  You should have a binary called 
+  xppaut
+
+Once you have the binary, you should test it on a simple problem. Type
+
+./xppaut lin.ode
+
+and it should fire up.  If it does not then it is probably because the
+X Server is not responding.  Make sure your X environment is set up
+correctly. Click on Window and select Zoom In.  Then click the mouse
+inside the main window and holding down the button, drag it on the
+screen. You should see a rectangle that stretches as you move the
+mouse. If you do not see this then you should run the program with the
+-xorfix command line:
+
+./xppaut -xorfix lin.ode
+
+Repeat the above and you should see the box.
+
+I generally rename  xppaut to xpp and if I need the -xorfix flag, I
+write a small script file called xpp that has one line:
+
+xppaut -xorfix $1 $2
+
+This means I dont have to add -xorfix every time.
+
+Once you are satisfied that it works, move it to a directory in your
+path. (/usr/local/bin is standard).
+
+There is a document xpp_doc.ps that gives the full documentation
+for the program and a WWW tutorial.
+
+
+
+			Notes on the Makefile.  
+
+Copy the distributed Makefile to Makefile.old.  Then edit the Makefile
+according to the comments within it.  
+
+The main reason that compilation fails is that
+the required X libraries cannot be found. You should thus alter the
+Makefile to  tell the compiler where to find the libraries. 
+
+Add 
+
+-I<X include path>
+
+to the CFLAGS line and add
+
+-L<X library path>
+
+to the LFLAGS line.  This should do the trick.  Ask your sysop for the
+correct pathnames.
+
+
+
+	Notes on the RS6000: (thanks to Artie Sherman)
+
+1) For those without gcc, they can run the standard IBM C-compiler, xlc, 
+with a set of definitions that fake a Sun compiler.  I just added the 
+following stanza to the file /etc/xlc.cfg:
+
+bsdcc:  use             = DEFLT
+        crt             = /lib/crt0.o
+        mcrt            = /lib/mcrt0.o
+        gcrt            = /lib/gcrt0.o
+        libraries       = -lbsd, -lc
+        proflibs        = -L/lib/profiled,-L/usr/lib/profiled
+        options         = -H512,-T512, -qlanglvl=extended, -qnoro,-D_BSD, -D_NON
+STD_TYPES, -D_NO_PROTO,-bnodelcsect, -U__STR__, -U__MATH__
+
+(The options must be on a single, wrapped line)
+
+and did: "ln /bin/cc /bin/xlc"
+
+2) In the makefile, I used CC=bsdcc 
+ 
+ ***  RECENT SIMPLIFICATIONS FOR RS6000 USERS: ***
+Artie Sherman says the following seems to work!
+
+CC= cc
+CFLAGS=  -O -DAUTO -DCVODE_YES
+LIBS= -lX11 -lm
+        $(CC) -DAUTO -o xppaut $(OBJECTS) $(AUTOOBJ) $(LDFLAGS) \
+libcvode. libf2cm.a $(LIBS) 
+
+
+	Notes on the new version of LINUX (thanks to Bum Rak Choi)
+
+
+I was able to compile xppaut program on linux but I had to link libraries 
+with -static option as follows.
+
+gcc -static -lm -lieee $(OBJ_FILES) ....
+
+When I compile xppaut with gcc -m486 option and -lm to optimize 
+calculation, I got the floating exception error message. So, I tried to 
+link with -lieee option.
+
+	Notes on the DEC alpha
+
+What a pain in the ass this machine was.  But, thanks to the DEC I am
+now ready for any other 64 bit machines.  I compiled and ran the 
+test program for XPPAUT on the DEC alpha using the DEC compiler cc.
+I have not succeeded in getting it to work under gcc.  You should
+definitely use the included libf2cm.a for this.  I tried a precompiled
+version of libf2c.a and it crashed.  This is because f2c uses lots of
+"long" declarations which on the DEC are 64 bits while I treated them
+as 32 bits (the old standard).  My version of the f2c stuff in the 
+subdirectory libI77 works.
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+SPACE x
+TIME t
+SET DELTA_T=.01
+SET TFINAL=.2
+SET GRID=50
+SET LENGTH=1
+SET METHOD=2
+SET FAST=1
+SET NOUT=200
+PAR du=1,dv=1,a=.6,b=1.5,sig=8
+CPAR none freq=1+sig*x
+CVAR u=1
+CVAR v=1
+BDRY u 0 noflux
+BDRY u 1 noflux
+BDRY v 0 noflux
+BDRY v 1 noflux
+u'=freq*(a-(b+1)*u+v*u^2)+du*u_xx
+v'=freq*(b*u-v*u^2)+dv*v_xx
+DONE
+
